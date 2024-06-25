@@ -1,0 +1,95 @@
+name: flutter_callouts
+description: Point stuff out for your users => Target, Transform, Configure Callouts, Record to JSON in Dev, and Play in Producton
+version: 0.1.0
+maintainer: Ian White
+homepage: https://github.com/biancashouse/flutter_callouts
+# github mirrored from bitbucket
+#homepage: https://bitbucket:org/biancashouse/flutter_callouts/src/master/
+issue_tracker: https://github.com/flutter/flutter/issues?q=is%3Aissue+is%3Aopen+label%3A%22p%3A+flutter_adaptive_scaffold%22
+repository: https://github.com/biancashouse/flutter-callouts
+
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+
+# Dependencies specify other packages that your package needs in order to work.
+# To automatically upgrade your package dependencies to the latest versions
+# consider running `flutter pub upgrade --major-versions`. Alternatively,
+# dependencies can be manually updated by changing the version numbers below to
+# the latest version available on pub.dev. To see which dependencies have newer
+# versions available, run `flutter pub outdated`.
+dependencies:
+  flutter:
+    sdk: flutter
+  #url_strategy: ^0.2.0
+#  json_annotation: ^4.8.1
+#  cupertino_icons: ^1.0.2
+#  flutter_bloc: ^8.1.1
+#  freezed: ^2.5.2
+#  freezed_annotation: ^2.2.0
+  transparent_pointer: ^1.0.0
+#  numeric_keyboard: ^1.1.0
+#  file_picker: ^8.0.3
+#  dart_mappable: ^4.0.1
+#  smooth_page_indicator: ^1.1.0
+#  google_fonts: ^6.1.0
+#  watcher: ^1.1.0
+#  pointer_interceptor: ^0.10.1
+#  multi_split_view: ^3.1.0
+#  url_launcher: ^6.2.5
+#  flutter_hooks: ^0.20.3
+#  calendar_date_picker2: ^1.0.1
+#  auto_size_text_field: ^2.2.2
+#  flutter_fancy_tree_view: ^1.4.1
+#  webview_flutter: ^4.7.0
+#  webview_flutter_android: ^3.15.0
+#  webview_flutter_wkwebview: ^3.12.0
+#  webview_flutter_web: ^0.2.2+4
+#  webview_flutter_platform_interface: ^2.7.0
+#  percent_indicator: ^4.2.3
+#  on_screen_ruler: ^0.0.1
+#  collection: ^1.18.0
+#  rotated_corner_decoration: ^2.1.0+1
+#  youtube_player_flutter: ^5.0.0
+#  youtube_parser: ^2.1.3
+#  flutter_localization: ^0.2.0
+  #pretty_json: ^2.0.0
+#  meta: ^1.12.0
+#  lorem_ipsum: ^0.0.3
+#  gradient_borders: ^1.0.1
+
+  bh_shared:
+    path: ../bh_shared
+
+#dependency_overrides:
+#  web: ^0.5.0 # latest version as of now
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  test: ^1.25.2
+  mockito: ^5.4.4
+#  build_runner: ^2.4.9
+#  json_serializable: ^6.5.3
+#  vector_math: ^2.1.2
+#  text_editor: ^0.7.0
+#  bloc_test: ^9.1.1
+  flutter_lints: ^4.0.0
+#  dart_mappable_builder: ^4.2.2
+#  analyzer: ^6.4.1
+
+#false_secrets:
+#  - /example/lib/firebase_options.dart
+
+# The following section is specific to Flutter packages.
+flutter:
+
+  uses-material-design: true
+
+
+
+
