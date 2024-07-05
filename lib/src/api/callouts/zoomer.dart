@@ -106,10 +106,10 @@ class ZoomerState extends State<Zoomer>
     //     MaterialSPA.of(context.mounted ? context : updatedContext!);
 
     if (widget.ancestorHScrollController != null) {
-      FCallouts().registerScrollController(widget.ancestorHScrollController!);
+      fca.registerScrollController(widget.ancestorHScrollController!);
     }
     if (widget.ancestorVScrollController != null) {
-      FCallouts().registerScrollController(widget.ancestorVScrollController!);
+      fca.registerScrollController(widget.ancestorVScrollController!);
     }
 
     // make available globally

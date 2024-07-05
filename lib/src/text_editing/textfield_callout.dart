@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
-import 'package:flutter_callouts/src/typedefs.dart';
 
 /// returning false means user tapped the x
 void editText2({
@@ -34,7 +33,8 @@ void editText2({
   final TextStyleF? textStyleF,
   final TextAlignF? textAlignF,
 }) {
-  GlobalKey<FC_TextEditorState> calloutChildGK = GlobalKey<FC_TextEditorState>();
+  GlobalKey<FC_TextEditorState> calloutChildGK =
+      GlobalKey<FC_TextEditorState>();
 
   final FocusNode focusNode = FocusNode();
 
@@ -45,7 +45,7 @@ void editText2({
   // Callout.removeAllOverlays();
   Callout.showOverlay(
       targetGkF: targetGK,
-      boxContentF: (ctx) => FC_TextField(
+      calloutContentF: (ctx) => FC_TextField(
             inputType: String,
             key: calloutChildGK,
             prompt: () => prompt,
@@ -61,7 +61,7 @@ void editText2({
             textAlignF: textAlignF,
           ),
       calloutConfig: CalloutConfig(
-        feature: feature,
+        cId: feature,
         containsTextField: true,
         // focusNode: focusNode,
         barrier: CalloutBarrier(
@@ -80,13 +80,15 @@ void editText2({
         finalSeparation: separation ?? 0.0,
         //developer.log('barrier tapped'),
         // dragHandle: dragHandle,
-        initialCalloutAlignment: initialCalloutOffset != null ? null : initialCalloutAlignment,
-        initialTargetAlignment: initialCalloutOffset != null ? null : initialTargetAlignment,
+        initialCalloutAlignment:
+            initialCalloutOffset != null ? null : initialCalloutAlignment,
+        initialTargetAlignment:
+            initialCalloutOffset != null ? null : initialTargetAlignment,
         initialCalloutPos: initialCalloutOffset,
         // barrierHasCircularHole: true,
         modal: false,
-        suppliedCalloutW: width!,
-        suppliedCalloutH: height ?? minHeight + 4,
+        initialCalloutW: width!,
+        initialCalloutH: height ?? minHeight + 4,
         minHeight: minHeight + 4,
         resizeableH: true,
         resizeableV: true,
@@ -99,7 +101,7 @@ void editText2({
           onAcceptedF?.call();
         },
         // containsTextField: true,
-        onResize: (Size newSize) {
+        onResizeF: (Size newSize) {
           // calloutChildGK.currentState?.setState(() {});
           onSizeChangeF?.call(newSize);
         },
@@ -116,19 +118,24 @@ void editText2({
   // if callout completed with false, revert to original string
   if (!ignoreCalloutResult) {
     if (!dontAutoFocus) {
-      FCallouts().afterMsDelayDo(500, focusNode.requestFocus);
+      fca.afterMsDelayDo(500, focusNode.requestFocus);
     }
-    Callout.showTextToast(
-      //context: context,
-      feature: "tap-outside-editor-name-toaccept",
-      msgText: "tap outside the editor to close it ${FCallouts().isWeb ? '\nor press <Shift-Return>' : ''}",
-      backgroundColor: Colors.purpleAccent,
-      textColor: Colors.white,
-      gravity: Alignment.topCenter,
-      width: 450,
-      height: 140,
-      onlyOnce: true,
-      removeAfterMs: 8*1000,
+    Callout.showToast(
+      removeAfterMs: 8 * 1000,
+      calloutConfig: CalloutConfig(
+        cId: "tap-outside-editor-name-toaccept",
+        gravity: Alignment.topCenter,
+        initialCalloutW: 450,
+        initialCalloutH: 140,
+        onlyOnce: true,
+      ),
+      calloutContentF: (context) => Padding(
+        padding: const EdgeInsets.all(10),
+        child: fca.coloredText(
+          "tap outside the editor to close it ${fca.isWeb ? '\nor press <Shift-Return>' : ''}",
+          color: Colors.white,
+        ),
+      ),
     );
   }
 }

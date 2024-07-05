@@ -64,7 +64,7 @@ class WrappedCalloutState extends State<WrappedCallout> {
   late CalloutConfig _config;
   static const _AllowImagesToRenderMs = 2000;
   late GlobalKey _targetMeasuringGK;
-  late bool _waitingForAnyImagesToRender;
+  // late bool _waitingForAnyImagesToRender;
   Offset? targetPos;
   Size? targetSize;
   Size? boxContentInitialSize;
@@ -82,10 +82,10 @@ class WrappedCalloutState extends State<WrappedCallout> {
     OE.registerOE(
         OE(opC: opController, calloutConfig: _config, isHidden: false));
 
-    _waitingForAnyImagesToRender = true;
-    FCallouts().afterNextBuildDo(() {
-      FCallouts().afterMsDelayDo(_AllowImagesToRenderMs, () {
-        _waitingForAnyImagesToRender = false;
+    // _waitingForAnyImagesToRender = true;
+    fca.afterNextBuildDo(() {
+      fca.afterMsDelayDo(_AllowImagesToRenderMs, () {
+        // _waitingForAnyImagesToRender = false;
 // get initial size after first build + a little more time to allow any images to render
         Rect? r = _targetMeasuringGK.globalPaintBounds(
             skipWidthConstraintWarning: widget.skipWidthConstraintWarning);
@@ -111,8 +111,8 @@ class WrappedCalloutState extends State<WrappedCallout> {
 
   @override
   void dispose() {
-    debugPrint("callout disposed: ${_config.feature}");
-    OE.deRegisterOE(Callout.findOE(_config.feature), force: true);
+    debugPrint("callout disposed: ${_config.cId}");
+    OE.deRegisterOE(Callout.findOE(_config.cId), force: true);
     super.dispose();
   }
 
@@ -155,12 +155,12 @@ class WrappedCalloutState extends State<WrappedCallout> {
 
   void showOP() {
 // may be called before target sized properly
-    if (false && _waitingForAnyImagesToRender) {
-      FCallouts().afterMsDelayDo(_AllowImagesToRenderMs, () {
-        opController.show;
-      });
-      return;
-    }
+//     if (false && _waitingForAnyImagesToRender) {
+//       fca.afterMsDelayDo(_AllowImagesToRenderMs, () {
+//         opController.show;
+//       });
+//       return;
+//     }
 
     if (opController.isShowing) {
       opController.show;
@@ -171,11 +171,11 @@ class WrappedCalloutState extends State<WrappedCallout> {
     _config.calloutW = boxContentInitialSize?.width;
     _config.calloutH = boxContentInitialSize?.height;
 //
-    _config.calloutW ??= _config.suppliedCalloutW;
-    _config.calloutH ??= _config.suppliedCalloutH;
+    _config.calloutW ??= _config.initialCalloutW;
+    _config.calloutH ??= _config.initialCalloutH;
 // possibly create the overlay after measuring the callout's content
-    if (_config.suppliedCalloutW == null || _config.suppliedCalloutH == null) {
-      FCallouts().afterNextBuildMeasureThenDo(
+    if (_config.initialCalloutW == null || _config.initialCalloutH == null) {
+      fca.afterNextBuildMeasureThenDo(
           skipWidthConstraintWarning: _config.calloutW != null,
           skipHeightConstraintWarning: _config.calloutH != null,
               (mctx) => widget.calloutBoxContentBuilderF(mctx), (Size size) {
@@ -214,7 +214,7 @@ class WrappedCalloutState extends State<WrappedCallout> {
       Animation<double> animation = tween.animate(animationController);
       animation.addListener(() {
 // debugPrint('--- ${_config.feature} --- animation value ${animation.value}');
-        _config.setSeparation(animation.value, () => opController.show());
+        _config.setSeparation(animation.value);//, () => opController.show());
       });
       _config.startedAnimatingSeparation();
       animationController.forward().whenComplete(() {

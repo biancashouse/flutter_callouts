@@ -1,6 +1,6 @@
 // ignore: constant_identifier_names
 enum ArrowType {
-  NO_CONNECTOR,
+  NONE,
   POINTY,
   VERY_THIN,
   VERY_THIN_REVERSED,

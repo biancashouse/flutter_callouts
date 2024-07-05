@@ -11,7 +11,7 @@ class PathUtil {
     Path path = Path();
     config.calcEndpoints();
     Offset tE = config.tE?.asOffset ?? Offset.zero;
-    if (config.arrowType == ArrowType.NO_CONNECTOR || (config.tE == null || config.cR().contains(tE))) {
+    if (config.arrowType == ArrowType.NONE || (config.tE == null || config.cR().contains(tE))) {
       /*
 			 * rectangle around calloutR
 			 */

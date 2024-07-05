@@ -30,7 +30,7 @@ class OE {
       } else {
         OE.list.add(newOE);
       }
-      debug();
+      // debug();
     }
   }
 
@@ -38,31 +38,30 @@ class OE {
     oe?.calloutConfig.onDismissedF?.call();
     if (oe?.entry != null || force) {
       OE.list.remove(oe);
-      debug();
+      // debug();
     }
   }
 
   static void printFeatures() {
     debugPrint('------------');
     for (OE oe in OE.list) {
-      debugPrint('${oe.calloutConfig.feature} ${oe.opC != null ? "*" : ""}');
+      debugPrint('${oe.calloutConfig.cId} ${oe.opC != null ? "*" : ""}');
     }
     debugPrint('------------');
   }
 
-  static void debug() {
-    return;
-    debugPrint('${list.length} overlays');
-    debugPrint('------------');
-    for (OE oe in OE.list) {
-      debugPrint(
-          '${oe.calloutConfig.feature}: ${oe.entry != null ? Overlay : OverlayPortal}, ${oe.isHidden ? "hidden" : "showing"}, ${oe.isToast ? "TOAST" : ""}');
-    }
-  }
+  // static void debug() {
+  //   debugPrint('${list.length} overlays');
+  //   debugPrint('------------');
+  //   for (OE oe in OE.list) {
+  //     debugPrint(
+  //         '${oe.calloutConfig.cId}: ${oe.entry != null ? Overlay : OverlayPortal}, ${oe.isHidden ? "hidden" : "showing"}, ${oe.isToast ? "TOAST" : ""}');
+  //   }
+  // }
 
   static OE? findOE(Feature feature) {
     for (OE oe in OE.list) {
-      if (oe.calloutConfig.feature == feature) {
+      if (oe.calloutConfig.cId == feature) {
         return oe;
       }
     }

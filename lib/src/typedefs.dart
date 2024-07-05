@@ -59,5 +59,3 @@ typedef BoolFunc = bool Function();
 // typedef TextAlignFunc = TextAlign Function();
 
 // typedef Adder<Node> = void Function({Node? parentNode, required Node selectedNode, required Node newNode});
-
-typedef ColorValue = int;

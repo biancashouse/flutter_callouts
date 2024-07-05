@@ -16,8 +16,8 @@ class BubbleShape_OP extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     Path? path = _drawBubble(calloutConfig, pointyThickness: calloutConfig.calloutH! <= 40 ? 5 : null);
     if (path != null) {
-      canvas.drawPath(path, FCallouts().bgPaint(calloutConfig.fillColor??Colors.white));
-      canvas.drawPath(path, FCallouts().linePaint(Colors.black, theThickness: thickness));
+      canvas.drawPath(path, fca.bgPaint(calloutConfig.fillColor??Colors.white));
+      canvas.drawPath(path, fca.linePaint(Colors.black, theThickness: thickness));
     }
   }
 
@@ -30,7 +30,7 @@ class BubbleShape_OP extends CustomPainter {
     Path path = Path();
     callout.calcEndpoints();
     Offset tE = callout.tE?.asOffset ?? Offset.zero;
-    if (callout.arrowType == ArrowType.NO_CONNECTOR || (callout.tE == null || callout.cR().contains(tE))) {
+    if (callout.arrowType == ArrowType.NONE || (callout.tE == null || callout.cR().contains(tE))) {
       /*
 			 * rectangle around calloutR
 			 */

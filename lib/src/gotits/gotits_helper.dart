@@ -10,9 +10,9 @@ class GotitsHelper {
       if (notUsingHydratedStorage) {
         _features = [];
       } else {
-        String? gotitList = await FCallouts().browserStorage_read('gotits');
+        String? gotitList = await fca.localStorage_read('gotits');
         _features =
-            gotitList.substring(1, gotitList.length - 1).split(',').toList();
+            gotitList?.substring(1, gotitList.length - 1).split(',').toList() ?? [];
       }
     }
     return _features!;
@@ -24,7 +24,7 @@ class GotitsHelper {
         await featureList(notUsingHydratedStorage: notUsingHydratedStorage);
     if (!features.contains(feature)) {
       _features ?? [].add(feature);
-      FCallouts().browserStorage_write('gotits', features.toString());
+      fca.localStorage_write('gotits', features.toString());
     }
   }
 
@@ -38,7 +38,7 @@ class GotitsHelper {
   static Future<void> clearGotits(
       {bool notUsingHydratedStorage = false}) async {
     if (!notUsingHydratedStorage) {
-      FCallouts().browserStorage_delete('gotits');
+      fca.localStorage_delete('gotits');
     }
     _features?.clear();
     // debugPrint("GotitsHelper.clearGotits");

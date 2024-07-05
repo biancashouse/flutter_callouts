@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
@@ -120,7 +119,7 @@ class FC_TextEditorState extends State<FC_TextField> {
     _txtController = TextEditingController();
     _txtController.text = widget.originalS;
     if (!widget.dontAutoFocus) {
-      FCallouts().afterNextBuildDo(() {
+      fca.afterNextBuildDo(() {
         _focusNode.requestFocus();
       });
     } else {
@@ -136,39 +135,38 @@ class FC_TextEditorState extends State<FC_TextField> {
 
   @override
   Widget build(BuildContext context) {
-    Widget? prefixWidget;
-    if (widget.prefixIcon != null &&
-        (widget.prompt?.call().isNotEmpty ?? false)) {
-      prefixWidget = Row(
-        children: [
-          widget.prefixIcon!,
-          FCallouts().coloredText(
-            widget.prompt!.call(),
-            color: Colors.purpleAccent,
-            fontSize: 14,
-          ),
-        ],
-      );
-    } else if (widget.prefixIcon != null) {
-      prefixWidget = widget.prefixIcon!;
-    }
-    if (widget.prompt?.call().isNotEmpty ?? false) {
-      prefixWidget = Padding(
-        padding: const EdgeInsets.only(top: 8.0),
-        child: FCallouts()
-            .coloredText(widget.prompt!.call(), color: Colors.purpleAccent),
-      );
-    }
+    // Widget? prefixWidget;
+    // if (widget.prefixIcon != null &&
+    //     (widget.prompt?.call().isNotEmpty ?? false)) {
+    //   prefixWidget = Row(
+    //     children: [
+    //       widget.prefixIcon!,
+    //       FCA.coloredText(
+    //         widget.prompt!.call(),
+    //         color: Colors.purpleAccent,
+    //         fontSize: 14,
+    //       ),
+    //     ],
+    //   );
+    // } else if (widget.prefixIcon != null) {
+    //   prefixWidget = widget.prefixIcon!;
+    // }
+    // if (widget.prompt?.call().isNotEmpty ?? false) {
+    //   prefixWidget = Padding(
+    //     padding: const EdgeInsets.only(top: 8.0),
+    //     child: FCA.coloredText(widget.prompt!.call(), color: Colors.purpleAccent),
+    //   );
+    // }
 
-    TextInputType keyboardType = widget.isPassword
-        ? TextInputType.visiblePassword
-        : TextInputType.multiline;
+    // TextInputType keyboardType = widget.isPassword
+    //     ? TextInputType.visiblePassword
+    //     : TextInputType.multiline;
 
-    if (!kIsWeb && widget.inputType == int) {
-      keyboardType = TextInputType.number;
-    } else if (!kIsWeb && widget.inputType == double) {
-      keyboardType = const TextInputType.numberWithOptions(decimal: true);
-    }
+    // if (!kIsWeb && widget.inputType == int) {
+    //   keyboardType = TextInputType.number;
+    // } else if (!kIsWeb && widget.inputType == double) {
+    //   keyboardType = const TextInputType.numberWithOptions(decimal: true);
+    // }
 
     InputDecoration inputDecoration = widget.isPassword
         ? InputDecoration(

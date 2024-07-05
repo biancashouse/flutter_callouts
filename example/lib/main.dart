@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
 
-import 'demos_home.dart';
-
 void main() {
   runApp(const MyApp());
 }
@@ -13,324 +11,210 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Callouts Package Demos',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: FCallouts().FUCHSIA_X),
-        useMaterial3: true,
-      ),
-      home: const CalloutDemosHome(),
+    return const MaterialApp(
+      title: 'flutter_callouts demo',
+      home: MyHomePage(),
     );
   }
 }
 
-// class DemoHomePage extends StatelessWidget {
-//   const DemoHomePage({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: <Widget>[
-//             const Text('Flutter Callouts - Examples Home Page'),
-//             Text(
-//               'subTitlesubTitlesubTitlesubTitlesubTitle',
-//               textScaler: TextScaler.linear(.7),
-//             ),
-//           ],
-//         ),
-//       ),
-//       body: Center(
-//         child: Padding(
-//           padding: const EdgeInsets.all(50.0),
-//           child: Wrap(
-//             children: [
-//               FilledButton(
-//                 key: _gk1,
-//                 onPressed: () {
-//                   Navigator.push(
-//                     context,
-//                     MaterialPageRoute(
-//                         builder: (context) => const CalloutDemoPage1()),
-//                   );
-//                 }, // _button1,
-//                 style: FilledButton.styleFrom(backgroundColor: Colors.red),
-//                 child: const Padding(
-//                   padding: EdgeInsets.all(8),
-//                   child: Text(
-//                     'tap me',
-//                     style: TextStyle(color: Colors.yellow),
-//                   ),
-//                 ),
-//               ),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-//
-//   void _button1() {
-//     Callout.showOverlay(
-//       targetGkF: () => _gk1,
-//       targetChangedNotifier: notifier,
-//       boxContentF: (ctx) => Column(
-//         mainAxisSize: MainAxisSize.max,
-//         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//         crossAxisAlignment: CrossAxisAlignment.center,
-//         children: [
-//           FCallouts().purpleText("Example Callout\nwith a TextEditor",
-//               fontSize: 24, family: 'Merriweather'),
-//           Container(
-//             padding: const EdgeInsets.symmetric(horizontal: 12),
-//             width: 240,
-//             height: 100,
-//
-//             /// only need feature when wanting to dismiss the editor callout in a callback
-//             child: FC_TextField(
-//               inputType: String,
-//               prompt: () => 'password',
-//               originalS: '',
-//               onTextChangedF: (s) async {
-//                 if (s.toLowerCase() == "x") {
-//                   Callout.dismiss("top-left");
-//                 }
-//               },
-//               onEscapedF: (s) {
-//                 Callout.dismiss("top-left");
-//               },
-//               dontAutoFocus: false,
-//               isPassword: true,
-//               passwordHelp: "Clue: Elon Musk's favourite letter",
-//               onEditingCompleteF: (s) {
-//                 Callout.dismiss("top-left");
-//               },
-//             ),
-//           ),
-//           Text("(this callout is draggable)"),
-//         ],
-//       ),
-//       calloutConfig: CalloutConfig(
-//           feature: "top-left",
-//           initialTargetAlignment: Alignment.bottomRight,
-//           initialCalloutAlignment: Alignment.topLeft,
-//           finalSeparation: 300,
-//           barrier: CalloutBarrier(
-//             opacity: .5,
-//             onTappedF: () {
-//               Callout.dismiss("top-left");
-//             },
-//           ),
-//           suppliedCalloutW: 240,
-//           suppliedCalloutH: 220,
-//           borderRadius: 12,
-//           fillColor: Colors.lime,
-//           animate: true,
-//           toDelta: -20,
-//           arrowType: ArrowType.POINTY,
-//           vsync: this),
-//     );
-//   }
-//
-//   Future<void> _button2() async {
-//     CalloutConfig cc = CalloutConfig(
-//       feature: "top-right",
-//       initialTargetAlignment: Alignment.bottomLeft,
-//       initialCalloutAlignment: Alignment.topRight,
-//       finalSeparation: 150,
-//       barrier: CalloutBarrier(
-//         opacity: .5,
-//         onTappedF: () {
-//           Callout.dismiss("top-right");
-//         },
-//       ),
-//       suppliedCalloutW: 280,
-//       suppliedCalloutH: 200,
-//       borderRadius: 12,
-//       fillColor: Colors.blue[50],
-//       arrowColor: Colors.green,
-//       arrowType: ArrowType.POINTY,
-//       animate: true,
-//       toDelta: -20,
-//       resizeableH: true,
-//       resizeableV: true,
-//       vsync: this,
-//     );
-//     Callout.showOverlay(
-//       targetGkF: () => _gk2,
-//       targetChangedNotifier: notifier,
-//       boxContentF: (ctx) => Column(
-//         mainAxisSize: MainAxisSize.max,
-//         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//         crossAxisAlignment: CrossAxisAlignment.center,
-//         children: [
-//           FCallouts()
-//               .purpleText(
-//                 "Animated.",
-//                 fontSize: 24,
-//                 family: 'Merriweather',
-//               )
-//               .animate()
-//             ..swap(
-//                 duration: 3400.ms,
-//                 builder: (_, __) => FCallouts().purpleText(
-//                       "Animated,\nand Resizeable",
-//                       fontSize: 24,
-//                       family: 'Merriweather',
-//                     ))
-//             ..swap(
-//                 duration: 5.seconds,
-//                 builder: (_, __) => FCallouts().purpleText(
-//                       "Animated,\nand Resizeable,\nand Draggable",
-//                       fontSize: 24,
-//                       family: 'Merriweather',
-//                     ))
-//             ..swap(
-//                 duration: 7.seconds,
-//                 builder: (_, __) => FCallouts().purpleText(
-//                       "Animated,\nand Resizeable,\nand Draggable,\ntry it...",
-//                       fontSize: 24,
-//                       family: 'Merriweather',
-//                     )),
-//         ],
-//       ),
-//       calloutConfig: cc,
-//     );
-//     Future.delayed(
-//         1.seconds,
-//         () => cc.animateCornerBy(Alignment.topLeft, -50, -50,
-//             durationMs: 1.seconds));
-//     Future.delayed(
-//         3.seconds,
-//         () => cc.animateCornerBy(Alignment.topRight, 50, 0,
-//             durationMs: 1.seconds));
-//     Future.delayed(
-//         5.seconds,
-//         () => cc.animateCornerBy(Alignment.bottomLeft, -50, 50,
-//             durationMs: 1.seconds));
-//     Future.delayed(
-//         7.seconds,
-//         () => cc.animateCornerBy(Alignment.bottomRight, 0, 100,
-//             durationMs: 1.seconds));
-//     // await Future.delayed(
-//     //     1.seconds,
-//     //     () => cc.animateCalloutBy(0, 100,
-//     //         durationMs: 500.ms,
-//     //         afterAnimationF: () => cc.animateCalloutBy(100, 0,
-//     //             durationMs: 500.ms,
-//     //             afterAnimationF: () => cc.animateCalloutBy(-200, 200,
-//     //                 durationMs: 900.ms,
-//     //                 afterAnimationF: () => cc.animateCalloutBy(200, -200,
-//     //                     durationMs: 500.ms, afterAnimationF: () => {
-//     //                   cc.animateCornerBy(Alignment.topLeft, -50, -50, durationMs: 500.ms)
-//     //                     })))));
-//   }
-//
-//   /// wrappedTarget does NOT need a GlobalKey
-//   Widget _button3() => Callout.wrapTarget(
-//         targetChangedNotifier: notifier,
-//         calloutBoxContentBuilderF: (context) => Column(
-//           mainAxisSize: MainAxisSize.max,
-//           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//           crossAxisAlignment: CrossAxisAlignment.center,
-//           children: [
-//             FCallouts().purpleText(
-//               "Animated,\nResizeable,\nDraggable,\nExample Callout",
-//               fontSize: 24,
-//               family: 'Merriweather',
-//             ),
-//           ],
-//         ),
-//         calloutConfig: CalloutConfig(
-//           feature: "bottom-left",
-//           initialTargetAlignment: Alignment.bottomLeft,
-//           initialCalloutAlignment: Alignment.topRight,
-//           finalSeparation: 150,
-//           barrier: CalloutBarrier(
-//             opacity: .5,
-//             onTappedF: () {
-//               Callout.hideParentCallout(context);
-//             },
-//           ),
-//           suppliedCalloutW: 280,
-//           suppliedCalloutH: 200,
-//           borderRadius: 12,
-//           fillColor: Colors.blue[50],
-//           animate: true,
-//           toDelta: -20,
-//           resizeableH: true,
-//           resizeableV: true,
-//         ),
-//         targetBuilderF: (ctx) => FilledButton(
-//           // key: _blGk,
-//           onPressed: () {
-//             Callout.unhideParentCallout(ctx, animateSeparation: false);
-//           },
-//           style: FilledButton.styleFrom(backgroundColor: Colors.greenAccent),
-//           child: const Padding(
-//             padding: EdgeInsets.all(8),
-//             child: Text(
-//               'tap to see example callout',
-//               style: TextStyle(color: Colors.black),
-//             ),
-//           ),
-//         ),
-//       );
-//
-//   void _button4() {
-//     Callout.showOverlay(
-//       targetGkF: () => _gk4,
-//       targetChangedNotifier: notifier,
-//       boxContentF: (ctx) => Column(
-//         mainAxisSize: MainAxisSize.max,
-//         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//         crossAxisAlignment: CrossAxisAlignment.center,
-//         children: [
-//           FCallouts().purpleText("Example Callout\nwith a TextEditor",
-//               fontSize: 24, family: 'Merriweather'),
-//           Container(
-//             padding: const EdgeInsets.symmetric(horizontal: 12),
-//             width: 240,
-//             height: 100,
-//             child: FC_TextField(
-//               inputType: String,
-//               prompt: () => 'password',
-//               originalS: '',
-//               onTextChangedF: (s) async {
-//                 if (s.toLowerCase() == "x") {
-//                   Callout.dismiss("top-left");
-//                 }
-//               },
-//               dontAutoFocus: false,
-//               isPassword: true,
-//               passwordHelp: "Clue: Elon Musk's favourite letter",
-//               onEditingCompleteF: (s) {},
-//             ),
-//           ),
-//           Text("(this callout is draggable)"),
-//         ],
-//       ),
-//       calloutConfig: CalloutConfig(
-//         feature: "bottom-right",
-//         initialTargetAlignment: Alignment.bottomRight,
-//         initialCalloutAlignment: Alignment.topLeft,
-//         finalSeparation: 150,
-//         barrier: CalloutBarrier(
-//           opacity: .5,
-//           onTappedF: () {
-//             Callout.dismiss("bottom-right");
-//           },
-//         ),
-//         suppliedCalloutW: 240,
-//         suppliedCalloutH: 220,
-//         borderRadius: 12,
-//         fillColor: Colors.lime,
-//         animate: true,
-//         toDelta: -20,
-//       ),
-//     );
-//   }
-// }
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key});
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+/// it's important to add the mixin, because callouts are animated
+class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
+  int _counter = 0;
+
+  late GlobalKey fabGK;
+
+  ScrollController controller = ScrollController();
+
+  /// the CalloutConfig object is where you configure the callout and its pointer
+  /// All params are shown, and many are commented out for this example callout
+  CalloutConfig basicCalloutConfig(ScrollController controller) =>
+      CalloutConfig(
+        cId: 'basic',
+        // -- initial pos and animation ---------------------------------
+        initialTargetAlignment: Alignment.topLeft,
+        initialCalloutAlignment: Alignment.bottomRight,
+        // initialCalloutPos:
+        finalSeparation: 100,
+        // fromDelta: 0.0,
+        // toDelta : 0.0,
+        // initialAnimatedPositionDurationMs:
+        // -- optional barrier (when opacity > 0) ----------------------
+        // barrier: CalloutBarrier(
+        //   opacity: .5,
+        //   onTappedF: () {
+        //     Callout.dismiss("basic");
+        //   },
+        // ),
+        // -- callout appearance ----------------------------------------
+        // suppliedCalloutW: 280, // if not supplied, callout content widget gets measured
+        // suppliedCalloutH: 200, // if not supplied, callout content widget gets measured
+        // borderRadius: 12,
+        borderThickness: 3,
+        fillColor: Colors.yellow[700],
+        // elevation: 10,
+        // frameTarget: true,
+        // -- optional close button and got it button -------------------
+        // showGotitButton: true,
+        // showCloseButton: true,
+        // closeButtonColor:
+        // closeButtonPos:
+        // gotitAxis:
+        // -- pointer -------------------------------------------------
+        // arrowColor: Colors.green,
+        // arrowType: ArrowType.THIN,
+        animate: true,
+        // lineLabel: Text('line label'),
+        // fromDelta: -20,
+        // toDelta: -20,
+        // lengthDeltaPc: ,
+        // contentTranslateX: ,
+        // contentTranslateY:
+        // targetTranslateX:
+        // targetTranslateY:
+        // scaleTarget:
+        // -- resizing -------------------------------------------------
+        // resizeableH: true,
+        // resizeableV: true,
+        // -- dragging -------------------------------------------------
+        // draggable: false,
+        // draggableColor: Colors.green,
+        // dragHandleHeight: ,
+        vScrollController: controller,
+        vsync: this,
+      );
+
+  void _incrementCounter() {
+    setState(() {
+      _counter++;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    /// target's key
+    fabGK = GlobalKey();
+
+    fca.afterNextBuildDo(() {
+      Callout.showOverlay(
+        calloutConfig: basicCalloutConfig(controller),
+        calloutContentF: (context) => const Padding(
+          padding: EdgeInsets.all(8.0),
+          child:
+              Text('Tap this floating action button to increment the counter.'),
+        ),
+        targetGkF: () => fabGK,
+      );
+      fca.afterMsDelayDo(
+        800,
+        () => _showToast(Alignment.topCenter),
+      );
+    });
+  }
+
+  void _showToast(Alignment gravity,
+          {int showForMs = 0, VoidCallback? onDismissedF}) =>
+      Callout.showToast(
+        removeAfterMs: showForMs,
+        calloutConfig: CalloutConfig(
+          cId: 'initstate-toast',
+          gravity: gravity,
+          initialCalloutW: 500,
+          initialCalloutH: 90,
+          fillColor: Colors.black26,
+          showCloseButton: true,
+          borderThickness: 5,
+          borderRadius: 16,
+          borderColor: Colors.yellow,
+          elevation: 10,
+          vScrollController: controller,
+          vsync: this,
+          onDismissedF: () => onDismissedF?.call(),
+        ),
+        calloutContentF: (_) => Center(
+          child: Text(
+            'gravity: ${gravity.toString()}',
+            textScaler: const TextScaler.linear(2),
+            style: const TextStyle(color: Colors.white),
+          ),
+        ),
+      );
+
+  @override
+  Widget build(BuildContext context) {
+    Size screenSize = MediaQuery.of(context).size;
+    return NotificationListener<SizeChangedLayoutNotification>(
+      onNotification: (SizeChangedLayoutNotification notification) {
+        // Callout.dismissAll(exceptFeatures: []);
+        FlutterCallouts.instance.afterMsDelayDo(300, () {
+          Callout.refreshAll();
+        });
+        return true;
+      },
+      child: SizeChangedLayoutNotifier(
+        child: Scaffold(
+          body: Center(
+            child: SingleChildScrollView(
+              controller: controller,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(
+                    height: screenSize.height - 200,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          'You have pushed the + button this many times:',
+                        ),
+                        Text(
+                          '$_counter',
+                          style: Theme.of(context).textTheme.headlineMedium,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    width: double.infinity,
+                    height: 100,
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                        padding: const EdgeInsets.all(18.0),
+                        child: FloatingActionButton(
+                          key: fabGK,
+                          onPressed: _incrementCounter,
+                          tooltip: 'Increment',
+                          child: const Icon(Icons.add),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    height: 1000,
+                    width: double.infinity,
+                    color: Colors.blue[50],
+                    child: const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text('Scroll to see that the yellow callout is Scroll-aware.\n'
+                      'Resize the window to see the pointer refreshing.'),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

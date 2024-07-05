@@ -93,7 +93,7 @@ mixin CalloutUseful /* extends BaseUseful */ {
     // Rect? wrapperRect = findGlobalRect(widget.key as GlobalKey);
 
     Rect screenRect =
-        Rect.fromLTWH(0, 0, FCallouts().scrW, FCallouts().scrH);
+        Rect.fromLTWH(0, 0, fca.scrW, fca.scrH);
     wrapperRect = screenRect;
     Offset wrapperC = wrapperRect.center;
     Offset targetRectC = targetRect.center;
@@ -125,12 +125,12 @@ mixin CalloutUseful /* extends BaseUseful */ {
     double resultLeft = calloutRect.left;
     double resultTop = calloutRect.top;
     // adjust s.t entirely visible
-    if (calloutRect.left > (FCallouts().scrW - minVisibleH)) {
-      resultLeft = FCallouts().scrW - minVisibleH;
+    if (calloutRect.left > (fca.scrW - minVisibleH)) {
+      resultLeft = fca.scrW - minVisibleH;
     }
     if (calloutRect.top >
-        (FCallouts().scrH - minVisibleV - FCallouts().kbdH)) {
-      resultTop = FCallouts().scrH - minVisibleV - FCallouts().kbdH;
+        (fca.scrH - minVisibleV - fca.kbdH)) {
+      resultTop = fca.scrH - minVisibleV - fca.kbdH;
     }
     if (calloutRect.right < minVisibleH)
       resultLeft = minVisibleH - calloutRect.width;
@@ -146,8 +146,8 @@ mixin CalloutUseful /* extends BaseUseful */ {
     final top = max(rect.top, 0.0);
 
     // Clamp right and bottom to prevent going off-screen
-    final right = min(rect.right, FCallouts().scrW);
-    final bottom = min(rect.bottom, FCallouts().scrH);
+    final right = min(rect.right, fca.scrW);
+    final bottom = min(rect.bottom, fca.scrH);
 
     // Ensure width and height remain positive (might be 0 if completely off-screen)
     final width = max(0.0, right - left);
@@ -158,11 +158,11 @@ mixin CalloutUseful /* extends BaseUseful */ {
 
   // compare appInfo versionAndBuild with this app's yaml values
   // static Future<bool> possiblyInformUserOfNewVersion() async {
-  //   String appsVersionAndBuildNum = await FC().versionAndBuild;
-  //   String? storedVersionAndBuild = FC().appInfo.versionAndBuildNum ?? '';
+  //   String appsVersionAndBuildNum = await FCA.versionAndBuild;
+  //   String? storedVersionAndBuild = FCA.appInfo.versionAndBuildNum ?? '';
   //   if (appsVersionAndBuildNum != storedVersionAndBuild) {
-  //     FC().appInfo.versionAndBuildNum = appsVersionAndBuildNum;
-  //     if (false) FC().modelRepo.saveAppInfo();
+  //     FCA.appInfo.versionAndBuildNum = appsVersionAndBuildNum;
+  //     if (false) FCA.modelRepo.saveAppInfo();
   //     return true;
   //   }
   //   return false;
@@ -189,7 +189,7 @@ mixin CalloutUseful /* extends BaseUseful */ {
   Alignment calcTargetAlignmentWholeScreen(
       final Rect targetRect, double calloutW, double calloutH) {
     Rect screenRect =
-        Rect.fromLTWH(0, 0, FCallouts().scrW, FCallouts().scrH);
+        Rect.fromLTWH(0, 0, fca.scrW, fca.scrH);
     double T = targetRect.top;
     double L = targetRect.left;
     double B = screenRect.height - targetRect.bottom;
@@ -355,15 +355,15 @@ extension GlobalKeyExtension on GlobalKey {
         !skipWidthConstraintWarning &&
         !skipHeightConstraintWarning &&
         (paintBounds?.width == scrSize!.width ||
-            paintBounds?.height == FCallouts().scrH)) {
+            paintBounds?.height == fca.scrH)) {
       _alreadyGaveGlobalPosAndSizeWarning = true;
       Callout.showOverlay(
-        boxContentF: (BuildContext context) {
+        calloutContentF: (BuildContext context) {
           return Column(
             children: [
               Text('Warning - Target Size Constraint'),
               Text(
-                paintBounds?.width == FCallouts().scrW
+                paintBounds?.width == fca.scrW
                     ? "\nThe width of your callout target is the same as the window width.\n"
                         "This might indicate that your target has an unbounded width constraint.\n"
                         "This occurs, for example, when your target is a child of a ListView.\n\n"
@@ -388,10 +388,10 @@ extension GlobalKeyExtension on GlobalKey {
           );
         },
         calloutConfig: CalloutConfig(
-          feature: 'globalPaintBounds error',
+          cId: 'globalPaintBounds error',
           draggable: false,
-          suppliedCalloutW: FCallouts().scrW * .7,
-          suppliedCalloutH: 400,
+          initialCalloutW: fca.scrW * .7,
+          initialCalloutH: 400,
           fillColor: Colors.white,
         ),
       );

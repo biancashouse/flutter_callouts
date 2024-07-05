@@ -7,9 +7,8 @@ import 'package:flutter_callouts/src/api/callouts/draggable_corner.dart';
 import 'package:flutter_callouts/src/api/callouts/draggable_edge.dart';
 import 'package:flutter_callouts/src/api/callouts/line.dart';
 import 'package:flutter_callouts/src/api/callouts/pointing_line.dart';
-import 'package:flutter_callouts/src/model/color_values.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
-import 'package:transparent_pointer/transparent_pointer.dart';
+// import 'package:transparent_pointer/transparent_pointer.dart';
 
 // import 'callout_config_toolbar.dart';
 
@@ -17,15 +16,15 @@ class CalloutConfig {
   // final VoidCallback refreshOPParent;
 
   // ignore: constant_identifier_names
-  final String feature;
+  final String cId;
 
   final TickerProviderStateMixin? vsync;
 
   final ValueNotifier<int>?
-  movedOrResizedNotifier; // will bump every time callout overlay moved or resized
+      movedOrResizedNotifier; // will bump every time callout overlay moved or resized
 
-  double? suppliedCalloutW;
-  double? suppliedCalloutH;
+  double? initialCalloutW;
+  double? initialCalloutH;
 
   Rect? _targetRect;
 
@@ -39,7 +38,7 @@ class CalloutConfig {
 
   final bool? onlyOnce;
 
-  final double scale;
+  // final double scale;
   final ScrollController? hScrollController;
   final ScrollController? vScrollController;
 
@@ -106,7 +105,7 @@ class CalloutConfig {
   final bool skipOnScreenCheck;
   final bool resizeableH;
   final bool resizeableV;
-  final ValueChanged<Size>? onResize;
+  final ValueChanged<Size>? onResizeF;
   final VoidCallback? onDismissedF;
   final VoidCallback? onHiddenF;
   final VoidCallback? onAcceptedF;
@@ -116,18 +115,17 @@ class CalloutConfig {
 
   final bool containsTextField;
 
-  final bool transparentPointer;
-
   bool initialised = false;
 
   // overlay class must set this callback
   VoidCallback? _rebuildOverlayEntryF;
 
+  // MAYBE reinstate
   // better to pass these in to overcome the unwelcome rebuilding of TextField
-  TextEditingController? teC = TextEditingController();
-  FocusNode? focusNode = FocusNode();
+  // TextEditingController? teC = TextEditingController();
+  // FocusNode? focusNode = FocusNode();
 
-  WidgetBuilder? _cachedCalloutContent;
+  // WidgetBuilder? _cachedCalloutContent;
 
   void setRebuildCallback(VoidCallback newCallback) =>
       _rebuildOverlayEntryF = newCallback;
@@ -158,7 +156,7 @@ class CalloutConfig {
 
   // get size of callout - ignore locn - it comes from the offstage overlay - not useful
   // we'll be adding the callout to the overlay relative to the targetRect
-  // Size get calloutSize => Size(calloutW, calloutH);
+  // Size get calloutSize => Size(_calloutW, _calloutH);
 
   late bool isHidden;
 
@@ -177,19 +175,27 @@ class CalloutConfig {
   late double actualLeft;
 
   // either supplied else measured
-  double? calloutW;
-  double? calloutH;
+  double? _calloutW;
+  double? _calloutH;
+
+  double? get calloutW => _calloutW;
+
+  double? get calloutH => _calloutH;
+
+  void set calloutW(double? newW) => _calloutW = newW;
+
+  void set calloutH(double? newH) => _calloutH = newH;
 
   bool ignoreCalloutResult;
 
-  int initialAnimatedPositionDurationMs;
+  // int initialAnimatedPositionDurationMs;
 
   //Timer? _timer;
 
   // bool _animatingSeparation = false;
   bool _finishedAnimatingSeparation = false;
   bool _animatingTopLeft = false;
-  double? separation;
+  double _separation = 0;
 
   late bool isDraggable;
 
@@ -198,9 +204,8 @@ class CalloutConfig {
 
   Rectangle? get tR => _targetRectangle();
 
-  Rectangle cR() =>
-      Rectangle.fromRect(_calloutRect()
-          .translate(contentTranslateX ?? 0.0, contentTranslateY ?? 0.0));
+  Rectangle cR() => Rectangle.fromRect(_calloutRect()
+      .translate(contentTranslateX ?? 0.0, contentTranslateY ?? 0.0));
 
   // TargetModel? _configurableTarget;
 
@@ -210,16 +215,16 @@ class CalloutConfig {
 
   CalloutConfig({
     // required this.refreshOPParent,
-    required this.feature,
+    required this.cId,
     this.vsync,
     this.movedOrResizedNotifier,
     this.gravity,
-    this.scale = 1.0,
+    // this.scale = 1.0,
     this.hScrollController,
     this.vScrollController,
     this.forceMeasure = false,
-    this.suppliedCalloutW,
-    this.suppliedCalloutH,
+    this.initialCalloutW,
+    this.initialCalloutH,
     this.minWidth,
     this.minHeight,
     this.fillColor,
@@ -264,7 +269,7 @@ class CalloutConfig {
     this.skipOnScreenCheck = false,
     this.resizeableH = false,
     this.resizeableV = false,
-    this.onResize,
+    this.onResizeF,
     this.draggableColor,
     this.showGotitButton = false,
     this.gotitAxis,
@@ -274,12 +279,11 @@ class CalloutConfig {
     this.containsTextField = false,
     this.alwaysReCalcSize = false,
     this.ignoreCalloutResult = false,
-    this.transparentPointer = false,
     this.finalSeparation = 0.0,
     this.onDismissedF,
     this.onHiddenF,
     this.onAcceptedF,
-    this.initialAnimatedPositionDurationMs = 150,
+    // this.initialAnimatedPositionDurationMs = 150,
     bool notUsingHydratedStorage = false,
   }) {
     // debugPrint(
@@ -300,8 +304,8 @@ class CalloutConfig {
     // originalWidth = width;
     // originalHeight = height;
 
-    calloutW ??= suppliedCalloutW;
-    calloutH ??= suppliedCalloutH;
+    _calloutW ??= initialCalloutW;
+    _calloutH ??= initialCalloutH;
 
     if (initialCalloutPos != null) {
       initialCalloutAlignment = initialTargetAlignment = null;
@@ -309,7 +313,8 @@ class CalloutConfig {
 
     if (barrier != null) {
       barrier!.gradientColors = [];
-      if (barrier!.opacity > 0.0) {} else {
+      if (barrier!.opacity > 0.0) {
+      } else {
         barrier!.gradientColors ??= const [Colors.black12, Colors.black12];
       }
     }
@@ -317,19 +322,20 @@ class CalloutConfig {
     initialised = true;
     // set gotit automatically once used
     if (onlyOnce ?? false) {
-      GotitsHelper.gotit(feature,
-          notUsingHydratedStorage: notUsingHydratedStorage);
+      GotitsHelper.gotit(cId, notUsingHydratedStorage: notUsingHydratedStorage);
     }
 
     isDraggable = draggable;
 
     // calloutColor = fillColor ?? Colors.white;
     draggableColor ??= Colors.blue.withOpacity(.1); //JIC ??
+
+    _separation = vsync != null ? 0 : finalSeparation;
   }
 
   /// copy constructor
   CalloutConfig copyWith({
-    required String feature,
+    required String cId,
     TickerProviderStateMixin? vsync,
     ValueNotifier<int>? movedOrResizedNotifier,
     Alignment? gravity,
@@ -391,7 +397,6 @@ class CalloutConfig {
     bool? containsTextField,
     bool? alwaysReCalcSize,
     bool? ignoreCalloutResult,
-    bool? transparentPointer,
     double? finalSeparation,
     VoidCallback? onDismissedF,
     VoidCallback? onHiddenF,
@@ -400,16 +405,19 @@ class CalloutConfig {
     bool? notUsingHydratedStorage,
   }) {
     return CalloutConfig(
-      feature: feature,
+      cId: cId,
+      gravity: gravity ?? this.gravity,
       initialTargetAlignment:
-      initialTargetAlignment ?? this.initialTargetAlignment,
+          initialTargetAlignment ?? this.initialTargetAlignment,
       initialCalloutAlignment:
-      initialCalloutAlignment ?? this.initialCalloutAlignment,
+          initialCalloutAlignment ?? this.initialCalloutAlignment,
+      initialCalloutPos: initialCalloutPos ?? this.initialCalloutPos,
       finalSeparation: finalSeparation ?? this.finalSeparation,
       barrier: barrier ?? this.barrier,
-      suppliedCalloutW: suppliedCalloutW ?? this.suppliedCalloutW,
-      suppliedCalloutH: suppliedCalloutH ?? this.suppliedCalloutH,
+      initialCalloutW: suppliedCalloutW ?? this.initialCalloutW,
+      initialCalloutH: suppliedCalloutH ?? this.initialCalloutH,
       borderRadius: borderRadius ?? this.borderRadius,
+      borderColor: borderColor ?? this.borderColor,
       borderThickness: borderThickness ?? this.borderThickness,
       fillColor: fillColor ?? this.fillColor,
       elevation: elevation ?? this.elevation,
@@ -436,6 +444,8 @@ class CalloutConfig {
       draggable: draggable ?? this.draggable,
       draggableColor: draggableColor ?? this.draggableColor,
       dragHandleHeight: dragHandleHeight ?? this.dragHandleHeight,
+      skipOnScreenCheck: skipOnScreenCheck ?? this.skipOnScreenCheck,
+      onDismissedF: onDismissedF ?? this.onDismissedF,
       vsync: vsync ?? this.vsync,
     );
   }
@@ -483,8 +493,8 @@ class CalloutConfig {
   //   //   await measureThenRemoveOffstageWidget(rendered.$1, rendered.$2);
   //   // }
   //
-  //   // // if (width > Useful.screenW()) calloutW = Useful.screenW() - 30;
-  //   // //if (height > Useful.screenH()) calloutH = Useful.screenH() - 30;
+  //   // // if (width > Useful.screenW()) _calloutW = Useful.screenW() - 30;
+  //   // //if (height > Useful.screenH()) _calloutH = Useful.screenH() - 30;
   //   //
   //   // // get size of callout - ignore locn - it comes from the offstage overlay - not useful
   //   // // we'll be adding the callout to the overlay relative to the targetRect
@@ -601,8 +611,8 @@ class CalloutConfig {
   //   //   await measureThenRemoveOffstageWidget(rendered.$1, rendered.$2);
   //   // }
   //
-  //   // // if (width > Useful.screenW()) calloutW = Useful.screenW() - 30;
-  //   // //if (height > Useful.screenH()) calloutH = Useful.screenH() - 30;
+  //   // // if (width > Useful.screenW()) _calloutW = Useful.screenW() - 30;
+  //   // //if (height > Useful.screenH()) _calloutH = Useful.screenH() - 30;
   //   //
   //   // // get size of callout - ignore locn - it comes from the offstage overlay - not useful
   //   // // we'll be adding the callout to the overlay relative to the targetRect
@@ -701,19 +711,19 @@ class CalloutConfig {
     required VoidCallback rebuildF,
     // TargetModel? configurableTarget,
   }) {
-    print('isAnimating: ${isAnimating().toString()}');
+    // print('isAnimating: ${isAnimating().toString()}');
 
     // _zoomer = zoomer;
     // _configurableTarget = configurableTarget;
     // opDescendantContext = context; // used to find nearest parent OverlayPortal for barrier tap to close
-    return (Callout.isHidden(feature))
+    return (Callout.isHidden(cId))
         ? const Offstage()
         : _renderCallout(targetRect, calloutContent, rebuildF);
   }
 
   Widget opContentWidget({
     required BuildContext
-    context, // if supplied, will be a descendant of an OverlayPortal
+        context, // if supplied, will be a descendant of an OverlayPortal
     required Rect targetRect,
     required WidgetBuilder calloutContent,
     required VoidCallback rebuildF,
@@ -721,7 +731,7 @@ class CalloutConfig {
     opDescendantContext =
         context; // used to find nearest parent OverlayPortal for barrier tap to close
     // _zoomer = Zoomer.of(context);
-    return calloutW == null || calloutH == null
+    return _calloutW == null || _calloutH == null
         ? const Offstage()
         : _renderCallout(targetRect, calloutContent, rebuildF);
   }
@@ -738,25 +748,26 @@ class CalloutConfig {
   //
   //   Rect? rect = findGlobalRect(GetIt.I.get<GlobalKey>(instanceName: getIt_offstageGK)!);
   //   if (rect != null) {
-  //     calloutW ??= rect.width;
-  //     calloutH ??= rect.height;
+  //     _calloutW ??= rect.width;
+  //     _calloutH ??= rect.height;
   //     debugPrint('_measureThenRenderCallout: width:$calloutW, height:$calloutH');
   //   }
   //   debugPrint("measured size: $calloutW x $calloutH");
   //   return _renderCallout(context, targetRect, calloutContent, rebuildF);
   // }
 
-  Widget _renderCallout(Rect targetRect,
-      WidgetBuilder calloutContent,
-      VoidCallback rebuildF,
-      // TargetModel? configurableTarget,
-      ) {
-    _cachedCalloutContent = calloutContent;
+  Widget _renderCallout(
+    Rect targetRect,
+    WidgetBuilder calloutContent,
+    VoidCallback rebuildF,
+    // TargetModel? configurableTarget,
+  ) {
+    // _cachedCalloutContent = calloutContent;
     _targetRect = targetRect;
     setRebuildCallback(rebuildF);
 
-    // // if (width > Useful.screenW()) calloutW = Useful.screenW() - 30;
-    // //if (height > Useful.screenH()) calloutH = Useful.screenH() - 30;
+    // // if (width > Useful.screenW()) _calloutW = Useful.screenW() - 30;
+    // //if (height > Useful.screenH()) _calloutH = Useful.screenH() - 30;
     //
     // // get size of callout - ignore locn - it comes from the offstage overlay - not useful
     // // we'll be adding the callout to the overlay relative to the targetRect
@@ -783,16 +794,16 @@ class CalloutConfig {
       //   targetC = tR!.center;
       // }
 
-      Rect screenRect = Rect.fromLTWH(0, 0, FCallouts().scrW, FCallouts().scrH);
+      Rect screenRect = Rect.fromLTWH(0, 0, fca.scrW, fca.scrH);
       if (screenRect.width == targetRect.width &&
           screenRect.height == targetRect.height) {
         initialTargetAlignment = initialCalloutAlignment = Alignment.center;
       } else {
         initialTargetAlignment =
-        -FCallouts().calcTargetAlignmentWithinWrapper(screenRect, tR!);
+            -fca.calcTargetAlignmentWithinWrapper(screenRect, tR!);
         initialCalloutAlignment = -initialTargetAlignment!;
-        initialTargetAlignment = FCallouts()
-            .calcTargetAlignmentWholeScreen(tR!, calloutW!, calloutH!);
+        initialTargetAlignment =
+            fca.calcTargetAlignmentWholeScreen(tR!, _calloutW!, _calloutH!);
         initialCalloutAlignment = -initialTargetAlignment!;
       }
     }
@@ -806,46 +817,46 @@ class CalloutConfig {
       return const Icon(Icons.error, color: Colors.orangeAccent, size: 60);
     }
 
-    if (!skipOnScreenCheck && (top ?? 999) < FCallouts().viewPadding.top) {
-      top = FCallouts().viewPadding.top;
+    if (!skipOnScreenCheck && (top ?? 999) < fca.viewPadding.top) {
+      top = fca.viewPadding.top;
     }
 
     // set before we start animating the separation gap
     _initialTop ??= top;
     _initialLeft ??= left;
 
-    if (feature == 'body panel:default-snippet') debugPrint("top $top");
+    if (cId == 'body panel:default-snippet') debugPrint("top $top");
 
-    debugPrint(
-        'before adjusting for separation($separation): pos is is $left, $top');
+    // debugPrint('before adjusting for separation($_separation): pos is $left, $top');
 
-    if (!_finishedAnimatingSeparation &&
-        (separation ?? 0.0) > 0.0 &&
+    if (vsync != null &&
+        !_finishedAnimatingSeparation &&
+        (_separation) > 0.0 &&
         tR != null &&
         cE != null) {
       debugPrint('ADJUSTING.');
       var adjustedTopLeft = _adjustTopLeftForSeparation(
-          separation!, _initialTop!, _initialLeft!, cE!, tR!);
+          _separation, _initialTop!, _initialLeft!, cE!, tR!);
       top = adjustedTopLeft.$1;
       left = adjustedTopLeft.$2;
     } else {
-      debugPrint('NOT ADJUSTING.');
+      // debugPrint('NOT ADJUSTING.');
     }
 
     // if (_finishedAnimatingSeparation) {
     //   if (!calloutWouldNotBeOffscreen(cE!, 0, 0)) {
-    //     left = Useful.scrW / 2 - calloutW! / 2;
-    //     top = Useful.scrH / 2 - calloutH! / 2;
+    //     left = Useful.scrW / 2 - _calloutW! / 2;
+    //     top = Useful.scrH / 2 - _calloutH! / 2;
     //   }
     // }
 
-    debugPrint('after adjusting for separation: pos is $left, $top');
+    // debugPrint('after adjusting for separation: pos is $left, $top');
 
     return Stack(
       children: [
         if (notToast && barrier != null && barrier!.opacity > 0.0)
           PointerInterceptor(child: _createBarrier()),
-        if (notToast && frameTarget && tR != null) _createTarget(),
+        if (notToast && frameTarget && tR != null) _createTargetBorder(),
         if (resizeableH && resizeableV)
           topLeftCorner = DraggableCorner_OP(
               alignment: Alignment.topLeft,
@@ -919,14 +930,14 @@ class CalloutConfig {
               color: draggableColor!,
               parent: this),
         if (notToast && arrowType == ArrowType.POINTY) _positionedBubbleBg(),
-        PositionedBoxContent(this, calloutContent(FCallouts().rootContext!)),
+        PositionedBoxContent(this, calloutContent(fca.rootContext)),
         if (notToast &&
-            arrowType != ArrowType.NO_CONNECTOR &&
+            arrowType != ArrowType.NONE &&
             arrowType != ArrowType.POINTY &&
             tR != null)
           _createPointingLine(),
         if (notToast &&
-            arrowType != ArrowType.NO_CONNECTOR &&
+            arrowType != ArrowType.NONE &&
             arrowType != ArrowType.POINTY &&
             tR != null &&
             lineLabel != null)
@@ -936,9 +947,9 @@ class CalloutConfig {
     );
   }
 
-  void setSeparation(double newSeparation, VoidCallback rebuildOverlayEntryF) {
-    separation = newSeparation;
-    rebuildOverlayEntryF();
+  void setSeparation(double newSeparation) {
+    _separation = newSeparation;
+    _rebuildOverlayEntryF?.call();
   }
 
   void setTop(double newTop) {
@@ -948,6 +959,13 @@ class CalloutConfig {
 
   void setLeft(double newLeft) {
     left = newLeft;
+    _rebuildOverlayEntryF?.call();
+  }
+
+  void setPos(Offset newPos) {
+    top = newPos.dy;
+    left = newPos.dx;
+    debugPrint('new pos ${newPos.toString()}');
     _rebuildOverlayEntryF?.call();
   }
 
@@ -967,8 +985,8 @@ class CalloutConfig {
   // function determines whether topLeft and bottomRioht are onScreen
   bool calloutWouldNotBeOffscreen(Coord cE, double deltaX, double deltaY) {
     Rect finalCR =
-    Rect.fromLTWH(left! + deltaX, top! + deltaY, calloutW!, calloutH!);
-    Rect scrRect = Rect.fromLTWH(0, 0, FCallouts().scrW, FCallouts().scrH);
+        Rect.fromLTWH(left! + deltaX, top! + deltaY, _calloutW!, _calloutH!);
+    Rect scrRect = Rect.fromLTWH(0, 0, fca.scrW, fca.scrH);
     bool result = scrRect.contains(finalCR.topLeft) &&
         scrRect.contains(finalCR.bottomRight);
     // if (!result) {
@@ -977,7 +995,8 @@ class CalloutConfig {
     return result;
   }
 
-  (double, double) _adjustTopLeftForSeparation(double theSeparation,
+  (double, double) _adjustTopLeftForSeparation(
+      double theSeparation,
       double initialTop,
       double inititalLeft,
       Coord initialCE,
@@ -1014,12 +1033,12 @@ class CalloutConfig {
 
   bool _wouldBeOnscreenX(double left) {
     if (_finishedAnimatingSeparation) return true;
-    return left + calloutW! < FCallouts().scrW;
+    return left + _calloutW! < fca.scrW;
   }
 
   bool _wouldBeOnscreenY(double top) {
     if (_finishedAnimatingSeparation) return true;
-    bool onscreen = top + calloutH! < FCallouts().scrH - FCallouts().kbdH;
+    bool onscreen = top + _calloutH! < fca.scrH - fca.kbdH;
     return onscreen;
   }
 
@@ -1053,16 +1072,16 @@ class CalloutConfig {
     // can supply target globalkey directly or via a function
     if (initialCalloutPos != null) {
       return Rectangle.fromPoints(
-          initialCalloutPos!, Offset(calloutW!, calloutH!));
+          initialCalloutPos!, Offset(_calloutW!, _calloutH!));
     }
     if (_opGK?.currentWidget == null) {
-      debugPrint("$feature _targetRectangle(): opGK!?.currentWidget == null");
+      debugPrint("$cId _targetRectangle(): opGK!?.currentWidget == null");
       // Rect screenRect = Rect.fromLTWH(0, 0, Useful.scrW, Useful.scrH);
       return null;
     } else {
       Rect? r = _opGK!.globalPaintBounds(); //Measuring.findGlobalRect(_opGK!);
       if (r == null) return null;
-      debugPrint("$feature findGlobalRect(_opGK!) = ${r.toString()}");
+      debugPrint("$cId findGlobalRect(_opGK!) = ${r.toString()}");
       // adjust for possible scroll
       double hOffset = hScrollController?.offset ?? 0.0;
       double vOffset = vScrollController?.offset ?? 0.0;
@@ -1088,7 +1107,7 @@ class CalloutConfig {
       final targetAlignmentIntersectionPos = initialTargetAlignment!
           .withinRect(Rect.fromLTWH(0, 0, tR!.width, tR!.height));
       final calloutAlignmentIntersectionPos = initialCalloutAlignment!
-          .withinRect(Rect.fromLTWH(0, 0, calloutW!, calloutH!));
+          .withinRect(Rect.fromLTWH(0, 0, _calloutW!, _calloutH!));
 
       final startingCalloutTopLeftRelativeToTarget =
           targetAlignmentIntersectionPos - calloutAlignmentIntersectionPos;
@@ -1113,18 +1132,21 @@ class CalloutConfig {
     // ensure callout will be on onscreen
     // only needs  to be scrollable when can't fit on screen
     // debugPrint('============   screenH = ${Useful.screenH()}');
-    needsToScrollH = calloutW! > FCallouts().scrW;
-    needsToScrollV = calloutH! > (FCallouts().scrH - FCallouts().kbdH);
-    if (!skipOnScreenCheck && !needsToScrollV && !needsToScrollH) {
-      var definitelyOnScreen = FCallouts().ensureOnScreen(
+    needsToScrollH = _calloutW! > fca.scrW;
+    needsToScrollV = _calloutH! > (fca.scrH - fca.kbdH);
+    if (!notToast) {
+      debugPrint('must skip screen bounds check');
+    }
+    if ((!skipOnScreenCheck) && !needsToScrollV && !needsToScrollH) {
+      var definitelyOnScreen = fca.ensureOnScreen(
         Rect.fromLTWH(
           actualLeft,
           actualTop,
-          calloutW!,
-          calloutH!,
+          _calloutW!,
+          _calloutH!,
         ),
-        calloutW!,
-        calloutH!,
+        _calloutW!,
+        _calloutH!,
       );
       actualLeft = definitelyOnScreen.$1;
       actualTop = definitelyOnScreen.$2;
@@ -1144,16 +1166,15 @@ class CalloutConfig {
   }
 
 // bool _isOffscreen() {
-//   // debugPrint('left: $actualLeft\ncalloutSize!.width: ${calloutW!}\nUseful.screenW(): ${Useful.screenW()}');
+//   // debugPrint('left: $actualLeft\ncalloutSize!.width: ${_calloutW!}\nUseful.screenW(): ${Useful.screenW()}');
 //   // debugPrint(
-//   //     'top: $actualTop\ncalloutSize!.height: ${calloutH!}\nUseful.screenH(): ${Useful.screenH()}\nUseful.kbdH(): ${Useful.kbdH()}');
-//   return !skipOnScreenCheck && ((actualLeft + calloutW!) > Useful.scrW || (actualTop + calloutH!) > (Useful.scrH - Useful.kbdH));
+//   //     'top: $actualTop\ncalloutSize!.height: ${_calloutH!}\nUseful.screenH(): ${Useful.screenH()}\nUseful.kbdH(): ${Useful.kbdH()}');
+//   return !skipOnScreenCheck && ((actualLeft + _calloutW!) > Useful.scrW || (actualTop + _calloutH!) > (Useful.scrH - Useful.kbdH));
 // }
 
   bool get notToast => gravity == null;
 
-  Widget _positionedBubbleBg() =>
-      Positioned(
+  Widget _positionedBubbleBg() => Positioned(
         top: 0,
         left: 0,
         child: CustomPaint(
@@ -1181,14 +1202,14 @@ class CalloutConfig {
     rebuild(() {
       top = event.globalPosition.dy - dragCalloutOffset.dy;
       left = event.globalPosition.dx - dragCalloutOffset.dx;
-      var definitelyOnScreen = FCallouts().ensureOnScreen(
+      var definitelyOnScreen = fca.ensureOnScreen(
         Rect.fromLTWH(
           left!,
           top!,
-          calloutW!,
-          dragHandleHeight ?? calloutH!,
+          _calloutW!,
+          dragHandleHeight ?? _calloutH!,
         ),
-        calloutW!,
+        _calloutW!,
         0,
       );
       left = definitelyOnScreen.$1;
@@ -1218,11 +1239,11 @@ class CalloutConfig {
   //       Rect.fromLTWH(
   //         left!,
   //         top!,
-  //         calloutW!,
-  //         dragHandleHeight ?? calloutH!,
+  //         _calloutW!,
+  //         dragHandleHeight ?? _calloutH!,
   //       ),
-  //       calloutW!,
-  //       calloutH!,
+  //       _calloutW!,
+  //       _calloutH!,
   //     );
   //     left = definitelyOnScreen.$1;
   //     top = definitelyOnScreen.$2;
@@ -1237,15 +1258,15 @@ class CalloutConfig {
     rebuild(() {
       top = newTop;
       left = newLeft;
-      var definitelyOnScreen = FCallouts().ensureOnScreen(
+      var definitelyOnScreen = fca.ensureOnScreen(
         Rect.fromLTWH(
           left!,
           top!,
-          calloutW!,
-          dragHandleHeight ?? calloutH!,
+          _calloutW!,
+          dragHandleHeight ?? _calloutH!,
         ),
-        calloutW!,
-        calloutH!,
+        _calloutW!,
+        _calloutH!,
       );
       left = definitelyOnScreen.$1;
       top = definitelyOnScreen.$2;
@@ -1256,12 +1277,13 @@ class CalloutConfig {
     });
   }
 
-  Future<void> animateResizeByCornerMove(Alignment alignment,
-      double hDelta,
-      double vDelta, {
-        required Duration duration,
-        VoidCallback? afterAnimationF,
-      }) async {
+  Future<void> animateResizeByCornerMove(
+    Alignment alignment,
+    double hDelta,
+    double vDelta, {
+    required Duration duration,
+    VoidCallback? afterAnimationF,
+  }) async {
     if (vsync == null || left == null || top == null) return;
     AnimationController animationController = AnimationController(
       duration: duration,
@@ -1274,53 +1296,51 @@ class CalloutConfig {
     Animation<Offset>? animation = tween.animate(animationController);
     Offset prevValue = Offset.zero;
     int i = 0;
-    animation.addListener(() =>
-        rebuild(() {
+    animation.addListener(() => rebuild(() {
           Offset delta = Offset(animation.value.dx - prevValue.dx,
               animation.value.dy - prevValue.dy);
           prevValue = animation.value;
           debugPrint(
-              '${i++} av ${animation.value} delta ${delta
-                  .toString()}, prevDelta ${prevValue.toString()}');
+              '${i++} av ${animation.value} delta ${delta.toString()}, prevDelta ${prevValue.toString()}');
           if (alignment == Alignment.topLeft) {
-            if (delta.dx < 0 || calloutW! + delta.dx >= (minWidth ?? 30)) {
+            if (delta.dx < 0 || _calloutW! + delta.dx >= (minWidth ?? 30)) {
               left = left! + delta.dx;
-              calloutW = calloutW! - delta.dx;
+              _calloutW = _calloutW! - delta.dx;
             }
-            if (delta.dy < 0 || calloutH! + delta.dy >= (minHeight ?? 30)) {
+            if (delta.dy < 0 || _calloutH! + delta.dy >= (minHeight ?? 30)) {
               top = top! + delta.dy;
-              calloutH = calloutH! - delta.dy;
+              _calloutH = _calloutH! - delta.dy;
             }
           } else if (alignment == Alignment.topRight) {
-            if (calloutW! + delta.dx < (minWidth ?? 30)) {
-              calloutW = minWidth ?? 30;
+            if (_calloutW! + delta.dx < (minWidth ?? 30)) {
+              _calloutW = minWidth ?? 30;
             } else {
-              calloutW = calloutW! + delta.dx;
+              _calloutW = _calloutW! + delta.dx;
             }
-            if (delta.dy < 0 || calloutH! + delta.dy >= (minHeight ?? 30)) {
+            if (delta.dy < 0 || _calloutH! + delta.dy >= (minHeight ?? 30)) {
               top = top! + delta.dy;
-              calloutH = calloutH! - delta.dy;
+              _calloutH = _calloutH! - delta.dy;
             }
           } else if (alignment == Alignment.bottomLeft) {
-            if (delta.dx < 0 || calloutW! + delta.dx >= (minWidth ?? 30)) {
+            if (delta.dx < 0 || _calloutW! + delta.dx >= (minWidth ?? 30)) {
               left = left! + delta.dx;
-              calloutW = calloutW! - delta.dx;
+              _calloutW = _calloutW! - delta.dx;
             }
-            if (calloutH! + delta.dy < (minHeight ?? 30)) {
-              calloutH = minHeight ?? 30;
+            if (_calloutH! + delta.dy < (minHeight ?? 30)) {
+              _calloutH = minHeight ?? 30;
             } else {
-              calloutH = calloutH! + delta.dy;
+              _calloutH = _calloutH! + delta.dy;
             }
           } else if (alignment == Alignment.bottomRight) {
-            if (calloutW! + delta.dx < (minWidth ?? 30)) {
-              calloutW = minWidth ?? 30;
+            if (_calloutW! + delta.dx < (minWidth ?? 30)) {
+              _calloutW = minWidth ?? 30;
             } else {
-              calloutW = calloutW! + delta.dx;
+              _calloutW = _calloutW! + delta.dx;
             }
-            if (calloutH! + delta.dy < (minHeight ?? 30)) {
-              calloutH = minHeight ?? 30;
+            if (_calloutH! + delta.dy < (minHeight ?? 30)) {
+              _calloutH = minHeight ?? 30;
             } else {
-              calloutH = calloutH! + delta.dy;
+              _calloutH = _calloutH! + delta.dy;
             }
           }
         }));
@@ -1354,14 +1374,14 @@ class CalloutConfig {
     //if (preventDrag || !isDraggable || event.localPosition.dy >= (dragHandleHeight ?? 9999)) return;
     if (dragging) {
       rebuild(() {
-        var definitelyOnScreen = FCallouts().ensureOnScreen(
+        var definitelyOnScreen = fca.ensureOnScreen(
           Rect.fromLTWH(
             left!,
             top!,
-            calloutW!,
-            dragHandleHeight ?? calloutH!,
+            _calloutW!,
+            dragHandleHeight ?? _calloutH!,
           ),
-          calloutW!,
+          _calloutW!,
           0,
         );
         left = definitelyOnScreen.$1;
@@ -1378,8 +1398,7 @@ class CalloutConfig {
     }
   }
 
-  Widget _closeButton() =>
-      Positioned(
+  Widget _closeButton() => Positioned(
         top: closeButtonPos.dy,
         right: closeButtonPos.dx,
         child: IconButton(
@@ -1390,14 +1409,13 @@ class CalloutConfig {
           ),
           onPressed: () {
             onCloseButtonPressF?.call();
-            Callout.dismiss(feature);
-            Callout.findCallout<OverlayPortalController>(feature)?.hide();
+            Callout.dismiss(cId);
+            Callout.findCallout<OverlayPortalController>(cId)?.hide();
           },
         ),
       );
 
-  Widget _gotitButton() =>
-      Blink(
+  Widget _gotitButton() => Blink(
         animateColor: false,
         child: IconButton(
           tooltip: "got it - don't show again.",
@@ -1407,23 +1425,22 @@ class CalloutConfig {
             color: Colors.orangeAccent,
           ),
           onPressed: () {
-            GotitsHelper.gotit(feature);
-            Callout.findCallout<OverlayEntry>(feature)?.remove();
-            Callout.findCallout<OverlayPortalController>(feature)?.hide();
+            GotitsHelper.gotit(cId);
+            Callout.findCallout<OverlayEntry>(cId)?.remove();
+            Callout.findCallout<OverlayPortalController>(cId)?.hide();
             onGotitPressedF?.call();
           },
         ),
       );
 
-  Widget _cpi() =>
-      Padding(
+  Widget _cpi() => Padding(
         padding: const EdgeInsets.all(8.0),
         child: CircularProgressIndicator(
           backgroundColor: fillColor,
         ),
       );
 
-  Widget _possiblyScrollableContents(Widget contents) =>
+  // Widget _possiblyScrollableContents(Widget contents) =>
 // (needsToScrollV || needsToScrollH)
 // ? SizedBox.fromSize(
 //     size: calloutSize,
@@ -1433,19 +1450,19 @@ class CalloutConfig {
 //     ),
 //   )
 // :
-  SizedBox(
-    width: calloutW!,
-    height: calloutH!,
-    child: Builder(builder: (context) {
-      return contents;
-    }),
-  );
+//       SizedBox(
+//         width: _calloutW!,
+//         height: _calloutH!,
+//         child: Builder(builder: (context) {
+//           return contents;
+//         }),
+//       );
 
   Widget _createPointingLine() {
     if (initialCalloutAlignment == null && initialTargetAlignment == null) {
-      Rect screenRect = Rect.fromLTWH(0, 0, FCallouts().scrW, FCallouts().scrH);
+      Rect screenRect = Rect.fromLTWH(0, 0, fca.scrW, fca.scrH);
       initialTargetAlignment =
-      -FCallouts().calcTargetAlignmentWithinWrapper(screenRect, tR!);
+          -fca.calcTargetAlignmentWithinWrapper(screenRect, tR!);
       initialCalloutAlignment = -initialTargetAlignment!;
     }
 
@@ -1455,13 +1472,13 @@ class CalloutConfig {
       Rect r = Rect.fromPoints(tE!.asOffset, cE!.asOffset);
       Offset to = tE!.asOffset
           .translate(
-        -r.left,
-        -r.top,
-      )
+            -r.left,
+            -r.top,
+          )
           .translate(
-        -(hScrollController?.offset ?? 0.0),
-        -(vScrollController?.offset ?? 0.0),
-      );
+            -(hScrollController?.offset ?? 0.0),
+            -(vScrollController?.offset ?? 0.0),
+          );
       Offset from = cE!.asOffset.translate(-r.left, -r.top);
       Line line = Line(Coord.fromOffset(from), Coord.fromOffset(to));
       double lineLen = line.length();
@@ -1504,8 +1521,7 @@ class CalloutConfig {
     }
   }
 
-  Widget _createLineLabel() =>
-      Positioned(
+  Widget _createLineLabel() => Positioned(
         top: (tE!.y + cE!.y) / 2,
         left: (tE!.x + cE!.x) / 2,
         child: Material(
@@ -1513,8 +1529,7 @@ class CalloutConfig {
         ),
       );
 
-  Widget _createTarget() =>
-      Positioned(
+  Widget _createTargetBorder() => Positioned(
         top: tR!.top,
         left: tR!.left,
         child: Material(
@@ -1544,8 +1559,7 @@ class CalloutConfig {
 //     return toolbar;
 //   }
 
-  ModalBarrier _createBarrier() =>
-      ModalBarrier(
+  ModalBarrier _createBarrier() => ModalBarrier(
         color: Colors.black.withOpacity(barrier!.opacity),
         onDismiss: onBarrierTap,
       );
@@ -1557,7 +1571,7 @@ class CalloutConfig {
         state?.hideOP();
         onDismissedF?.call();
       } else {
-        Callout.dismiss(feature);
+        Callout.dismiss(cId);
       }
     } else if (barrier?.hideOnTapped ?? false) {
       if (opDescendantContext != null) {
@@ -1565,7 +1579,7 @@ class CalloutConfig {
         state?.hideOP();
         onHiddenF?.call();
       } else {
-        Callout.hide(feature);
+        Callout.hide(cId);
         onHiddenF?.call();
       }
     }
@@ -1666,7 +1680,7 @@ class CalloutConfig {
 //         ),
 //       ));
 
-  Rect _calloutRect() => Rect.fromLTWH(left!, top!, calloutW!, calloutH!);
+  Rect _calloutRect() => Rect.fromLTWH(left!, top!, _calloutW!, _calloutH!);
 
 // Offset _calloutCentre() => _calloutRect().center;
 
@@ -1696,14 +1710,14 @@ class CalloutConfig {
     _rebuildOverlayEntryF?.call();
   }
 
-  // void redraw() {
-  //   if (_cachedCalloutContent == null || _rebuildOverlayEntryF == null) return;
-  //   oeContentWidget(
-  //     targetRect: tR!,
-  //     calloutContent: _cachedCalloutContent!,
-  //     rebuildF: _rebuildOverlayEntryF!,
-  //   );
-  // }
+// void redraw() {
+//   if (_cachedCalloutContent == null || _rebuildOverlayEntryF == null) return;
+//   oeContentWidget(
+//     targetRect: tR!,
+//     calloutContent: _cachedCalloutContent!,
+//     rebuildF: _rebuildOverlayEntryF!,
+//   );
+// }
 }
 
 class CalloutBarrier {
@@ -1730,10 +1744,11 @@ class PositionedBoxContent extends StatelessWidget {
   final CalloutConfig calloutConfig;
   final Widget child;
 
-  const PositionedBoxContent(this.calloutConfig,
-      this.child, {
-        super.key,
-      });
+  const PositionedBoxContent(
+    this.calloutConfig,
+    this.child, {
+    super.key,
+  });
 
   static PositionedBoxContent? of(BuildContext context) =>
       context.findAncestorWidgetOfExactType<PositionedBoxContent>();
@@ -1745,24 +1760,24 @@ class PositionedBoxContent extends StatelessWidget {
     if (cc.initialCalloutPos == null &&
         cc.initialCalloutAlignment == null &&
         cc.initialTargetAlignment == null) {
-      Rect screenRect = Rect.fromLTWH(0, 0, FCallouts().scrW, FCallouts().scrH);
+      Rect screenRect = Rect.fromLTWH(0, 0, fca.scrW, fca.scrH);
       cc.initialTargetAlignment =
-      -FCallouts().calcTargetAlignmentWithinWrapper(screenRect, cc.tR!);
+          -fca.calcTargetAlignmentWithinWrapper(screenRect, cc.tR!);
       cc.initialCalloutAlignment = -cc.initialTargetAlignment!;
     }
 
-    var decoration = cc.decorationShape.toDecoration(
-      fillColorValues: ColorValues(color1Value: cc.fillColor?.value),
-      borderColorValues: ColorValues(color1Value: cc.borderColor?.value),
-      borderRadius: cc.borderRadius,
-      thickness: cc.borderThickness,
-      starPoints: cc.starPoints,
-    );
-    ShapeBorder? sb;
-    if (decoration is ShapeDecoration) {
-      final ob = decoration;
-      sb = ob.shape;
-    }
+    // var decoration = cc.decorationShape.toDecoration(
+    //   fillColorValues: ColorValues(color1Value: cc.fillColor?.value),
+    //   borderColorValues: ColorValues(color1Value: cc.borderColor?.value),
+    //   borderRadius: cc.borderRadius,
+    //   thickness: cc.borderThickness,
+    //   starPoints: cc.starPoints,
+    // );
+    // ShapeBorder? sb;
+    // if (decoration is ShapeDecoration) {
+    //   final ob = decoration;
+    //   sb = ob.shape;
+    // }
 
     return Positioned(
         top: (cc.top ?? 0) + (cc.contentTranslateY ?? 0.0),
@@ -1778,64 +1793,60 @@ class PositionedBoxContent extends StatelessWidget {
           onPanCancel: () {
             cc._onDragEnd(DragEndDetails());
           },
-          child: TransparentPointer(
-            transparent: cc.transparentPointer,
-            child: Container(
-              decoration: cc.elevation == 0
-                  ? cc.decorationShape.toDecoration(
-                fillColorValues:
-                ColorValues(color1Value: cc.fillColor?.value),
-                borderColorValues:
-                ColorValues(color1Value: cc.borderColor?.value),
-                borderRadius: cc.borderRadius,
-                thickness: cc.borderThickness,
-                starPoints: cc.starPoints,
-              )
-                  : null,
+          // child: TransparentPointer(
+          child: Container(
+            decoration: cc.decorationShape.toDecoration(
+              fillColorValues: ColorValues(color1Value: cc.fillColor?.value),
+              borderColorValues:
+                  ColorValues(color1Value: cc.borderColor?.value),
+              borderRadius: cc.borderRadius,
+              thickness: cc.borderThickness,
+              starPoints: cc.starPoints,
+            ),
 
-              // decoration: ShapeDecoration(
-              //   shape: outlinedBorderGroup!.outlinedBorderType!.toFlutterWidget(nodeSide: outlinedBorderGroup?.side, nodeRadius: borderRadius),
-              //   color: fillColor1Value != null ? Color(fillColor1Value!) : null,
-              // ),
-              width: cc.calloutW,
-              height: cc.calloutH,
-              child: Material(
-                type: cc.elevation > 0
-                    ? MaterialType.canvas
-                    : MaterialType.transparency,
-                color: cc.fillColor,
-                elevation: 10,
-                shape: RoundedRectangleBorder(
-                  // Optional: customize border shape
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                // cc.elevation,
-                child: Stack(
-                  children: <Widget>[
-                    Align(
-                      alignment: Alignment.topLeft,
-                      child: cc.showGotitButton
-                          ? Flex(
-                        direction: cc.gotitAxis ?? Axis.horizontal,
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: calloutContent(cc),
-                          ),
-                          if (cc.gotitAxis != null && !cc.showcpi)
-                            cc._gotitButton(),
-                          if (cc.showcpi) cc._cpi(),
-                        ],
-                      )
-                          : calloutContent(cc),
-                    ),
-                    if (cc.showCloseButton) cc._closeButton(),
-                  ],
-                ),
+            // decoration: ShapeDecoration(
+            //   shape: outlinedBorderGroup!.outlinedBorderType!.toFlutterWidget(nodeSide: outlinedBorderGroup?.side, nodeRadius: borderRadius),
+            //   color: fillColor1Value != null ? Color(fillColor1Value!) : null,
+            // ),
+            width: cc._calloutW,
+            height: cc._calloutH,
+            child: Material(
+              type: cc.elevation > 0
+                  ? MaterialType.canvas
+                  : MaterialType.transparency,
+              color: cc.fillColor,
+              elevation: cc.elevation,
+              shape: RoundedRectangleBorder(
+                // Optional: customize border shape
+                borderRadius: BorderRadius.circular(cc.borderRadius),
               ),
-            ), // TRUE means treat as invisible, and pass events down below
+              // cc.elevation,
+              child: Stack(
+                children: <Widget>[
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: cc.showGotitButton
+                        ? Flex(
+                            direction: cc.gotitAxis ?? Axis.horizontal,
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: calloutContent(cc),
+                              ),
+                              if (cc.gotitAxis != null && !cc.showcpi)
+                                cc._gotitButton(),
+                              if (cc.showcpi) cc._cpi(),
+                            ],
+                          )
+                        : calloutContent(cc),
+                  ),
+                  if (cc.showCloseButton) cc._closeButton(),
+                ],
+              ),
+            ),
+          ), // TRUE means treat as invisible, and pass events down below
 //             child: Material(
 //               // shape: const StarBorder(
 //               //   side: BorderSide(color: Colors.black, width: 3),
@@ -1856,9 +1867,9 @@ class PositionedBoxContent extends StatelessWidget {
 //               //     textScaler: const TextScaler.linear(1.0),
 //               //   ),
 //               child: SizedBox(
-//                 width: cc.calloutW!.abs(),
+//                 width: cc._calloutW!.abs(),
 // // - (gotitAxis == Axis.horizontal ? 50 : 0),
-//                 height: cc.calloutH!.abs(),
+//                 height: cc._calloutH!.abs(),
 // // - (gotitAxis == Axis.vertical ? 50 : 0),
 // //                 decoration: calloutConfig.circleShape
 // //                     ? const BoxDecoration(
@@ -1874,15 +1885,14 @@ class PositionedBoxContent extends StatelessWidget {
 // //                               spreadRadius: 9),
 // //                         ],
 // //                       ),
-          ),
+//           ),
         ));
   }
 
-  Widget calloutContent(cc) =>
-      cc.draggable
-          ? MouseRegion(
-        cursor: SystemMouseCursors.grab,
-        child: cc._possiblyScrollableContents(child),
-      )
-          : cc._possiblyScrollableContents(child);
+  Widget calloutContent(cc) => cc.draggable
+      ? MouseRegion(
+          cursor: SystemMouseCursors.grab,
+          child: cc._possiblyScrollableContents(child),
+        )
+      : cc._possiblyScrollableContents(child);
 }

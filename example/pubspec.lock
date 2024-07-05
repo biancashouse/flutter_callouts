@@ -12,10 +12,11 @@ packages:
   bh_shared:
     dependency: transitive
     description:
-      path: "../../bh_shared"
-      relative: true
-    source: path
-    version: "0.0.1"
+      name: bh_shared
+      sha256: "25bc7e168d4751365a94bde703399613b6a1c9bab618adfc31178a47a19e3c74"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.4"
   bloc:
     dependency: transitive
     description:
@@ -117,29 +118,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_animate:
-    dependency: "direct main"
-    description:
-      name: flutter_animate
-      sha256: "7c8a6594a9252dad30cc2ef16e33270b6248c4dedc3b3d06c86c4f3f4dc05ae5"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.5.0"
   flutter_callouts:
     dependency: "direct main"
     description:
       path: ".."
       relative: true
     source: path
-    version: "0.1.0"
-  flutter_hooks:
-    dependency: "direct main"
-    description:
-      name: flutter_hooks
-      sha256: cde36b12f7188c85286fba9b38cc5a902e7279f36dd676967106c041dc9dde70
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.20.5"
+    version: "0.0.1"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -148,14 +133,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.2"
-  flutter_shaders:
-    dependency: transitive
-    description:
-      name: flutter_shaders
-      sha256: "02750b545c01ff4d8e9bbe8f27a7731aa3778402506c67daa1de7f5fc3f4befe"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.2"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -338,10 +315,10 @@ packages:
     dependency: transitive
     description:
       name: path_provider_android
-      sha256: "9c96da072b421e98183f9ea7464898428e764bc0ce5567f27ec8693442e72514"
+      sha256: bca87b0165ffd7cdb9cad8edd22d18d2201e886d9a9f19b4fb3452ea7df3a72a
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.5"
+    version: "2.2.6"
   path_provider_foundation:
     dependency: transitive
     description:
@@ -499,14 +476,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.6.1"
-  transparent_pointer:
-    dependency: transitive
-    description:
-      name: transparent_pointer
-      sha256: "02b498db33f8a6a2f84bb6d27b64e9c27344aadf589c26084058a7845aa690cb"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.1"
   typed_data:
     dependency: transitive
     description:

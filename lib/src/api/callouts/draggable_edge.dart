@@ -81,7 +81,7 @@ class DraggableEdge_OP extends StatelessWidget {
             if (_debounce?.isActive ?? false) _debounce?.cancel();
             // Set up a new debounce timer
             _debounce = Timer(const Duration(milliseconds: 200), () async {
-              parent.onResize?.call(Size(parent.calloutW!, parent.calloutH!));
+              parent.onResizeF?.call(Size(parent.calloutW!, parent.calloutH!));
             });
           });
         },

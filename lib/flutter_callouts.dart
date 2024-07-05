@@ -16,33 +16,30 @@ export 'src/measuring/find_global_rect.dart';
 export 'src/measuring/measure_sizebox.dart';
 export 'src/measuring/text_measuring.dart';
 export 'src/text_editing/fc_textfield_T.dart';
-export 'src/model/decoration_shape_enum.dart';
 export 'src/api/callouts/arrow_type.dart';
 export 'src/api/callouts/zoomer.dart';
 export 'src/typedefs.dart';
 export 'src/callout_useful.dart';
 
-class FCallouts with CalloutUseful, BaseUseful, WidgetHelper, BrowserStorage {
-  FCallouts._();
+// client apps will only access this functionality thru this global instance
+FlutterCallouts fca = FlutterCallouts.instance;
 
-  // Static instance variable
-  static FCallouts? _instance;
+class FlutterCallouts extends BaseGlobal with CalloutUseful {
 
-  // Factory method to provide access to the singleton instance
-  factory FCallouts() {
-    // If the instance doesn't exist, create it
-    _instance ??= FCallouts._();
-    return _instance!;
+  FlutterCallouts._internal() // Private constructor
+  {
+    debugPrint('FlutterCallouts._internal()');
   }
 
-  // must be called from a widget build
-  void initWithContext(BuildContext context) {
-    if (super.rootContext == null) {
-      initDeviceInfoAndPlatform();
-      afterNextBuildDo(() {
-        createOffstageOverlay(context);
-      });
-    }
-    rootContext = context;
+  static final FlutterCallouts _instance = FlutterCallouts._internal();
+
+  static FlutterCallouts get instance {
+    return _instance;
+  }
+
+  // must be called AFTER a first widget build
+  @override
+  void initWithContext(BuildContext context, {VoidCallback? f}) {
+    super.initWithContext(context, f: ()=>createOffstageOverlay(context));
   }
 }

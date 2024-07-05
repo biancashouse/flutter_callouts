@@ -133,7 +133,7 @@ class PointingLinePainter extends CustomPainter {
     path.close();
 
     canvas.drawPath(path, _linePaint(arrowColor, arrowTypeToLineThickness(arrowThickness)));
-    canvas.drawPath(path, FCallouts().bgPaint(arrowColor));
+    canvas.drawPath(path, fca.bgPaint(arrowColor));
   }
 
   double arrowTypeToHeadRadius(ArrowType size) {
@@ -153,7 +153,7 @@ class PointingLinePainter extends CustomPainter {
       // case ArrowType.HUGE:
       // case ArrowType.HUGE_REVERSED:
       //   return 40;
-      case ArrowType.NO_CONNECTOR:
+      case ArrowType.NONE:
         return 0;
       case ArrowType.POINTY:
         return 0;
@@ -177,7 +177,7 @@ class PointingLinePainter extends CustomPainter {
       // case ArrowType.HUGE:
       // case ArrowType.HUGE_REVERSED:
       //   return 20;
-      case ArrowType.NO_CONNECTOR:
+      case ArrowType.NONE:
       case ArrowType.POINTY:
       return 1;
     }
