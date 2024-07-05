@@ -1,6 +1,6 @@
 <hr>
 <figure>
-    <img src='example/screen-capture.gif' width="60%" height="60%" title="screen capture" alt='simple example'>
+    <img src='https://github.com/biancashouse/flutter_callouts/blob/main/example/screen-capture.gif' width="60%" height="60%" title="screen capture" alt='simple example'>
     <figcaption>animated gif of a *simple* demo, illustrating:
 
 - a yellow, draggable, callout pointing to a button (target)

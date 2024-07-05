@@ -16,7 +16,7 @@
 <!-- #include readme-simple-example-gif.md -->
 <hr>
 <figure>
-    <img src='example/screen-capture.gif' width="60%" height="60%" title="screen capture" alt='simple example'>
+    <img src='https://github.com/biancashouse/flutter_callouts/blob/main/example/screen-capture.gif' width="60%" height="60%" title="screen capture" alt='simple example'>
     <figcaption>animated gif of a *simple* demo, illustrating:
 
 - a yellow, draggable, callout pointing to a button (target)
@@ -236,7 +236,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     /// target's key
     fabGK = GlobalKey();
 
-    FCA.afterNextBuildDo(() {
+    fca.afterNextBuildDo(() {
       Callout.showOverlay(
         calloutConfig: basicCalloutConfig(controller),
         calloutContentF: (context) => const Padding(
@@ -246,7 +246,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         ),
         targetGkF: () => fabGK,
       );
-      FCA.afterMsDelayDo(
+      fca.afterMsDelayDo(
         800,
         () => _showToast(Alignment.topCenter),
       );
