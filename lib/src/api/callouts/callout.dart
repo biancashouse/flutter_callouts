@@ -15,7 +15,7 @@ class Callout {
   static void showOverlay({
     ZoomerState? zoomer, // if callout needs access to the zoomer
     required CalloutConfig calloutConfig,
-    required WidgetBuilder calloutContentF,
+    required Widget calloutContent,
     TargetKeyFunc? targetGkF,
     bool ensureLowestOverlay = false,
     int? removeAfterMs,
@@ -48,78 +48,87 @@ class Callout {
       });
     }
 
-    // get this target's context
-    if (targetGkF != null) {
-      GlobalKey? gk = targetGkF.call();
-      var cc = gk?.currentContext;
-      if (cc == null) {
-        debugPrint(
-            '${calloutConfig.cId} missing target gk - overlay not shown');
-        return;
-      } else {
-        fca.initWithContext(cc);
-      }
-    }
-
-    late OverlayEntry oEntry; // will be null if target not present
-    calloutConfig.calloutW = calloutConfig.initialCalloutW;
-
-    calloutConfig.calloutH = calloutConfig.initialCalloutH;
+    // // get this target's context
+    // if (targetGkF != null) {
+    //   GlobalKey? gk = targetGkF.call();
+    //   var cc = gk?.currentContext;
+    //   if (cc == null) {
+    //     debugPrint(
+    //         '${calloutConfig.cId} missing target gk - overlay not shown');
+    //     return;
+    //   } else {
+    //     fca.initWithContext(cc);
+    //   }
+    // }
 
     // possibly create the overlay after measuring the callout's content
     if (calloutConfig.initialCalloutW == null ||
         calloutConfig.initialCalloutH == null) {
-      fca.afterNextBuildMeasureThenDo(
-          skipWidthConstraintWarning: calloutConfig.calloutW != null,
-          skipHeightConstraintWarning: calloutConfig.calloutH != null,
-          (mctx) => calloutContentF(mctx), (Size size) {
-        calloutConfig.calloutW ??= size.width;
-        calloutConfig.calloutH ??= size.height;
-        oEntry = _createOverlay(
-          zoomer,
-          calloutConfig,
-          calloutContentF,
-          targetGkF,
-          ensureLowestOverlay,
-        );
-        // if a notifer was passed in, means inside another overlay, so the target would change as the overlay gets moved or resized
-        targetChangedNotifier?.addListener(() {
-          // debugPrint("\n\ntime to update the target\n\n");
-          fca.afterNextBuildDo(() => oEntry.markNeedsBuild());
-        });
-        Future.delayed(const Duration(milliseconds: 300), () {
-          debugPrint('_possiblyAnimateSeparation');
-          _possiblyAnimateSeparation(calloutConfig);
-        });
-      });
+      fca
+          .measureWidgetRect(context: fca.rootContext, widget: calloutContent)
+          .then(
+        (rect) {
+          calloutConfig.calloutW = rect.width;
+          calloutConfig.calloutH = rect.height;
+          debugPrint('measured content size: ${rect.toString()}');
+          _createOverlayDefinitelyHasSize(
+            calloutConfig,
+            calloutContent,
+            zoomer,
+            targetGkF,
+            targetChangedNotifier,
+            ensureLowestOverlay,
+          );
+        },
+      );
     } else {
-      oEntry = _createOverlay(
-        zoomer,
+      // width and height supplied
+      calloutConfig.initialCalloutW = calloutConfig.initialCalloutH = 0.0;
+      _createOverlayDefinitelyHasSize(
         calloutConfig,
-        calloutContentF,
+        calloutContent,
+        zoomer,
         targetGkF,
+        targetChangedNotifier,
         ensureLowestOverlay,
       );
-      // if a notifer was passed in, means inside another overlay, so the target would change as the overlay gets moved or resized
-      targetChangedNotifier?.addListener(() {
-        // debugPrint("\n\ntime to update the target\n\n");
-        fca.afterNextBuildDo(() => oEntry.markNeedsBuild());
-      });
-      Future.delayed(const Duration(milliseconds: 300), () {
-        if (calloutConfig.notToast) {
-          debugPrint('_possiblyAnimateSeparation');
-          _possiblyAnimateSeparation(calloutConfig);
-        } else {
-          _possiblyAnimateToastPos(calloutConfig);
-        }
-      });
     }
+  }
+
+  static void _createOverlayDefinitelyHasSize(
+    CalloutConfig calloutConfig,
+    Widget calloutContent,
+    ZoomerState? zoomer,
+    TargetKeyFunc? targetGkF,
+    ValueNotifier<int>? targetChangedNotifier,
+    bool ensureLowestOverlay,
+  ) {
+    OverlayEntry oEntry = _createOverlay(
+      zoomer,
+      calloutConfig,
+      calloutContent,
+      targetGkF,
+      ensureLowestOverlay,
+    ); // will be null if target not present
+    // if a notifer was passed in, means inside another overlay, so the target would change as the overlay gets moved or resized
+    targetChangedNotifier?.addListener(() {
+      // debugPrint("\n\ntime to update the target\n\n");
+      fca.afterNextBuildDo(() => oEntry.markNeedsBuild());
+    });
+    Future.delayed(const Duration(milliseconds: 300), () {
+      if (calloutConfig.notToast) {
+        debugPrint('_possiblyAnimateSeparation');
+        _possiblyAnimateSeparation(calloutConfig);
+      } else {
+        _possiblyAnimateToastPos(calloutConfig);
+      }
+    });
   }
 
   static OverlayEntry _createOverlay(
     ZoomerState? zoomer,
     CalloutConfig calloutConfig,
-    WidgetBuilder boxContentF,
+    Widget boxContent,
     TargetKeyFunc? targetGkF,
     bool ensureLowestOverlay,
   ) {
@@ -168,7 +177,7 @@ class Callout {
         child: calloutConfig.oeContentWidget(
 // zoomer: zoomer,
           targetRect: r,
-          calloutContent: (_) => boxContentF(_),
+          calloutContent: (_) => boxContent,
           rebuildF: () {
             entry.markNeedsBuild();
           },
@@ -183,9 +192,9 @@ class Callout {
       lowestOverlay = result.$2;
     }
 
-    fca.afterNextBuildDo(() {
-      Overlay.of(fca.rootContext).insert(entry, below: lowestOverlay);
-    });
+    // fca.afterNextBuildDo(() {
+    Overlay.of(fca.rootContext).insert(entry, below: lowestOverlay);
+    // });
 
 // // animate separation just once
 //     if (calloutConfig.finalSeparation > 0.0) {
@@ -338,13 +347,26 @@ class Callout {
     }
   }
 
-  static CalloutConfig? findParentCalloutConfig(context) => context
-      .findAncestorWidgetOfExactType<PositionedBoxContent>()
-      ?.calloutConfig;
+  static CalloutConfig? findParentCalloutConfig(context) {
+    return context
+        .findAncestorWidgetOfExactType<PositionedBoxContent>()
+        ?.calloutConfig;
+  }
 
 // unhide OpenPortal overlay
   static void unhideParentCallout(BuildContext context,
       {bool animateSeparation = false, int hideAfterMs = 0}) {
+    var op = context.findAncestorWidgetOfExactType<OverlayPortal>();
+    if (op != null) {
+      // find its cc
+      for (OE oe in OE.list) {
+        if (oe.opC == op.controller) {
+          CalloutConfig cc = oe.calloutConfig;
+          unhide(cc.cId);
+        }
+      }
+    }
+
     CalloutConfig? config = findParentCalloutConfig(context);
     if (config != null) {
       unhide(config.cId);
@@ -447,7 +469,7 @@ class Callout {
 
   static void showToast({
     required CalloutConfig calloutConfig,
-    required WidgetBuilder calloutContentF,
+    required Widget calloutContent,
     int removeAfterMs = 0,
   }) {
     assert(calloutConfig.gravity != null &&
@@ -483,7 +505,7 @@ class Callout {
     }
     showOverlay(
       calloutConfig: toastCC,
-      calloutContentF: (cachedContext) => calloutContentF(cachedContext),
+      calloutContent: calloutContent,
     );
   }
 
@@ -594,7 +616,7 @@ class Callout {
           arrowType: ArrowType.NONE,
           draggable: false,
         ),
-        calloutContentF: (cachedContext) => Center(
+        calloutContent: Center(
           child: Container(
 //width: w,
 // decoration: BoxDecoration(
@@ -621,7 +643,7 @@ class Callout {
 
   static void hide(String cId) {
     OE? oeObj = findOE(cId);
-    if (oeObj != null && !oeObj.isHidden) {
+    if (oeObj != null/*  && !oeObj.isHidden*/) {
       oeObj
         ..isHidden = true
         ..opC?.hide()
@@ -646,7 +668,7 @@ class Callout {
 
   static void unhide(String cId) {
     OE? oe = findOE(cId);
-    if (oe != null && oe.isHidden) {
+    if (oe != null /*&& oe.isHidden*/) {
       oe
         ..isHidden = false
         ..opC?.show()

@@ -3,17 +3,16 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
 
-mixin CalloutUseful /* extends BaseUseful */ {
+mixin CalloutMixin /* extends BaseUseful */ {
   // late SharedPreferences _prefs;
   // late LocalStoreHydrated _localStore;
   // final Map<String, OverlayManager> _oms = {};
 
-  GlobalKey? _offstageGK;
-  WidgetBuilder _builder = (context) => const Icon(Icons.warning);
-  OverlayEntry? _oe;
+  // GlobalKey? _offstageGK;
+  // WidgetBuilder _builder = (context) => const Icon(Icons.warning);
+  // OverlayEntry? _oe;
 
   final List<ScrollController> registeredScrollControllers = [];
 
@@ -24,39 +23,39 @@ mixin CalloutUseful /* extends BaseUseful */ {
     }
   }
 
-  createOffstageOverlay(BuildContext context) {
-    Overlay.of(context).insert(_oe = OverlayEntry(
-        builder: (BuildContext ctx) => Offstage(
-              child: Material(
-                color: Colors.transparent,
-                child: Center(
-                  child: Container(
-                    key: _offstageGK,
-                    child: _builder(context),
-                  ),
-                ),
-              ),
-            )));
-  }
-
-  // update config with measured size
-  Size _measureOffstageWidget(
-    bool skipWidthConstraintWarning,
-    bool skipHeightConstraintWarning,
-  ) {
-    if (_offstageGK != null) {
-      Rect? rect = _offstageGK!.globalPaintBounds(
-        skipWidthConstraintWarning: skipWidthConstraintWarning,
-        skipHeightConstraintWarning: skipHeightConstraintWarning,
-      ); //Measuring.findGlobalRect(_offstageGK!);
-      if (rect != null) {
-        debugPrint(
-            '_measureThenRenderCallout: width:${rect.width}, height:${rect.height}');
-        return rect.size;
-      }
-    }
-    return Size.zero;
-  }
+  // void createOffstageOverlay(BuildContext context) {
+  //   Overlay.of(context).insert(_oe = OverlayEntry(
+  //       builder: (BuildContext ctx) => Offstage(
+  //             child: Material(
+  //               color: Colors.transparent,
+  //               child: Center(
+  //                 child: Container(
+  //                   key: _offstageGK,
+  //                   child: _builder(context),
+  //                 ),
+  //               ),
+  //             ),
+  //           )));
+  // }
+  //
+  // // update config with measured size
+  // Size _measureOffstageWidget(
+  //   bool skipWidthConstraintWarning,
+  //   bool skipHeightConstraintWarning,
+  // ) {
+  //   if (_offstageGK != null) {
+  //     Rect? rect = _offstageGK!.globalPaintBounds(
+  //       skipWidthConstraintWarning: skipWidthConstraintWarning,
+  //       skipHeightConstraintWarning: skipHeightConstraintWarning,
+  //     ); //Measuring.findGlobalRect(_offstageGK!);
+  //     if (rect != null) {
+  //       debugPrint(
+  //           '_measureThenRenderCallout: width:${rect.width}, height:${rect.height}');
+  //       return rect.size;
+  //     }
+  //   }
+  //   return Size.zero;
+  // }
 
   // void _saveScrollOffsets() {
   //   if (editingPageState?.vScrollController.positions.isNotEmpty ?? false) {
@@ -232,41 +231,39 @@ mixin CalloutUseful /* extends BaseUseful */ {
     // return Alignment.center;
   }
 
-  void afterNextBuildMeasureThenDo(
-    final WidgetBuilder widgetBuilder,
-    final ValueChanged<Size> fn, {
-    final bool skipWidthConstraintWarning =
-        false, // should be true if a width was supplied
-    final bool skipHeightConstraintWarning =
-        false, // should be true if a height was supplied
-    final List<ScrollController>? scrollControllers,
-  }) {
-    Map<int, double> savedOffsets = {};
-    if (scrollControllers != null && scrollControllers.isNotEmpty) {
-      for (int i = 0; i < scrollControllers.length; i++) {
-        ScrollController sc = scrollControllers[i];
-        if (sc.positions.isNotEmpty) {
-          savedOffsets[i] = sc.offset;
-        }
-      }
-    }
-    _offstageGK = GlobalKey(debugLabel: 'offstage-gk');
-    _builder = widgetBuilder;
-    _oe?.markNeedsBuild();
-    SchedulerBinding.instance.addPostFrameCallback(
-      (_) {
-        if (savedOffsets.isNotEmpty) {
-          for (int i in savedOffsets.keys) {
-            scrollControllers![i].jumpTo(savedOffsets[i]!);
-            // scrollControllers![i].animateTo(savedOffsets[i]!, duration: Duration(milliseconds: 500), curve: Curves.easeIn);
-          }
-        }
-        Size size = _measureOffstageWidget(
-            skipWidthConstraintWarning, skipHeightConstraintWarning);
-        if (size != Size.zero) fn.call(size);
-      },
-    );
-  }
+  // void afterNextBuildMeasureThenDo(
+  //   final WidgetBuilder widgetBuilder,
+  //   final ValueChanged<Size> fn, {
+  //   final bool skipWidthConstraintWarning =
+  //       false, // should be true if a width was supplied
+  //   final bool skipHeightConstraintWarning =
+  //       false, // should be true if a height was supplied
+  //   final List<ScrollController>? scrollControllers,
+  // }) {
+  //   Map<int, double> savedOffsets = {};
+  //   if (scrollControllers != null && scrollControllers.isNotEmpty) {
+  //     for (int i = 0; i < scrollControllers.length; i++) {
+  //       ScrollController sc = scrollControllers[i];
+  //       if (sc.positions.isNotEmpty) {
+  //         savedOffsets[i] = sc.offset;
+  //       }
+  //     }
+  //   }
+  //   _offstageGK = GlobalKey(debugLabel: 'offstage-gk');
+  //   _builder = widgetBuilder;
+  //   _oe?.markNeedsBuild();
+  //   fca.afterNextBuildDo((){
+  //     if (savedOffsets.isNotEmpty) {
+  //       for (int i in savedOffsets.keys) {
+  //         scrollControllers![i].jumpTo(savedOffsets[i]!);
+  //         // scrollControllers![i].animateTo(savedOffsets[i]!, duration: Duration(milliseconds: 500), curve: Curves.easeIn);
+  //       }
+  //     }
+  //     Size size = _measureOffstageWidget(
+  //         skipWidthConstraintWarning, skipHeightConstraintWarning);
+  //     if (size != Size.zero) fn.call(size);
+  //   });
+  // }
 }
 
 // class Measuring {
@@ -358,8 +355,7 @@ extension GlobalKeyExtension on GlobalKey {
             paintBounds?.height == fca.scrH)) {
       _alreadyGaveGlobalPosAndSizeWarning = true;
       Callout.showOverlay(
-        calloutContentF: (BuildContext context) {
-          return Column(
+        calloutContent: Column(
             children: [
               Text('Warning - Target Size Constraint'),
               Text(
@@ -380,13 +376,12 @@ extension GlobalKeyExtension on GlobalKey {
               ),
               TextButton(
                 onPressed: () {
-                  Callout.removeParentCallout(context);
+                  Callout.dismissTopFeature();
                 },
                 child: const Text('Close'),
               ),
             ],
-          );
-        },
+          ),
         calloutConfig: CalloutConfig(
           cId: 'globalPaintBounds error',
           draggable: false,

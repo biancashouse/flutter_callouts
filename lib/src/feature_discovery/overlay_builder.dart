@@ -2,7 +2,7 @@
 //
 // import 'package:flutter/material.dart';
 // import 'package:flutter_callouts/src/feature_discovery/featured_widget.dart';
-// import 'package:flutter_callouts/src/callout_useful.dart';
+// import 'package:flutter_callouts/src/callout_mixin.dart';
 //
 // class DiscoveryOverlayBuilder extends StatefulWidget {
 //   final FeaturedWidget parent;

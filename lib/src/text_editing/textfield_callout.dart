@@ -45,7 +45,7 @@ void editText2({
   // Callout.removeAllOverlays();
   Callout.showOverlay(
       targetGkF: targetGK,
-      calloutContentF: (ctx) => FC_TextField(
+      calloutContent: FC_TextField(
             inputType: String,
             key: calloutChildGK,
             prompt: () => prompt,
@@ -129,7 +129,7 @@ void editText2({
         initialCalloutH: 140,
         onlyOnce: true,
       ),
-      calloutContentF: (context) => Padding(
+      calloutContent: Padding(
         padding: const EdgeInsets.all(10),
         child: fca.coloredText(
           "tap outside the editor to close it ${fca.isWeb ? '\nor press <Shift-Return>' : ''}",

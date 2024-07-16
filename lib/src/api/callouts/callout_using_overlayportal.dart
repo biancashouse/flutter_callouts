@@ -117,17 +117,17 @@ class WrappedCalloutState extends State<WrappedCallout> {
   }
 
   @override
-  Widget build(BuildContext contexT) => OverlayPortal(
+  Widget build(BuildContext contexT) {return OverlayPortal(
     controller: opController,
 // the CalloutConfig + overlayPortalChild + overlayContent are combined to make the Overlay
-    overlayChildBuilder: (contexT) {
+    overlayChildBuilder: (_) {
       Rect r = Rect.fromLTWH(targetPos?.dx ?? 0, targetPos?.dy ?? 0,
           targetSize?.width ?? 0, targetSize?.height ?? 0);
       return _config.opContentWidget(
         context: contexT,
         targetRect: r,
-        calloutContent: (ctx) => Builder(builder: (ctx) {
-          return widget.calloutBoxContentBuilderF(ctx);
+        calloutContent: (ctx) => Builder(builder: (context) {
+          return widget.calloutBoxContentBuilderF(context);
         }),
         rebuildF: () => opController.show(),
       );
@@ -148,6 +148,7 @@ class WrappedCalloutState extends State<WrappedCallout> {
       builder: (ctx) => widget.targetBuilderF(ctx),
     ),
   );
+    }
 
   void unhide({bool animateSeparation = false, int hideAfterMs = 0}) {
     showOP();
@@ -175,6 +176,11 @@ class WrappedCalloutState extends State<WrappedCallout> {
     _config.calloutH ??= _config.initialCalloutH;
 // possibly create the overlay after measuring the callout's content
     if (_config.initialCalloutW == null || _config.initialCalloutH == null) {
+      fca
+          .measureWidgetRect(context: fca.rootContext, widget: widget.calloutBoxContentBuilderF(fca.rootContext))
+          .then((rect) {
+        },
+      );
       fca.afterNextBuildMeasureThenDo(
           skipWidthConstraintWarning: _config.calloutW != null,
           skipHeightConstraintWarning: _config.calloutH != null,

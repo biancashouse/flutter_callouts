@@ -8,6 +8,8 @@ import 'package:flutter_callouts/src/api/callouts/draggable_edge.dart';
 import 'package:flutter_callouts/src/api/callouts/line.dart';
 import 'package:flutter_callouts/src/api/callouts/pointing_line.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
+
+import 'decoration_shape_enum.dart';
 // import 'package:transparent_pointer/transparent_pointer.dart';
 
 // import 'callout_config_toolbar.dart';
@@ -852,6 +854,8 @@ class CalloutConfig {
 
     // debugPrint('after adjusting for separation: pos is $left, $top');
 
+    BuildContext ctx = fca.rootContext;
+    var content = calloutContent(ctx);
     return Stack(
       children: [
         if (notToast && barrier != null && barrier!.opacity > 0.0)
@@ -930,7 +934,7 @@ class CalloutConfig {
               color: draggableColor!,
               parent: this),
         if (notToast && arrowType == ArrowType.POINTY) _positionedBubbleBg(),
-        PositionedBoxContent(this, calloutContent(fca.rootContext)),
+        PositionedBoxContent(this, content),
         if (notToast &&
             arrowType != ArrowType.NONE &&
             arrowType != ArrowType.POINTY &&
@@ -1440,23 +1444,22 @@ class CalloutConfig {
         ),
       );
 
-  // Widget _possiblyScrollableContents(Widget contents) =>
-// (needsToScrollV || needsToScrollH)
-// ? SizedBox.fromSize(
-//     size: calloutSize,
-//     child: SingleChildScrollView(
-//       scrollDirection: Axis.vertical,
-//       child: contents,
-//     ),
-//   )
-// :
-//       SizedBox(
-//         width: _calloutW!,
-//         height: _calloutH!,
-//         child: Builder(builder: (context) {
-//           return contents;
-//         }),
-//       );
+  Widget _possiblyScrollableContents(Widget contents) =>
+      (needsToScrollV || needsToScrollH)
+          ? SizedBox(
+              width: calloutW, height: calloutH,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: contents,
+              ),
+            )
+          : SizedBox(
+              width: _calloutW!,
+              height: _calloutH!,
+              child: Builder(builder: (context) {
+                return contents;
+              }),
+            );
 
   Widget _createPointingLine() {
     if (initialCalloutAlignment == null && initialTargetAlignment == null) {
@@ -1808,8 +1811,8 @@ class PositionedBoxContent extends StatelessWidget {
             //   shape: outlinedBorderGroup!.outlinedBorderType!.toFlutterWidget(nodeSide: outlinedBorderGroup?.side, nodeRadius: borderRadius),
             //   color: fillColor1Value != null ? Color(fillColor1Value!) : null,
             // ),
-            width: cc._calloutW,
-            height: cc._calloutH,
+            //width: cc._calloutW,
+            //height: cc._calloutH,
             child: Material(
               type: cc.elevation > 0
                   ? MaterialType.canvas
@@ -1889,7 +1892,7 @@ class PositionedBoxContent extends StatelessWidget {
         ));
   }
 
-  Widget calloutContent(cc) => cc.draggable
+  Widget calloutContent(CalloutConfig cc) => cc.draggable
       ? MouseRegion(
           cursor: SystemMouseCursors.grab,
           child: cc._possiblyScrollableContents(child),

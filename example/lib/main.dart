@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const FlutterCalloutsSimpleDemo());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class FlutterCalloutsSimpleDemo extends StatelessWidget {
+  const FlutterCalloutsSimpleDemo({super.key});
 
   // This widget is the root of your application.
   @override
@@ -107,10 +107,14 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     fca.afterNextBuildDo(() {
       Callout.showOverlay(
         calloutConfig: basicCalloutConfig(controller),
-        calloutContentF: (context) => const Padding(
+        calloutContent: const Padding(
           padding: EdgeInsets.all(8.0),
-          child:
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
               Text('Tap this floating action button to increment the counter.'),
+            ],
+          ),
         ),
         targetGkF: () => fabGK,
       );
@@ -119,6 +123,12 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         () => _showToast(Alignment.topCenter),
       );
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    fca.initWithContext(context);
+    super.didChangeDependencies();
   }
 
   void _showToast(Alignment gravity,
@@ -140,7 +150,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           vsync: this,
           onDismissedF: () => onDismissedF?.call(),
         ),
-        calloutContentF: (_) => Center(
+        calloutContent: Center(
           child: Text(
             'gravity: ${gravity.toString()}',
             textScaler: const TextScaler.linear(2),
@@ -150,71 +160,70 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       );
 
   @override
-  Widget build(BuildContext context) {
-    Size screenSize = MediaQuery.of(context).size;
-    return NotificationListener<SizeChangedLayoutNotification>(
-      onNotification: (SizeChangedLayoutNotification notification) {
-        // Callout.dismissAll(exceptFeatures: []);
-        FlutterCallouts.instance.afterMsDelayDo(300, () {
-          Callout.refreshAll();
-        });
-        return true;
-      },
-      child: SizeChangedLayoutNotifier(
-        child: Scaffold(
-          body: Center(
-            child: SingleChildScrollView(
-              controller: controller,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  SizedBox(
-                    height: screenSize.height - 200,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text(
-                          'You have pushed the + button this many times:',
-                        ),
-                        Text(
-                          '$_counter',
-                          style: Theme.of(context).textTheme.headlineMedium,
-                        ),
-                      ],
+  Widget build(BuildContext context) =>
+      NotificationListener<SizeChangedLayoutNotification>(
+        onNotification: (SizeChangedLayoutNotification notification) {
+          // Callout.dismissAll(exceptFeatures: []);
+          fca.afterMsDelayDo(300, () {
+            Callout.refreshAll();
+          });
+          return true;
+        },
+        child: SizeChangedLayoutNotifier(
+          child: Scaffold(
+            body: Center(
+              child: SingleChildScrollView(
+                controller: controller,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height - 200,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                            'You have pushed the + button this many times:',
+                          ),
+                          Text(
+                            '$_counter',
+                            style: Theme.of(context).textTheme.headlineMedium,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  Container(
-                    width: double.infinity,
-                    height: 100,
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: Padding(
-                        padding: const EdgeInsets.all(18.0),
-                        child: FloatingActionButton(
-                          key: fabGK,
-                          onPressed: _incrementCounter,
-                          tooltip: 'Increment',
-                          child: const Icon(Icons.add),
+                    Container(
+                      width: double.infinity,
+                      height: 100,
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Padding(
+                          padding: const EdgeInsets.all(18.0),
+                          child: FloatingActionButton(
+                            key: fabGK,
+                            onPressed: _incrementCounter,
+                            tooltip: 'Increment',
+                            child: const Icon(Icons.add),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Container(
-                    height: 1000,
-                    width: double.infinity,
-                    color: Colors.blue[50],
-                    child: const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text('Scroll to see that the yellow callout is Scroll-aware.\n'
-                      'Resize the window to see the pointer refreshing.'),
+                    Container(
+                      height: 1000,
+                      width: double.infinity,
+                      color: Colors.blue[50],
+                      child: const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(
+                            'Scroll to see that the yellow callout is Scroll-aware.\n'
+                            'Resize the window to see the pointer refreshing.'),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
         ),
-      ),
-    );
-  }
+      );
 }

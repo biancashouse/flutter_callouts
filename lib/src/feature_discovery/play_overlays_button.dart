@@ -1,7 +1,7 @@
 // import 'package:flutter/material.dart';
 // import 'package:flutter_callouts/src/blink.dart';
 // import 'package:flutter_callouts/src/gotits/gotits_helper.dart';
-// import 'package:flutter_callouts/src/callout_useful.dart';
+// import 'package:flutter_callouts/src/callout_mixin.dart';
 //
 // import 'discovery_controller.dart';
 //

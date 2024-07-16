@@ -7,6 +7,7 @@ homepage: https://github.com/biancashouse/flutter_callouts
 #homepage: https://bitbucket:org/biancashouse/flutter_callouts/src/master/
 #issue_tracker: https://github.com/flutter/flutter/issues?q=is%3Aissue+is%3Aopen+label%3A%22p%3A+flutter_adaptive_scaffold%22
 repository: https://github.com/biancashouse/flutter-callouts
+publish_to: none
 
 environment:
   sdk: '>=3.3.0 <4.0.0'
@@ -22,8 +23,10 @@ dependencies:
     sdk: flutter
 
   pointer_interceptor: ^0.10.1+1
+  gradient_borders: 1.0.1
 
-  bh_shared: ^0.0.4
+  bh_shared:
+    path: ../bh_shared
 
 #dependency_overrides:
 #  web: ^0.5.0 # latest version as of now
