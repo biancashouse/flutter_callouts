@@ -2,133 +2,132 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
 import 'package:flutter_callouts/src/api/callouts/coord.dart';
-import 'package:flutter_callouts/src/api/callouts/line.dart';
 
 class PathUtil {
   static const int DEFAULT_THICKNESS = 10;
 
-  static Path? draw(CalloutConfig config, {int? pointyThickness}) {
-    Path path = Path();
-    config.calcEndpoints();
-    Offset tE = config.tE?.asOffset ?? Offset.zero;
-    if (config.arrowType == ArrowType.NONE || (config.tE == null || config.cR().contains(tE))) {
-      /*
-			 * rectangle around calloutR
-			 */
-      //PathUtil.roundedRect(path, callout.top!, callout.left!, callout.cR().width, callout.cR().height, callout.roundedCorners);
-      // debugPrint('no pointy');
-    } else {
-      Rectangle calloutR = config.cR();
-      Offset cspCentre = calloutR.center;
-
-      // possibly translate tE with callout args + possible scroll offsets
-      config.tE = Coord.fromOffset(
-        config.tE!.asOffset.translate(
-          config.targetTranslateX ?? 0.0,
-          config.targetTranslateY ?? 0.0,
-          // )
-          // .translate(
-          //   -(callout.hScrollController?.offset ?? 0.0),
-          //   -(callout.vScrollController?.offset ?? 0.0),
-        ),
-      );
-
-      // path.translate(-canvasOffset.left, -canvasOffset.top);
-
-      /*
-			 * line from tE centre to calloutR centre
-			 */
-      Line lineCentreToCentre = Line(config.tE!, Coord.fromOffset(cspCentre));
-
-      /*
-			 * point where line intersects rectangle is the centre of the pointy's base. we draw through a
-			 * point either side of that.
-			 */
-      Coord pointyBase = calloutR.snapToRect(Rectangle.getBubbleIntersectionPoint(lineCentreToCentre, calloutR));
-      if (Rectangle.NO_INTERSECTION_FOUND.samePointAs(pointyBase)) return null;
-      Coord pointyBase1 = calloutR.cleverTraverseClockwise(pointyBase, (pointyThickness ?? DEFAULT_THICKNESS));
-      Coord pointyBase2 = calloutR.cleverTraverseAntiClockwise(pointyBase, (pointyThickness ?? DEFAULT_THICKNESS));
-
-      /*
-			 * draw clockwise, only drawing corners (if applicable) that would not intersect with the
-			 * pointy
-			 */
-
-      if (calloutR.onSameSide(pointyBase1, pointyBase2)) {
-        double distanceToNextCorner = calloutR.distanceToNextCorner(pointyBase1);
-        double distanceToPrevCorner = calloutR.distanceToPreviousCorner(pointyBase2);
-        if (distanceToNextCorner > 0 && distanceToNextCorner < config.borderRadius) {
-          pointyBase1 = calloutR.nextClockwiseCorner(pointyBase1);
-          pointyBase2 = calloutR.cleverTraverseAntiClockwise(pointyBase1, (pointyThickness ?? DEFAULT_THICKNESS) * 2);
-          partialRectWith3CornersRounded(path, pointyBase1, pointyBase2, calloutR, config);
-        } else if (distanceToPrevCorner > 0 && distanceToPrevCorner < config.borderRadius) {
-          pointyBase2 = calloutR.previousClockwiseCorner(pointyBase2);
-          pointyBase1 = calloutR.cleverTraverseClockwise(pointyBase2, (pointyThickness ?? DEFAULT_THICKNESS) * 2);
-          partialRectWith3CornersRounded(path, pointyBase1, pointyBase2, calloutR, config);
-        } else {
-          partialRectWithAll4CornersRounded(path, pointyBase1, pointyBase2, calloutR, config);
-        }
-      } else {
-        partialRectWith3CornersRounded(path, pointyBase1, pointyBase2, calloutR, config);
-      }
-
-      /*
-				 * finally, close shape by drawing pb2 to pointy and back to pb1
-				 */
-      // debugPrint("path.lineTo(${callout.tE!.x}, ${callout.tE!.y})");
-      path.lineTo(config.tE!.x, config.tE!.y);
-      path.lineTo(pointyBase1.x, pointyBase1.y);
-    }
-    //path.close();
-    return path;
-  }
+  // static Path? draw(CalloutConfig config, {int? pointyThickness}) {
+  //   Path path = Path();
+  //   config.calcEndpoints();
+  //   Offset tE = config.tE?.asOffset ?? Offset.zero;
+  //   if (config.arrowType == ArrowType.NONE || (config.tE == null || config.cR().contains(tE))) {
+  //     /*
+	// 		 * rectangle around calloutR
+	// 		 */
+  //     //PathUtil.roundedRect(path, callout.top!, callout.left!, callout.cR().width, callout.cR().height, callout.roundedCorners);
+  //     // debugPrint('no pointy');
+  //   } else {
+  //     Rectangle calloutR = config.cR();
+  //     Offset cspCentre = calloutR.center;
+  //
+  //     // possibly translate tE with callout args + possible scroll offsets
+  //     config.tE = Coord.fromOffset(
+  //       config.tE!.asOffset.translate(
+  //         config.targetTranslateX ?? 0.0,
+  //         config.targetTranslateY ?? 0.0,
+  //         // )
+  //         // .translate(
+  //         //   -(callout.hScrollController?.offset ?? 0.0),
+  //         //   -(callout.vScrollController?.offset ?? 0.0),
+  //       ),
+  //     );
+  //
+  //     // path.translate(-canvasOffset.left, -canvasOffset.top);
+  //
+  //     /*
+	// 		 * line from tE centre to calloutR centre
+	// 		 */
+  //     Line lineCentreToCentre = Line(config.tE!, Coord.fromOffset(cspCentre));
+  //
+  //     /*
+	// 		 * point where line intersects rectangle is the centre of the pointy's base. we draw through a
+	// 		 * point either side of that.
+	// 		 */
+  //     Coord pointyBase = calloutR.snapToRect(Rectangle.getBubbleIntersectionPoint(lineCentreToCentre, calloutR));
+  //     if (Rectangle.NO_INTERSECTION_FOUND.samePointAs(pointyBase)) return null;
+  //     Coord pointyBase1 = calloutR.cleverTraverseClockwise(pointyBase, (pointyThickness ?? DEFAULT_THICKNESS));
+  //     Coord pointyBase2 = calloutR.cleverTraverseAntiClockwise(pointyBase, (pointyThickness ?? DEFAULT_THICKNESS));
+  //
+  //     /*
+	// 		 * draw clockwise, only drawing corners (if applicable) that would not intersect with the
+	// 		 * pointy
+	// 		 */
+  //
+  //     if (calloutR.onSameSide(pointyBase1, pointyBase2)) {
+  //       double distanceToNextCorner = calloutR.distanceToNextCorner(pointyBase1);
+  //       double distanceToPrevCorner = calloutR.distanceToPreviousCorner(pointyBase2);
+  //       if (distanceToNextCorner > 0 && distanceToNextCorner < config.borderRadius) {
+  //         pointyBase1 = calloutR.nextClockwiseCorner(pointyBase1);
+  //         pointyBase2 = calloutR.cleverTraverseAntiClockwise(pointyBase1, (pointyThickness ?? DEFAULT_THICKNESS) * 2);
+  //         partialRectWith3CornersRounded(path, pointyBase1, pointyBase2, calloutR, config);
+  //       } else if (distanceToPrevCorner > 0 && distanceToPrevCorner < config.borderRadius) {
+  //         pointyBase2 = calloutR.previousClockwiseCorner(pointyBase2);
+  //         pointyBase1 = calloutR.cleverTraverseClockwise(pointyBase2, (pointyThickness ?? DEFAULT_THICKNESS) * 2);
+  //         partialRectWith3CornersRounded(path, pointyBase1, pointyBase2, calloutR, config);
+  //       } else {
+  //         partialRectWithAll4CornersRounded(path, pointyBase1, pointyBase2, calloutR, config);
+  //       }
+  //     } else {
+  //       partialRectWith3CornersRounded(path, pointyBase1, pointyBase2, calloutR, config);
+  //     }
+  //
+  //     /*
+	// 			 * finally, close shape by drawing pb2 to pointy and back to pb1
+	// 			 */
+  //     // debugPrint("path.lineTo(${callout.tE!.x}, ${callout.tE!.y})");
+  //     path.lineTo(config.tE!.x, config.tE!.y);
+  //     path.lineTo(pointyBase1.x, pointyBase1.y);
+  //   }
+  //   //path.close();
+  //   return path;
+  // }
 
   /*
 	 * starting at theStartPos, draw rectangle from pb1 to pb2 clockwise
 	 */
-  static void partialRectWithAll4CornersRounded(Path path, Coord pb1, Coord pb2, Rectangle theRect, config) {
-    // debugPrint("partialRectWith4CornersRounded");
-    Coord pos = Coord.clone(pb1);
-    path.moveTo(pos.x, pos.y);
-    // path.addOval(Rect.fromCenter(center: pos.asOffset, width: 4, height: 4)); //TODO TBD
-    Side? startingSide = theRect.whichSide(pos);
-    if (startingSide == null) {
-      debugPrint('startSide NULL!');
-      return;
-    }
-    Side side = startingSide;
-    bool allSidesTraversed = false;
-    while (!allSidesTraversed) {
-      pos = PathUtil.lineToStartOfNextCorner(path, pos, theRect, config.borderRadius, side: side);
-      if (config.borderRadius > 0) pos = PathUtil.turnCornerClockwise(path, pos, theRect, config.borderRadius, side: side);
-      side = nextSide(side);
-      allSidesTraversed = side == startingSide;
-    }
+//   static void partialRectWithAll4CornersRounded(Path path, Coord pb1, Coord pb2, Rectangle theRect, config) {
+//     // debugPrint("partialRectWith4CornersRounded");
+//     Coord pos = Coord.clone(pb1);
+//     path.moveTo(pos.x, pos.y);
+//     // path.addOval(Rect.fromCenter(center: pos.asOffset, width: 4, height: 4)); //TODO TBD
+//     Side? startingSide = theRect.whichSide(pos);
+//     if (startingSide == null) {
+//       debugPrint('startSide NULL!');
+//       return;
+//     }
+//     Side side = startingSide;
+//     bool allSidesTraversed = false;
+//     while (!allSidesTraversed) {
+//       pos = PathUtil.lineToStartOfNextCorner(path, pos, theRect, config.borderRadius, side: side);
+//       if (config.borderRadius > 0) pos = PathUtil.turnCornerClockwise(path, pos, theRect, config.borderRadius, side: side);
+//       side = nextSide(side);
+//       allSidesTraversed = side == startingSide;
+//     }
+//
+//     path.lineTo(pb2.x, pb2.y);
+// // path.stroke();
+//   }
 
-    path.lineTo(pb2.x, pb2.y);
-// path.stroke();
-  }
-
-  static void partialRectWith3CornersRounded(Path path, Coord pb1, Coord pb2, Rectangle theRect, config) {
-    // debugPrint("partialRectWith3CornersRounded");
-    Coord pos = Coord.clone(pb1);
-    path.moveTo(pos.x, pos.y);
-    Side? startingSide = theRect.whichSide(pos);
-    if (startingSide == null) {
-      debugPrint('startSide NULL!');
-      return;
-    }
-    Side side = startingSide;
-    bool threeSidesTraversed = false;
-    while (!threeSidesTraversed) {
-      pos = PathUtil.lineToStartOfNextCorner(path, pos, theRect, config.borderRadius, side: side);
-      if (config.borderRadius > 0) pos = PathUtil.turnCornerClockwise(path, pos, theRect, config.borderRadius, side: side);
-      side = nextSide(side);
-      threeSidesTraversed = side == previousSide(startingSide);
-    }
-    path.lineTo(pb2.x, pb2.y);
-// path.stroke();
-  }
+//   static void partialRectWith3CornersRounded(Path path, Coord pb1, Coord pb2, Rectangle theRect, config) {
+//     // debugPrint("partialRectWith3CornersRounded");
+//     Coord pos = Coord.clone(pb1);
+//     path.moveTo(pos.x, pos.y);
+//     Side? startingSide = theRect.whichSide(pos);
+//     if (startingSide == null) {
+//       debugPrint('startSide NULL!');
+//       return;
+//     }
+//     Side side = startingSide;
+//     bool threeSidesTraversed = false;
+//     while (!threeSidesTraversed) {
+//       pos = PathUtil.lineToStartOfNextCorner(path, pos, theRect, config.borderRadius, side: side);
+//       if (config.borderRadius > 0) pos = PathUtil.turnCornerClockwise(path, pos, theRect, config.borderRadius, side: side);
+//       side = nextSide(side);
+//       threeSidesTraversed = side == previousSide(startingSide);
+//     }
+//     path.lineTo(pb2.x, pb2.y);
+// // path.stroke();
+//   }
 
   static void roundedRect(Path path, double x, double y, double width, double height, double radius) {
     // arcs:  https://medium.com/flutter-community/flutter-custom-clipper-28c6d380fdd6

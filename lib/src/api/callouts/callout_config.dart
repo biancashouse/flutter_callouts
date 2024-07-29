@@ -41,10 +41,10 @@ class CalloutConfig {
   final bool? onlyOnce;
 
   // final double scale;
-  final ScrollController? hScrollController;
-  final ScrollController? vScrollController;
+  final String? scrollControllerName;
 
-  //final GlobalKey? contentsGK;
+  final GlobalKey? callerGK; // option, allowing caller context to be tracked
+
   // final VoidCallback? onHidden;
 
   // extend line in the to direction by delta
@@ -218,12 +218,12 @@ class CalloutConfig {
   CalloutConfig({
     // required this.refreshOPParent,
     required this.cId,
+    this.callerGK,
     this.vsync,
     this.movedOrResizedNotifier,
     this.gravity,
     // this.scale = 1.0,
-    this.hScrollController,
-    this.vScrollController,
+    this.scrollControllerName,
     this.forceMeasure = false,
     this.initialCalloutW,
     this.initialCalloutH,
@@ -342,8 +342,7 @@ class CalloutConfig {
     ValueNotifier<int>? movedOrResizedNotifier,
     Alignment? gravity,
     double? scale,
-    ScrollController? hScrollController,
-    ScrollController? vScrollController,
+    String? scrollControllerName,
     bool? forceMeasure,
     double? suppliedCalloutW,
     double? suppliedCalloutH,
@@ -718,9 +717,15 @@ class CalloutConfig {
     // _zoomer = zoomer;
     // _configurableTarget = configurableTarget;
     // opDescendantContext = context; // used to find nearest parent OverlayPortal for barrier tap to close
+    Rect r = Rect.fromLTWH(
+        targetRect.left - scrollOffset(Axis.horizontal),
+        targetRect.top - scrollOffset(Axis.vertical),
+        targetRect.width * scaleTarget,
+        targetRect.height * scaleTarget);
+
     return (Callout.isHidden(cId))
         ? const Offstage()
-        : _renderCallout(targetRect, calloutContent, rebuildF);
+        : _renderCallout(r, calloutContent, rebuildF);
   }
 
   Widget opContentWidget({
@@ -836,7 +841,7 @@ class CalloutConfig {
         (_separation) > 0.0 &&
         tR != null &&
         cE != null) {
-      debugPrint('ADJUSTING.');
+      // debugPrint('ADJUSTING.');
       var adjustedTopLeft = _adjustTopLeftForSeparation(
           _separation, _initialTop!, _initialLeft!, cE!, tR!);
       top = adjustedTopLeft.$1;
@@ -969,7 +974,7 @@ class CalloutConfig {
   void setPos(Offset newPos) {
     top = newPos.dy;
     left = newPos.dx;
-    debugPrint('new pos ${newPos.toString()}');
+    // debugPrint('new pos ${newPos.toString()}');
     _rebuildOverlayEntryF?.call();
   }
 
@@ -1063,15 +1068,24 @@ class CalloutConfig {
 //   return Alignment(newX, newY);
 // }
 
+  double scrollOffset(Axis axis) {
+    if (scrollControllerName != null &&
+        fca.scrollAxis(scrollControllerName!) == axis) {
+      return fca.scrollOffset(scrollControllerName!) ?? 0.0;
+    }
+    return 0.0;
+  }
+
 // if target is CalloutTarget, it automatically measures itself after a build,
 // otherwise, just measure the widget having this key
   Rectangle? _targetRectangle() {
     if (_targetRect != null) {
       Rect r = _targetRect!;
-      double hOffset = hScrollController?.offset ?? 0.0;
-      double vOffset = vScrollController?.offset ?? 0.0;
-      return Rectangle.fromRect(Rect.fromLTWH(r.left + hOffset, r.top + vOffset,
-          r.width * scaleTarget, r.height * scaleTarget));
+      return Rectangle.fromRect(Rect.fromLTWH(
+          r.left + scrollOffset(Axis.horizontal),
+          r.top + scrollOffset(Axis.vertical),
+          r.width,// * scaleTarget,
+          r.height));// * scaleTarget));
     }
     // can supply target globalkey directly or via a function
     if (initialCalloutPos != null) {
@@ -1087,10 +1101,11 @@ class CalloutConfig {
       if (r == null) return null;
       debugPrint("$cId findGlobalRect(_opGK!) = ${r.toString()}");
       // adjust for possible scroll
-      double hOffset = hScrollController?.offset ?? 0.0;
-      double vOffset = vScrollController?.offset ?? 0.0;
-      return Rectangle.fromRect(Rect.fromLTWH(r.left + hOffset, r.top + vOffset,
-          r.width * scaleTarget, r.height * scaleTarget));
+      return Rectangle.fromRect(Rect.fromLTWH(
+          r.left + scrollOffset(Axis.horizontal),
+          r.top + scrollOffset(Axis.vertical),
+          r.width,// * scaleTarget,
+          r.height));// * scaleTarget));
     }
   }
 
@@ -1178,14 +1193,17 @@ class CalloutConfig {
 
   bool get notToast => gravity == null;
 
-  Widget _positionedBubbleBg() => Positioned(
-        top: 0,
-        left: 0,
-        child: CustomPaint(
-          painter: BubbleShape_OP(calloutConfig: this, fillColor: fillColor),
-          willChange: true,
-        ),
-      );
+  Widget _positionedBubbleBg() {
+    debugPrint('_positionedBubbleBg');
+    return Positioned(
+      top: 0,
+      left: 0,
+      child: CustomPaint(
+        painter: BubbleShape_OP(calloutConfig: this, fillColor: fillColor),
+        willChange: true,
+      ),
+    );
+  }
 
   void _onDragStart(DragStartDetails event) {
     if (preventDrag ||
@@ -1447,7 +1465,8 @@ class CalloutConfig {
   Widget _possiblyScrollableContents(Widget contents) =>
       (needsToScrollV || needsToScrollH)
           ? SizedBox(
-              width: calloutW, height: calloutH,
+              width: calloutW,
+              height: calloutH,
               child: SingleChildScrollView(
                 scrollDirection: Axis.vertical,
                 child: contents,
@@ -1473,15 +1492,10 @@ class CalloutConfig {
 
     if (tE != null && cE != null) {
       Rect r = Rect.fromPoints(tE!.asOffset, cE!.asOffset);
-      Offset to = tE!.asOffset
-          .translate(
-            -r.left,
-            -r.top,
-          )
-          .translate(
-            -(hScrollController?.offset ?? 0.0),
-            -(vScrollController?.offset ?? 0.0),
-          );
+      Offset to = tE!.asOffset.translate(
+        -r.left,
+        -r.top,
+      );
       Offset from = cE!.asOffset.translate(-r.left, -r.top);
       Line line = Line(Coord.fromOffset(from), Coord.fromOffset(to));
       double lineLen = line.length();
@@ -1693,6 +1707,10 @@ class CalloutConfig {
 
 // account for possible offset X or Y as well
     Offset tCentre = tR!.center;
+    // .translate(
+    //   -scrollOffset(Axis.horizontal),
+    //   -scrollOffset(Axis.vertical),
+    // );
     Offset cCentre = cR().center;
     Line line = Line.fromOffsets(cCentre, tCentre);
     tE = Rectangle.getTargetIntersectionPoint2(
@@ -1708,8 +1726,8 @@ class CalloutConfig {
     return line;
   }
 
-  void rebuild(VoidCallback f) {
-    f();
+  void rebuild(VoidCallback? f) {
+    f?.call();
     _rebuildOverlayEntryF?.call();
   }
 

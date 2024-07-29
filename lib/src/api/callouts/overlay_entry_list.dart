@@ -59,25 +59,25 @@ class OE {
   //   }
   // }
 
-  static OE? findOE(Feature feature) {
-    for (OE oe in OE.list) {
-      if (oe.calloutConfig.cId == feature) {
-        return oe;
-      }
-    }
-    return null;
-  }
+  // static OE? findOE(Feature feature) {
+  //   for (OE oe in OE.list) {
+  //     if (oe.calloutConfig.cId == feature) {
+  //       return oe;
+  //     }
+  //   }
+  //   return null;
+  // }
 
-  static (int? i, OverlayEntry?) lowestEntry() {
-    if (OE.list.isNotEmpty) {
-      for (int i = 0; i < OE.list.length; i++) {
-        if (OE.list[i].entry != null) {
-          return (i, OE.list[i].entry);
-        }
-      }
-    }
-    return (null, null);
-  }
+  // static (int? i, OverlayEntry?) lowestEntry() {
+  //   if (OE.list.isNotEmpty) {
+  //     for (int i = 0; i < OE.list.length; i++) {
+  //       if (OE.list[i].entry != null) {
+  //         return (i, OE.list[i].entry);
+  //       }
+  //     }
+  //   }
+  //   return (null, null);
+  // }
 
   bool get isToast => calloutConfig.gravity != null;
 }

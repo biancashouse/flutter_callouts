@@ -69,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         // gotitAxis:
         // -- pointer -------------------------------------------------
         // arrowColor: Colors.green,
-        // arrowType: ArrowType.THIN,
+        arrowType: ArrowType.THIN,
         animate: true,
         // lineLabel: Text('line label'),
         // fromDelta: -20,
@@ -87,7 +87,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         // draggable: false,
         // draggableColor: Colors.green,
         // dragHandleHeight: ,
-        vScrollController: controller,
+        scrollControllerName: 'main',
         vsync: this,
       );
 
@@ -103,6 +103,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
     /// target's key
     fabGK = GlobalKey();
+
+    fca.registerScrollController('main', controller, Axis.vertical);
 
     fca.afterNextBuildDo(() {
       Callout.showOverlay(
@@ -136,7 +138,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       Callout.showToast(
         removeAfterMs: showForMs,
         calloutConfig: CalloutConfig(
-          cId: 'initstate-toast',
+          cId: 'main-toast',
           gravity: gravity,
           initialCalloutW: 500,
           initialCalloutH: 90,
@@ -146,7 +148,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           borderRadius: 16,
           borderColor: Colors.yellow,
           elevation: 10,
-          vScrollController: controller,
+          scrollControllerName: 'main',
           vsync: this,
           onDismissedF: () => onDismissedF?.call(),
         ),

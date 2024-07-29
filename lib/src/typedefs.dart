@@ -20,6 +20,7 @@ typedef TargetId = int;
 //
 // typedef DoubleFunc = double Function();
 
+// typedef OverlayContentFunc = Widget Function({GlobalKey callerGK});
 typedef TargetKeyFunc = GlobalKey? Function();
 // typedef CalloutConfigChangedF = void Function(AlignmentEnum newTA, ArrowTypeEnum newAT);
 

@@ -10,10 +10,11 @@ export "side.dart";
 class Callout {
   Callout._(); // Private constructor
 
+  static const int separationAnimationMs = 500;
   // assumption: at least 1 build has been executed; after initState
   // #begin
-  static void showOverlay({
-    ZoomerState? zoomer, // if callout needs access to the zoomer
+  static Future<void> showOverlay({
+    // ZoomerState? zoomer, // if callout needs access to the zoomer
     required CalloutConfig calloutConfig,
     required Widget calloutContent,
     TargetKeyFunc? targetGkF,
@@ -23,21 +24,13 @@ class Callout {
     // TargetModel? configurableTarget,
     final skipWidthConstraintWarning = false,
     final skipHeightConstraintWarning = false,
-  })
+  }) async
   // #end
   {
     if (Callout.anyPresent([calloutConfig.cId])) return;
 
     if ((calloutConfig.calloutW ?? 0) < 0) {
       print('tbd');
-    }
-
-    // scroll awareness
-    if (calloutConfig.hScrollController != null) {
-      fca.registerScrollController(calloutConfig.hScrollController!);
-    }
-    if (calloutConfig.vScrollController != null) {
-      fca.registerScrollController(calloutConfig.vScrollController!);
     }
 
     // target's GlobalKey supplied
@@ -74,7 +67,7 @@ class Callout {
           _createOverlayDefinitelyHasSize(
             calloutConfig,
             calloutContent,
-            zoomer,
+            // zoomer,
             targetGkF,
             targetChangedNotifier,
             ensureLowestOverlay,
@@ -87,24 +80,26 @@ class Callout {
       _createOverlayDefinitelyHasSize(
         calloutConfig,
         calloutContent,
-        zoomer,
+        // zoomer,
         targetGkF,
         targetChangedNotifier,
         ensureLowestOverlay,
       );
     }
+    
+    await Future.delayed(Duration(milliseconds: 800));
   }
 
   static void _createOverlayDefinitelyHasSize(
     CalloutConfig calloutConfig,
     Widget calloutContent,
-    ZoomerState? zoomer,
+    // ZoomerState? zoomer,
     TargetKeyFunc? targetGkF,
     ValueNotifier<int>? targetChangedNotifier,
     bool ensureLowestOverlay,
   ) {
     OverlayEntry oEntry = _createOverlay(
-      zoomer,
+      // zoomer,
       calloutConfig,
       calloutContent,
       targetGkF,
@@ -126,7 +121,7 @@ class Callout {
   }
 
   static OverlayEntry _createOverlay(
-    ZoomerState? zoomer,
+    // ZoomerState? zoomer,
     CalloutConfig calloutConfig,
     Widget boxContent,
     TargetKeyFunc? targetGkF,
@@ -135,9 +130,9 @@ class Callout {
     late OverlayEntry entry;
     entry = OverlayEntry(builder: (BuildContext ctx) {
       // FCA.initWithContext(ctx);
-      debugPrint('...');
-      debugPrint("${calloutConfig.cId} OverlayEntry.builder...");
-      debugPrint('...');
+      // debugPrint('...');
+      // debugPrint("${calloutConfig.cId} OverlayEntry.builder...");
+      // debugPrint('...');
 // if (calloutConfig.cId == 'root'){
 //   debugPrint('root');
 // }
@@ -232,7 +227,7 @@ class Callout {
       if (calloutConfig.vsync != null) {
         // animate separation, top or left
         AnimationController animationController = AnimationController(
-          duration: const Duration(milliseconds: 500),
+          duration: const Duration(milliseconds: separationAnimationMs),
           vsync: calloutConfig.vsync!,
         );
         Tween<double> tween =
@@ -272,6 +267,16 @@ class Callout {
     return null;
   }
 
+  static CalloutConfig? getCalloutConfig(Feature feature) {
+    OE? oe  = findOE(feature);
+    if (oe != null) return oe.calloutConfig;
+    return null;
+  }
+
+  static void rebuild(Feature feature, {VoidCallback? f}) {
+    findOE(feature)?.calloutConfig.rebuild(f);
+  }
+
   static bool _sameType<T1, T2>() => T1 == T2;
 
   static T? findCallout<T>(String cId) {
@@ -284,6 +289,24 @@ class Callout {
       return entry as T?;
     }
     return null;
+  }
+
+  static BuildContext? findCalloutCallerContext(String cId) {
+    var oe = findOE(cId);
+    var callerGK = oe?.calloutConfig.callerGK;
+    return callerGK?.currentContext;
+  }
+
+  static State? findCalloutCallerState(String cId) {
+    var oe = findOE(cId);
+    var callerGK = oe?.calloutConfig.callerGK;
+    return callerGK?.currentState;
+  }
+
+  static Widget? findCalloutCallerWidget(String cId) {
+    var oe = findOE(cId);
+    var callerGK = oe?.calloutConfig.callerGK;
+    return callerGK?.currentWidget;
   }
 
   static void dismissAll(
@@ -476,16 +499,9 @@ class Callout {
         calloutConfig.initialCalloutW != null &&
         calloutConfig.initialCalloutH != null);
 
-    // scroll awareness
-    if (calloutConfig.hScrollController != null) {
-      fca.registerScrollController(calloutConfig.hScrollController!);
-    }
-    if (calloutConfig.vScrollController != null) {
-      fca.registerScrollController(calloutConfig.vScrollController!);
-    }
-
     CalloutConfig toastCC = calloutConfig.copyWith(
       cId: calloutConfig.cId,
+      scrollControllerName: calloutConfig.scrollControllerName,
       initialTargetAlignment: null,
       initialCalloutAlignment: null,
       gravity: calloutConfig.gravity,
@@ -575,7 +591,7 @@ class Callout {
       );
       // animate pos from offscreen
       AnimationController animationController = AnimationController(
-        duration: const Duration(milliseconds: 500),
+        duration: const Duration(milliseconds: separationAnimationMs),
         vsync: toastCC.vsync!,
       );
       Tween<Offset> tween = Tween<Offset>(begin: initialPos, end: finalPos);
@@ -643,7 +659,7 @@ class Callout {
 
   static void hide(String cId) {
     OE? oeObj = findOE(cId);
-    if (oeObj != null/*  && !oeObj.isHidden*/) {
+    if (oeObj != null /*  && !oeObj.isHidden*/) {
       oeObj
         ..isHidden = true
         ..opC?.hide()
@@ -685,10 +701,14 @@ class Callout {
   static void refreshAll({VoidCallback? f}) {
     f?.call();
     for (OE oe in OE.list) {
-      if (!oe.isHidden) {
+      if (!oe.isHidden && oe.entry != null) {
+        oe.calloutConfig.calcEndpoints();
+        debugPrint('after calcEndpoints: tR is ${oe.calloutConfig.tR.toString()}');
         oe.entry?.markNeedsBuild();
-        oe.opC?.show();
       }
+      // if (!oe.isHidden && oe.opC != null) {
+      //   oe.opC?.show();
+      // }
     }
   }
 

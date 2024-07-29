@@ -14,14 +14,14 @@ mixin CalloutMixin /* extends BaseUseful */ {
   // WidgetBuilder _builder = (context) => const Icon(Icons.warning);
   // OverlayEntry? _oe;
 
-  final List<ScrollController> registeredScrollControllers = [];
-
-  //avoids listening to the same scrollcontroller more than once for the purpose of refreshing the overlays
-  void registerScrollController(ScrollController sController) {
-    if (!registeredScrollControllers.contains(sController)) {
-      sController.addListener(() => Callout.refreshAll());
-    }
-  }
+  // final List<ScrollController> registeredScrollControllers = [];
+  //
+  // //avoids listening to the same scrollcontroller more than once for the purpose of refreshing the overlays
+  // void registerScrollController(ScrollController sController) {
+  //   if (!registeredScrollControllers.contains(sController)) {
+  //     sController.addListener(() => Callout.refreshAll());
+  //   }
+  // }
 
   // void createOffstageOverlay(BuildContext context) {
   //   Overlay.of(context).insert(_oe = OverlayEntry(
