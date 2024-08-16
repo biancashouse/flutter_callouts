@@ -1,6 +1,8 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:flutter/material.dart';
+import 'package:flutter_callouts/src/feature_discovery/discovery_controller.dart';
+import 'package:flutter_callouts/src/feature_discovery/featured_widget.dart';
 
 typedef Feature = String;
 // typedef TextStyleName = String;
@@ -32,10 +34,13 @@ typedef TargetKeyFunc = GlobalKey? Function();
 // typedef GksByTargetId = Map<TargetId, GlobalKey>;
 // typedef FeatureList = List<Feature>;
 
-// typedef FeaturedWidgetHelpContentBuilder = Widget Function(
-//     BuildContext context, FeaturedWidget? parent);
-// typedef FeaturedWidgetActionF = void Function(
-//     BuildContext, DiscoveryController);
+typedef TxtChangedF = void Function(String);
+
+typedef FeaturedWidgetHelpContentBuilder = Widget Function(
+    BuildContext context, FeaturedWidget? parent);
+
+typedef FeaturedWidgetActionF = void Function(
+    BuildContext, DiscoveryController);
 
 typedef TextStyleF = TextStyle Function();
 typedef TextAlignF = TextAlign Function();

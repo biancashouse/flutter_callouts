@@ -31,7 +31,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   late GlobalKey fabGK;
 
-  ScrollController controller = ScrollController();
+  NamedScrollController controller = NamedScrollController('main', Axis.vertical);
 
   /// the CalloutConfig object is where you configure the callout and its pointer
   /// All params are shown, and many are commented out for this example callout
@@ -69,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         // gotitAxis:
         // -- pointer -------------------------------------------------
         // arrowColor: Colors.green,
-        arrowType: ArrowType.THIN,
+        arrowType: ArrowType.POINTY,
         animate: true,
         // lineLabel: Text('line label'),
         // fromDelta: -20,
@@ -88,7 +88,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         // draggableColor: Colors.green,
         // dragHandleHeight: ,
         scrollControllerName: 'main',
-        vsync: this,
       );
 
   void _incrementCounter() {
@@ -104,10 +103,10 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     /// target's key
     fabGK = GlobalKey();
 
-    fca.registerScrollController('main', controller, Axis.vertical);
+    controller.listenToOffset();
 
     fca.afterNextBuildDo(() {
-      Callout.showOverlay(
+      fca.showOverlay(
         calloutConfig: basicCalloutConfig(controller),
         calloutContent: const Padding(
           padding: EdgeInsets.all(8.0),
@@ -135,7 +134,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   void _showToast(Alignment gravity,
           {int showForMs = 0, VoidCallback? onDismissedF}) =>
-      Callout.showToast(
+      fca.showToast(
         removeAfterMs: showForMs,
         calloutConfig: CalloutConfig(
           cId: 'main-toast',
@@ -149,7 +148,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           borderColor: Colors.yellow,
           elevation: 10,
           scrollControllerName: 'main',
-          vsync: this,
           onDismissedF: () => onDismissedF?.call(),
         ),
         calloutContent: Center(

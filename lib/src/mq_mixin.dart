@@ -26,11 +26,20 @@ mixin MQMixin {
     return viewInsets.bottom;
   }
 
-  MediaQueryData get mqd => MediaQuery.of(fca.rootContext);
+  MediaQueryData get mqd {
+
+    try {
+      return MediaQuery.of(fca.rootContext);
+    } catch (e) {
+      throw('no rootContext !');
+    }
+  }
 
   TextScaler get textScaler => mqd.textScaler;
 
   Orientation get orientation => mqd.orientation;
+
+  double get keyboardHeight => mqd.viewInsets.bottom;
 
   bool get isPortrait => orientation == Orientation.portrait;
 

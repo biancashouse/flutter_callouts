@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/src/scheduler/ticker.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
 
 import 'callout.dart';
@@ -58,7 +59,7 @@ class WrappedCallout extends StatefulWidget {
   State<WrappedCallout> createState() => WrappedCalloutState();
 }
 
-class WrappedCalloutState extends State<WrappedCallout> {
+class WrappedCalloutState extends State<WrappedCallout>  implements TickerProvider {
 // OverlayPortal use
   late OverlayPortalController opController;
   late CalloutConfig _config;
@@ -209,11 +210,11 @@ class WrappedCalloutState extends State<WrappedCallout> {
   }
 
   void _possiblyAnimateSeparationOP(BuildContext context) {
-    if (_config.finalSeparation > 0.0 && _config.vsync != null) {
+    if (_config.finalSeparation > 0.0) {
 // animate separation, top or left
       AnimationController animationController = AnimationController(
         duration: const Duration(milliseconds: 300),
-        vsync: _config.vsync!,
+        vsync: this,
       );
       Tween<double> tween =
       Tween<double>(begin: 0.0, end: _config.finalSeparation);
@@ -233,6 +234,11 @@ class WrappedCalloutState extends State<WrappedCallout> {
   void hideOP() {
     if (!opController.isShowing) return;
     opController.hide();
+  }
+
+  @override
+  Ticker createTicker(TickerCallback onTick) {
+    return Ticker(onTick);
   }
 
 // OverlayEntry renderCalloutBoxContentOffstage(Widget boxContent) {
