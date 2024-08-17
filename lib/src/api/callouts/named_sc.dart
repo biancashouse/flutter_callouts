@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
 
@@ -12,9 +13,9 @@ class NamedScrollController extends ScrollController {
 
   NamedScrollController(this.name, this.axis, {super.initialScrollOffset, super.debugLabel}) {
     _instanceMap..remove(name)..[name] = this;
-    debugPrint("new NamedScrollController($name)");
+    fca.logi("new NamedScrollController($name)");
     // onAttach() {
-    //   debugPrint('********************************** onAttach() - ${positions.length} positions' );
+    //   fca.logi('********************************** onAttach() - ${positions.length} positions' );
     // }
   }
 
@@ -22,9 +23,9 @@ class NamedScrollController extends ScrollController {
     addListener(() {
       if (hasClients) {
         _scrollOffsetMap[name] = offset;
-        debugPrint('NamedScrollController.listenToOffset: $name, $offset)');
+        fca.logi('NamedScrollController.listenToOffset: $name, $offset)');
         Callout.refreshAll();
-        debugPrint('NamedScrollController.listenToOffset: refreshAll');
+        fca.logi('NamedScrollController.listenToOffset: refreshAll');
       }
     });
   }
@@ -45,7 +46,7 @@ class NamedScrollController extends ScrollController {
     double result = sC != null && sC.axis == Axis.horizontal
         ? _scrollOffset(scName)
         : 0.0;
-    if (result != 0.0) debugPrint('hScrollOffset!=0');
+    // if (result != 0.0) fca.logi('hScrollOffset!=0');
     return result;
   }
 
@@ -55,7 +56,7 @@ class NamedScrollController extends ScrollController {
     double result = sC != null && sC.axis == Axis.vertical
         ? _scrollOffset(scName)
         : 0.0;
-    if (result != 0.0) debugPrint('vScrollOffset!=0');
+    // if (result != 0.0) fca.logi('vScrollOffset!=0');
     return result;
   }
 }

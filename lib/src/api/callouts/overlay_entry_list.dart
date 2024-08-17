@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
 
@@ -43,18 +44,18 @@ class OE {
   }
 
   static void printFeatures() {
-    debugPrint('------------');
+    fca.logi('------------');
     for (OE oe in OE.list) {
-      debugPrint('${oe.calloutConfig.cId} ${oe.opC != null ? "*" : ""}');
+      fca.logi('${oe.calloutConfig.cId} ${oe.opC != null ? "*" : ""}');
     }
-    debugPrint('------------');
+    fca.logi('------------');
   }
 
   // static void debug() {
-  //   debugPrint('${list.length} overlays');
-  //   debugPrint('------------');
+  //   fca.logi('${list.length} overlays');
+  //   fca.logi('------------');
   //   for (OE oe in OE.list) {
-  //     debugPrint(
+  //     fca.logi(
   //         '${oe.calloutConfig.cId}: ${oe.entry != null ? Overlay : OverlayPortal}, ${oe.isHidden ? "hidden" : "showing"}, ${oe.isToast ? "TOAST" : ""}');
   //   }
   // }

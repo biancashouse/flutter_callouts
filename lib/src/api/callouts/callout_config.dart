@@ -1,3 +1,4 @@
+
 import 'package:bh_shared/bh_shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -292,7 +293,7 @@ class CalloutConfig implements TickerProvider {
     // this.initialAnimatedPositionDurationMs = 150,
     bool notUsingHydratedStorage = false,
   }) {
-    // debugPrint(
+    // fca.logi(
     //     'Feature: ${feature} CalloutConfig.decoration: ${decorationShape.toString()}');
     if (decorationShape == DecorationShapeEnum.rectangle && borderRadius > 0) {
       decorationShape = DecorationShapeEnum.rounded_rectangle;
@@ -302,7 +303,7 @@ class CalloutConfig implements TickerProvider {
     // assert((dragHandle != null) && (dragHandleHeight != null), 'if using a drag handle, it must have height > 0.0 !');
     // assert((widthF != null && heightF != null) || context != null, 'if either widthF or heightF null, must provide a context for measuring !');
     // if ((widthF == null || heightF == null) && context == null) {
-    //   debugPrint("doh!");
+    //   fca.logi("doh!");
     // }
     // assert(context == null || (context!.mounted), 'context not mounted!');
     // assert(!Callout.anyPresent([feature]) && !fca.alreadyGotit(feature, notUsingHydratedStorage: notUsingHydratedStorage));
@@ -481,7 +482,7 @@ class CalloutConfig implements TickerProvider {
   //   Rect? rect = findGlobalRect(gk);
   //   await Future.delayed(const Duration(milliseconds: 500));
   //   entry.remove();
-  //   debugPrint("measured size: $calloutW x $calloutH");
+  //   fca.logi("measured size: $calloutW x $calloutH");
   //   return rect?.size;
   // }
 
@@ -505,13 +506,13 @@ class CalloutConfig implements TickerProvider {
   //   //
   //   // // get size of callout - ignore locn - it comes from the offstage overlay - not useful
   //   // // we'll be adding the callout to the overlay relative to the targetRect
-  //   //debugPrint('callout widget size: ${calloutSize}');
+  //   //fca.logi('callout widget size: ${calloutSize}');
   //
   //   // separation should take into account the callout size
   //
   //   /// given a Rect, returns most appropriate alignment between target and callout
   //
-  //   // debugPrint("overlayChild top:$top");
+  //   // fca.logi("overlayChild top:$top");
   //
   //   if ((initialCalloutAlignment == null || initialTargetAlignment == null)) {
   //     // double sw = Useful.scrW;
@@ -532,16 +533,16 @@ class CalloutConfig implements TickerProvider {
   //     initialTargetAlignment = -Useful.calcTargetAlignmentWithinWrapper(screenRect, tR!);
   //     initialCalloutAlignment = -initialTargetAlignment!;
   //
-  //     // debugPrint("initialCalloutAlignment: ${initialCalloutAlignment.toString()}");
-  //     // debugPrint("initialTargetAlignment: ${initialTargetAlignment.toString()}");
+  //     // fca.logi("initialCalloutAlignment: ${initialCalloutAlignment.toString()}");
+  //     // fca.logi("initialTargetAlignment: ${initialTargetAlignment.toString()}");
   //   }
   //
   //   if (top == null) _calcContentTopLeft();
   //
-  //   debugPrint('$feature: tR (${tR?.width}x${tR?.height})');
+  //   fca.logi('$feature: tR (${tR?.width}x${tR?.height})');
   //
   //   if (tR == null && initialCalloutPos == null) {
-  //     // debugPrint('skipping callout(${feature}) - perhaps target not present for some reason.');
+  //     // fca.logi('skipping callout(${feature}) - perhaps target not present for some reason.');
   //     return const Icon(Icons.error, color: Colors.orangeAccent, size: 60);
   //   }
   //
@@ -603,11 +604,11 @@ class CalloutConfig implements TickerProvider {
   //
   //   if (!initialised) return const Icon(Icons.error, color: Colors.deepOrange);
   //
-  //   // debugPrint("gk ${gk?.currentWidget.toString()}");
+  //   // fca.logi("gk ${gk?.currentWidget.toString()}");
   //   _opGK = gk;
   //
   //   if (!(gk?.currentContext?.mounted ?? false)) {
-  //     debugPrint('gk not mounted!');
+  //     fca.logi('gk not mounted!');
   //   }
   //
   //   _configurableTarget = configurableTarget;
@@ -623,13 +624,13 @@ class CalloutConfig implements TickerProvider {
   //   //
   //   // // get size of callout - ignore locn - it comes from the offstage overlay - not useful
   //   // // we'll be adding the callout to the overlay relative to the targetRect
-  //   //debugPrint('callout widget size: ${calloutSize}');
+  //   //fca.logi('callout widget size: ${calloutSize}');
   //
   //   // separation should take into account the callout size
   //
   //   /// given a Rect, returns most appropriate alignment between target and callout
   //
-  //   // debugPrint("overlayChild top:$top");
+  //   // fca.logi("overlayChild top:$top");
   //
   //   if ((initialCalloutAlignment == null || initialTargetAlignment == null)) {
   //     // double sw = Useful.scrW;
@@ -650,16 +651,16 @@ class CalloutConfig implements TickerProvider {
   //     initialTargetAlignment = -Useful.calcTargetAlignmentWithinWrapper(screenRect, tR!);
   //     initialCalloutAlignment = -initialTargetAlignment!;
   //
-  //     // debugPrint("initialCalloutAlignment: ${initialCalloutAlignment.toString()}");
-  //     // debugPrint("initialTargetAlignment: ${initialTargetAlignment.toString()}");
+  //     // fca.logi("initialCalloutAlignment: ${initialCalloutAlignment.toString()}");
+  //     // fca.logi("initialTargetAlignment: ${initialTargetAlignment.toString()}");
   //   }
   //
   //   if (top == null) _calcContentTopLeft();
   //
-  //   debugPrint('$feature: tR (${tR?.width}x${tR?.height})');
+  //   fca.logi('$feature: tR (${tR?.width}x${tR?.height})');
   //
   //   if (tR == null && initialCalloutPos == null) {
-  //     // debugPrint('skipping callout(${feature}) - perhaps target not present for some reason.');
+  //     // fca.logi('skipping callout(${feature}) - perhaps target not present for some reason.');
   //     return const Icon(Icons.error, color: Colors.orangeAccent, size: 60);
   //   }
   //
@@ -774,9 +775,9 @@ class CalloutConfig implements TickerProvider {
   //   if (rect != null) {
   //     _calloutW ??= rect.width;
   //     _calloutH ??= rect.height;
-  //     debugPrint('_measureThenRenderCallout: width:$calloutW, height:$calloutH');
+  //     fca.logi('_measureThenRenderCallout: width:$calloutW, height:$calloutH');
   //   }
-  //   debugPrint("measured size: $calloutW x $calloutH");
+  //   fca.logi("measured size: $calloutW x $calloutH");
   //   return _renderCallout(context, targetRect, calloutContent, rebuildF);
   // }
 
@@ -794,13 +795,13 @@ class CalloutConfig implements TickerProvider {
     //
     // // get size of callout - ignore locn - it comes from the offstage overlay - not useful
     // // we'll be adding the callout to the overlay relative to the targetRect
-    //debugPrint('callout widget size: ${calloutSize}');
+    //fca.logi('callout widget size: ${calloutSize}');
 
     // separation should take into account the callout size
 
     /// given a Rect, returns most appropriate alignment between target and callout
 
-    // debugPrint("overlayChild top:$top");
+    // fca.logi("overlayChild top:$top");
 
     if ((initialCalloutAlignment == null || initialTargetAlignment == null)) {
       // double sw = Useful.scrW;
@@ -833,10 +834,10 @@ class CalloutConfig implements TickerProvider {
 
     if (top == null) calcContentTopLeft();
 
-    // debugPrint('$feature: tR (${tR?.width}x${tR?.height})');
+    // fca.logi('$feature: tR (${tR?.width}x${tR?.height})');
 
     if (tR == null && initialCalloutPos == null) {
-      // debugPrint('skipping callout(${feature}) - perhaps target not present for some reason.');
+      // fca.logi('skipping callout(${feature}) - perhaps target not present for some reason.');
       return const Icon(Icons.error, color: Colors.orangeAccent, size: 60);
     }
 
@@ -848,22 +849,22 @@ class CalloutConfig implements TickerProvider {
     _initialTop ??= top;
     _initialLeft ??= left;
 
-    if (cId == 'body panel:default-snippet') debugPrint("top $top");
+    if (cId == 'body panel:default-snippet') fca.logi("top $top");
 
-    // debugPrint('before adjusting for separation($_separation): pos is $left, $top');
+    // fca.logi('before adjusting for separation($_separation): pos is $left, $top');
 
     if (
     !_finishedAnimatingSeparation &&
         (_separation) > 0.0 &&
         tR != null &&
         cE != null) {
-      // debugPrint('ADJUSTING.');
+      // fca.logi('ADJUSTING.');
       var adjustedTopLeft = _adjustTopLeftForSeparation(
           _separation, _initialTop!, _initialLeft!, cE!, tR!);
       top = adjustedTopLeft.$1;
       left = adjustedTopLeft.$2;
     } else {
-      // debugPrint('NOT ADJUSTING.');
+      // fca.logi('NOT ADJUSTING.');
     }
 
     // if (_finishedAnimatingSeparation) {
@@ -873,7 +874,7 @@ class CalloutConfig implements TickerProvider {
     //   }
     // }
 
-    // debugPrint('after adjusting for separation: pos is $left, $top');
+    // fca.logi('after adjusting for separation: pos is $left, $top');
 
     BuildContext ctx = fca.rootContext;
     var content = calloutContent(ctx);
@@ -990,7 +991,7 @@ class CalloutConfig implements TickerProvider {
   void setPos(Offset newPos) {
     top = newPos.dy;
     left = newPos.dx;
-    // debugPrint('new pos ${newPos.toString()}');
+    // fca.logi('new pos ${newPos.toString()}');
     _rebuildOverlayEntryF?.call();
   }
 
@@ -1015,7 +1016,7 @@ class CalloutConfig implements TickerProvider {
     bool result = scrRect.contains(finalCR.topLeft) &&
         scrRect.contains(finalCR.bottomRight);
     // if (!result) {
-    //   debugPrint("*************** OFFSCREEN ********************");
+    //   fca.logi("*************** OFFSCREEN ********************");
     // }
     return result;
   }
@@ -1035,7 +1036,7 @@ class CalloutConfig implements TickerProvider {
     var deltaX = cEafter.x - cEbefore.x;
     var deltaY = cEafter.y - cEbefore.y;
 
-    // debugPrint("initialLeft: $inititalLeft, separation: $theSeparation, delta: ($deltaX, $deltaY)");
+    // fca.logi("initialLeft: $inititalLeft, separation: $theSeparation, delta: ($deltaX, $deltaY)");
 
     if (theSeparation <= 1 ||
         calloutWouldNotBeOffscreen(cEafter, deltaX, deltaY)) {
@@ -1049,7 +1050,7 @@ class CalloutConfig implements TickerProvider {
       }
       return (newTop, newLeft);
     } else {
-      // debugPrint("adjustTopLeftForSeparation(max(0, $theSeparation/2))");
+      // fca.logi("adjustTopLeftForSeparation(max(0, $theSeparation/2))");
       return (initialTop, inititalLeft);
       // return _adjustTopLeftForSeparation(max(0, theSeparation / 2), initialTop, inititalLeft, initialCE, initialTR);
     }
@@ -1088,12 +1089,12 @@ class CalloutConfig implements TickerProvider {
   Rectangle? _targetRectangle() {
     Rect? rect;
     if (_targetRect != null) {
-      // debugPrint('targetRect != null');
+      // fca.logi('targetRect != null');
       rect = _targetRect!;
     }
     // can supply target globalkey directly or via a function
     else if (initialCalloutPos != null) {
-      debugPrint('initialCalloutPos != null');
+      fca.logi('initialCalloutPos != null');
       rect = Rect.fromLTWH(
         initialCalloutPos!.dx,
         initialCalloutPos!.dy,
@@ -1102,14 +1103,14 @@ class CalloutConfig implements TickerProvider {
       );
     }
     else if (_opGK?.currentWidget == null) {
-      debugPrint("$cId _targetRectangle(): opGK!?.currentWidget == null");
+      fca.logi("$cId _targetRectangle(): opGK!?.currentWidget == null");
       // Rect screenRect = Rect.fromLTWH(0, 0, Useful.scrW, Useful.scrH);
       return null;
     } else {
-      debugPrint('_opGK!.globalPaintBounds()');
+      fca.logi('_opGK!.globalPaintBounds()');
       Rect? r = _opGK!.globalPaintBounds(); //Measuring.findGlobalRect(_opGK!);
       if (r == null) return null;
-      debugPrint("$cId findGlobalRect(_opGK!) = ${r.toString()}");
+      fca.logi("$cId findGlobalRect(_opGK!) = ${r.toString()}");
       // adjust for possible scroll
       rect = Rect.fromLTWH(
         r.left,
@@ -1134,7 +1135,7 @@ class CalloutConfig implements TickerProvider {
     double startingCalloutTop;
     if (initialCalloutPos == null) {
       if (tR == null) {
-        // debugPrint('targetRectangle() returned NULL !');
+        // fca.logi('targetRectangle() returned NULL !');
         return;
       }
 
@@ -1166,11 +1167,11 @@ class CalloutConfig implements TickerProvider {
 
     // ensure callout will be on onscreen
     // only needs  to be scrollable when can't fit on screen
-    // debugPrint('============   screenH = ${Useful.screenH()}');
+    // fca.logi('============   screenH = ${Useful.screenH()}');
     needsToScrollH = _calloutW! > fca.scrW;
     needsToScrollV = _calloutH! > (fca.scrH - fca.kbdH);
     if (!notToast) {
-      debugPrint('must skip screen bounds check');
+      fca.logi('must skip screen bounds check');
     }
     if ((!skipOnScreenCheck) && !needsToScrollV && !needsToScrollH) {
       var definitelyOnScreen = fca.ensureOnScreen(
@@ -1196,13 +1197,13 @@ class CalloutConfig implements TickerProvider {
     // don't let callout be off screen
     top = actualTop;
     left = actualLeft;
-    // debugPrint('top: $top');
-    // debugPrint('left: $left');
+    // fca.logi('top: $top');
+    // fca.logi('left: $left');
   }
 
 // bool _isOffscreen() {
-//   // debugPrint('left: $actualLeft\ncalloutSize!.width: ${_calloutW!}\nUseful.screenW(): ${Useful.screenW()}');
-//   // debugPrint(
+//   // fca.logi('left: $actualLeft\ncalloutSize!.width: ${_calloutW!}\nUseful.screenW(): ${Useful.screenW()}');
+//   // fca.logi(
 //   //     'top: $actualTop\ncalloutSize!.height: ${_calloutH!}\nUseful.screenH(): ${Useful.screenH()}\nUseful.kbdH(): ${Useful.kbdH()}');
 //   return !skipOnScreenCheck && ((actualLeft + _calloutW!) > Useful.scrW || (actualTop + _calloutH!) > (Useful.scrH - Useful.kbdH));
 // }
@@ -1210,7 +1211,7 @@ class CalloutConfig implements TickerProvider {
   bool get notToast => gravity == null;
 
   Widget _positionedBubbleBg() {
-    // debugPrint('_positionedBubbleBg');
+    // fca.logi('_positionedBubbleBg');
     return Positioned(
       top: 0,
       left: 0,
@@ -1288,7 +1289,7 @@ class CalloutConfig implements TickerProvider {
   //
   //     onDragF?.call(Offset(left!, top!));
   //     movedOrResizedNotifier?.value++;
-  //     debugPrint('top: $top, left: $left');
+  //     fca.logi('top: $top, left: $left');
   //   });
   // }
   //
@@ -1311,7 +1312,7 @@ class CalloutConfig implements TickerProvider {
 
       onDragF?.call(Offset(left!, top!));
       movedOrResizedNotifier?.value++;
-      // debugPrint('top: $top, left: $left');
+      // fca.logi('top: $top, left: $left');
     });
   }
 
@@ -1338,7 +1339,7 @@ class CalloutConfig implements TickerProvider {
           Offset delta = Offset(animation.value.dx - prevValue.dx,
               animation.value.dy - prevValue.dy);
           prevValue = animation.value;
-          debugPrint(
+          fca.logi(
               '${i++} av ${animation.value} delta ${delta
                   .toString()}, prevDelta ${prevValue.toString()}');
           if (alignment == Alignment.topLeft) {
@@ -1525,7 +1526,7 @@ class CalloutConfig implements TickerProvider {
 // don't show line if gap between endpoints < specifid separation
       bool veryClose = lineLen <= 30;
       if (veryClose || tR == null || calloutrect.overlaps(tR!)) {
-        // debugPrint("not drawing pointing line");
+        // fca.logi("not drawing pointing line");
         return const Offstage();
       }
 
@@ -1591,7 +1592,7 @@ class CalloutConfig implements TickerProvider {
 //       parent: this,
 //       onParentBarrierTappedF: barrier?.onTappedF ??
 //           () {
-//             //debugPrint("missing onParentBarrierTappedF!");
+//             //fca.logi("missing onParentBarrierTappedF!");
 //           },
 //     );
 // // toolbar = Container(width: 500, height:  20, color: Colors.red,);
@@ -1829,7 +1830,7 @@ class PositionedBoxContent extends StatelessWidget {
         left: (cc.left ?? 0) + (cc.contentTranslateX ?? 0.0),
         child: GestureDetector(
           onTap: () {
-            debugPrint('PositionedBoxContent onTap');
+            fca.logi('PositionedBoxContent onTap');
           },
           // onTapDown: cc._onContentPointerDown,
           onPanStart: cc._onDragStart,

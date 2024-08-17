@@ -2,6 +2,7 @@
 
 library flutter_callouts;
 
+
 import 'package:bh_shared/bh_shared.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
@@ -50,7 +51,7 @@ class FlutterCalloutMixins
         GotitsMixin {
   FlutterCalloutMixins._internal() // Private constructor
   {
-    debugPrint('FlutterCallouts._internal()');
+    base.logi('FlutterCallouts._internal()');
   }
 
   static final FlutterCalloutMixins _instance =

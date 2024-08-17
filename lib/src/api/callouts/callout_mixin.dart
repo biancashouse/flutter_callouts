@@ -1,5 +1,6 @@
 import 'dart:math';
 
+
 import 'package:flutter/material.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
 import 'package:flutter_callouts/src/api/callouts/overlay_entry_list.dart';
@@ -45,7 +46,7 @@ mixin CalloutMixin {
     //   GlobalKey? gk = targetGkF.call();
     //   var cc = gk?.currentContext;
     //   if (cc == null) {
-    //     debugPrint(
+    //     fca.logi(
     //         '${calloutConfig.cId} missing target gk - overlay not shown');
     //     return;
     //   } else {
@@ -62,7 +63,7 @@ mixin CalloutMixin {
             (rect) {
           calloutConfig.calloutW = rect.width;
           calloutConfig.calloutH = rect.height;
-          debugPrint('measured content size: ${rect.toString()}');
+          fca.logi('measured content size: ${rect.toString()}');
           _createOverlayDefinitelyHasSize(
             calloutConfig,
             calloutContent,
@@ -104,12 +105,12 @@ mixin CalloutMixin {
     ); // will be null if target not present
     // if a notifer was passed in, means inside another overlay, so the target would change as the overlay gets moved or resized
     targetChangedNotifier?.addListener(() {
-      // debugPrint("\n\ntime to update the target\n\n");
+      // fca.logi("\n\ntime to update the target\n\n");
       fca.afterNextBuildDo(() => oEntry.markNeedsBuild());
     });
     Future.delayed(const Duration(milliseconds: 300), () {
       if (calloutConfig.notToast) {
-        // debugPrint('_possiblyAnimateSeparation');
+        // fca.logi('_possiblyAnimateSeparation');
         _possiblyAnimateSeparation(calloutConfig);
       } else {
         _possiblyAnimateToastPos(calloutConfig);
@@ -125,11 +126,11 @@ mixin CalloutMixin {
     late OverlayEntry entry;
     entry = OverlayEntry(builder: (BuildContext ctx) {
       // FCA.initWithContext(ctx);
-      // debugPrint('...');
-      // debugPrint("${calloutConfig.cId} OverlayEntry.builder...");
-      // debugPrint('...');
+      // fca.logi('...');
+      // fca.logi("${calloutConfig.cId} OverlayEntry.builder...");
+      // fca.logi('...');
 // if (calloutConfig.cId == 'root'){
-//   debugPrint('root');
+//   fca.logi('root');
 // }
 
       // if no target and no initialPos, use scren dimension
@@ -154,12 +155,12 @@ mixin CalloutMixin {
           calloutConfig.initialCalloutW!,
           calloutConfig.initialCalloutH!,
         );
-// debugPrint('${calloutConfig.cId} failed to measure pos and size from targetGkF - overlay not shown');
+// fca.logi('${calloutConfig.cId} failed to measure pos and size from targetGkF - overlay not shown');
 // return const Icon(Icons.warning_amber);
       }
       OE? oeObj = Callout.findOE(calloutConfig.cId);
       if ((calloutConfig.calloutW ?? 0) <= 0) {
-        debugPrint(
+        fca.logi(
             'calloutW:${calloutConfig.calloutW} !!!  (cId:${calloutConfig
                 .cId}');
       }
@@ -237,7 +238,7 @@ mixin CalloutMixin {
         }
       });
       animation.addListener(() {
-        //debugPrint('new separation: ${animation.value}');
+        //fca.logi('new separation: ${animation.value}');
         calloutConfig.setSeparation(animation.value);
       });
       calloutConfig.startedAnimatingSeparation();
@@ -435,7 +436,7 @@ mixin CalloutMixin {
     } else if (y > 0.75) {
       y = 1.0;
     }
-    // debugPrint("$x, $y");
+    // fca.logi("$x, $y");
     return Alignment(x, y);
   }
 
@@ -549,7 +550,7 @@ extension GlobalKeyExtension on GlobalKey {
     var cc = currentContext;
     Size? scrSize;
     if (cc == null) {
-      //debugPrint('GlobalKeyExtension: currentContext NULL!');
+      //fca.logi('GlobalKeyExtension: currentContext NULL!');
     } else {
       scrSize = MediaQuery.sizeOf(cc);
     }
@@ -559,7 +560,7 @@ extension GlobalKeyExtension on GlobalKey {
     try {
       paintBounds = renderObject?.paintBounds;
     } catch (e) {
-      debugPrint('paintBounds = renderObject?.paintBounds - ${e.toString()}');
+      fca.logi('paintBounds = renderObject?.paintBounds - ${e.toString()}');
     }
     // possibly warn about the target having an infinite width
     if (!_alreadyGaveGlobalPosAndSizeWarning &&

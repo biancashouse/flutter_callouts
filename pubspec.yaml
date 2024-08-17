@@ -22,6 +22,7 @@ dependencies:
   flutter:
     sdk: flutter
 
+  logger: ^2.4.0
   pointer_interceptor: ^0.10.1+1
   gradient_borders: 1.0.1
 

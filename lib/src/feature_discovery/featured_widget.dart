@@ -256,7 +256,7 @@ class FeaturedWidgetState extends State<FeaturedWidget> with TickerProviderState
           setState(() => state = OverlayStatusEnum.activating);
         } else if (status == AnimationStatus.completed) {
           stopAnimationControllers();
-          //debugPrint('Actioned.');
+          //fca.logi('Actioned.');
           //discoveryController.stop();
           if (widget.childTapActionF != null) {
             /// arrive here when featured widget tapped while discovery overlay showing
@@ -280,7 +280,7 @@ class FeaturedWidgetState extends State<FeaturedWidget> with TickerProviderState
           setState(() => state = OverlayStatusEnum.activating);
         } else if (status == AnimationStatus.completed) {
           stopAnimationControllers();
-          //debugPrint('Actioned.');
+          //fca.logi('Actioned.');
           //discoveryController.stop();
           if (widget.childDoubleTapActionF != null) {
             widget.childDoubleTapActionF!(context, widget.discoveryController);
@@ -301,7 +301,7 @@ class FeaturedWidgetState extends State<FeaturedWidget> with TickerProviderState
         } else if (status == AnimationStatus.completed) {
           //FeatureDiscovery.dismiss(context);
           stopAnimationControllers();
-          //debugPrint('Dismissed.');
+          //fca.logi('Dismissed.');
           if (widget.overlayDismissedF != null) widget.overlayDismissedF!();
           /*
            * possibly move on to next feature

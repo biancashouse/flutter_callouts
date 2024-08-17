@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter/src/scheduler/ticker.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
@@ -35,7 +36,7 @@ class WrappedCallout extends StatefulWidget {
     this.skipHeightConstraintWarning = false,
     super.key,
   }) {
-// debugPrint("Callout.wrapTarget");
+// fca.logi("Callout.wrapTarget");
   }
 
   static WrappedCalloutState? of(BuildContext context) =>
@@ -99,7 +100,7 @@ class WrappedCalloutState extends State<WrappedCallout>  implements TickerProvid
 
 // if a notifer was passed in, means inside another overlay, so the target would change as the overlay gets moved or resized
     widget.targetChangedNotifier?.addListener(() {
-      debugPrint("\n\ntime to update the target\n\n");
+      fca.logi("\n\ntime to update the target\n\n");
 // measure target again
       Rect? r = _targetMeasuringGK
           .globalPaintBounds(); //Measuring.findGlobalRect(_targetMeasuringGK);
@@ -112,7 +113,7 @@ class WrappedCalloutState extends State<WrappedCallout>  implements TickerProvid
 
   @override
   void dispose() {
-    debugPrint("callout disposed: ${_config.cId}");
+    fca.logi("callout disposed: ${_config.cId}");
     OE.deRegisterOE(Callout.findOE(_config.cId), force: true);
     super.dispose();
   }
@@ -134,9 +135,9 @@ class WrappedCalloutState extends State<WrappedCallout>  implements TickerProvid
       );
     },
 //     (BuildContext ctx) {
-//   debugPrint("overlayChildBuilder...");
-//   if (targetSize != null && targetPos != null) debugPrint("target not measured!");
-//   if (calloutSize != null) debugPrint("callout boxContent not measured!");
+//   fca.logi("overlayChildBuilder...");
+//   if (targetSize != null && targetPos != null) fca.logi("target not measured!");
+//   if (calloutSize != null) fca.logi("callout boxContent not measured!");
 //   return targetSize != null && targetPos != null
 //       ? _config.calloutOverlayEntryAlreadyMeasured(
 //           context: ctx,
@@ -220,7 +221,7 @@ class WrappedCalloutState extends State<WrappedCallout>  implements TickerProvid
       Tween<double>(begin: 0.0, end: _config.finalSeparation);
       Animation<double> animation = tween.animate(animationController);
       animation.addListener(() {
-// debugPrint('--- ${_config.feature} --- animation value ${animation.value}');
+// fca.logi('--- ${_config.feature} --- animation value ${animation.value}');
         _config.setSeparation(animation.value);//, () => opController.show());
       });
       _config.startedAnimatingSeparation();
@@ -245,7 +246,7 @@ class WrappedCalloutState extends State<WrappedCallout>  implements TickerProvid
 //   OverlayEntry offstageEntry = OverlayEntry(
 //     builder: (BuildContext ctx) => MeasureSizeBox(
 //       onSizedCallback: (newSize) {
-//         debugPrint("measured callout: ${newSize.toString()}");
+//         fca.logi("measured callout: ${newSize.toString()}");
 //         calloutSize = newSize;
 //         _config.calloutW = newSize.width;
 //         _config.calloutH = newSize.height;

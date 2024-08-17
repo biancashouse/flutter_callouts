@@ -1,5 +1,6 @@
 import 'dart:async';
 
+
 import 'package:flutter/material.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
 import 'package:vector_math/vector_math_64.dart' show Vector3;
@@ -35,7 +36,7 @@ mixin MeasuringMixin {
     final Completer<Rect> completer = Completer<Rect>();
     OverlayEntry? entry;
     entry = OverlayEntry(builder: (BuildContext ctx) {
-      print(Theme.of(context).platform);
+      fca.logi(Theme.of(context).platform.toString());
       return Material(
         child: _OffstageWidgetWrapper(
           onMeasuredRect: (Rect? rect) {
@@ -110,7 +111,7 @@ mixin MeasuringMixin {
         skipHeightConstraintWarning: skipHeightConstraintWarning,
       );
       if (rect != null) {
-        debugPrint(
+        fca.logi(
             '_measureThenRenderCallout: width:${rect.width}, height:${rect.height}');
         return rect.size;
       }

@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
 
@@ -82,9 +83,9 @@ class Callout {
   }
 
   static void dismiss(String cId, {bool skipOnDismiss = false}) {
-// debugPrint('-- dismiss -----------------------------------');
+// fca.logi('-- dismiss -----------------------------------');
 // for (OE oe in OE.list) {
-//   debugPrint(oe.calloutConfig.cId);
+//   fca.logi(oe.calloutConfig.cId);
 // }
 
     OE? oeObj = findOE(cId);
@@ -99,7 +100,7 @@ class Callout {
       if (oeObj.entry != null && !skipOnDismiss) {
         oeObj.calloutConfig.onDismissedF?.call();
       }
-      // debugPrint(
+      // fca.logi(
       //     '-- dismissed $cId ${oeObj.opC != null ? "*" : ""} ---------------------------');
     }
   }
@@ -199,7 +200,7 @@ class Callout {
     for (OE oe in OE.list) {
       if (!oe.isHidden && oe.entry != null) {
         oe.calloutConfig.calcEndpoints();
-        debugPrint('after calcEndpoints: tR is ${oe.calloutConfig.tR.toString()}');
+        fca.logi('after calcEndpoints: tR is ${oe.calloutConfig.tR.toString()}');
         oe.entry?.markNeedsBuild();
       }
       // if (!oe.isHidden && oe.opC != null) {

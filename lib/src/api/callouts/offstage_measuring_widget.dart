@@ -1,5 +1,6 @@
 import 'dart:async';
 
+
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
@@ -51,7 +52,7 @@ class _OffstageMeasuringWidgetState extends State<_OffstageMeasuringWidget> {
     SchedulerBinding.instance.endOfFrame.then((_) {
       // Rect? rect = Measuring.findGlobalRect(gk);
       Rect? rect = gk.globalPaintBounds();
-      debugPrint('OffstageMeasuringWidget size: ${rect.toString()}');
+      fca.logi('OffstageMeasuringWidget size: ${rect.toString()}');
       // only the size is useful, because widget is rendered offstage
       if (rect != null) {
         widget.onSized?.call(Size(rect.width, rect.height));
