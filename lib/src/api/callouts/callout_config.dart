@@ -137,7 +137,7 @@ class CalloutConfig implements TickerProvider {
       _rebuildOverlayEntryF = newCallback;
 
   // transient
-  BuildContext? opDescendantContext; // passed in by Callout.wrapTarget
+  BuildContext? opDescendantContext; // passed in by fca.wrapTarget
   // ZoomerState? _zoomer;
   GlobalKey? _opGK;
   OverlayEntry? offstageEntry;
@@ -306,7 +306,7 @@ class CalloutConfig implements TickerProvider {
     //   fca.logi("doh!");
     // }
     // assert(context == null || (context!.mounted), 'context not mounted!');
-    // assert(!Callout.anyPresent([feature]) && !fca.alreadyGotit(feature, notUsingHydratedStorage: notUsingHydratedStorage));
+    // assert(!fca.anyPresent([feature]) && !fca.alreadyGotit(feature, notUsingHydratedStorage: notUsingHydratedStorage));
 
     // originalWidth = width;
     // originalHeight = height;
@@ -600,7 +600,7 @@ class CalloutConfig implements TickerProvider {
   //   required GlobalKey? gk,
   //   TargetModel? configurableTarget,
   // }) {
-  //   var state = Callout.of(context);
+  //   var state = fca.of(context);
   //
   //   if (!initialised) return const Icon(Icons.error, color: Colors.deepOrange);
   //
@@ -741,7 +741,7 @@ class CalloutConfig implements TickerProvider {
         targetRect.width * scaleTarget,
         targetRect.height * scaleTarget);
 
-    return (Callout.isHidden(cId))
+    return (fca.isHidden(cId))
         ? const Offstage()
         : _renderCallout(r, calloutContent, rebuildF);
   }
@@ -1450,8 +1450,8 @@ class CalloutConfig implements TickerProvider {
           ),
           onPressed: () {
             onCloseButtonPressF?.call();
-            Callout.dismiss(cId);
-            Callout.findCallout<OverlayPortalController>(cId)?.hide();
+            fca.dismiss(cId);
+            fca.findCallout<OverlayPortalController>(cId)?.hide();
           },
         ),
       );
@@ -1468,8 +1468,8 @@ class CalloutConfig implements TickerProvider {
           ),
           onPressed: () {
             fca.gotit(cId);
-            Callout.findCallout<OverlayEntry>(cId)?.remove();
-            Callout.findCallout<OverlayPortalController>(cId)?.hide();
+            fca.findCallout<OverlayEntry>(cId)?.remove();
+            fca.findCallout<OverlayPortalController>(cId)?.hide();
             onGotitPressedF?.call();
           },
         ),
@@ -1612,7 +1612,7 @@ class CalloutConfig implements TickerProvider {
         state?.hideOP();
         onDismissedF?.call();
       } else {
-        Callout.dismiss(cId);
+        fca.dismiss(cId);
       }
     } else if (barrier?.hideOnTapped ?? false) {
       if (opDescendantContext != null) {
@@ -1620,7 +1620,7 @@ class CalloutConfig implements TickerProvider {
         state?.hideOP();
         onHiddenF?.call();
       } else {
-        Callout.hide(cId);
+        fca.hide(cId);
         onHiddenF?.call();
       }
     }
@@ -1636,10 +1636,10 @@ class CalloutConfig implements TickerProvider {
 //               onPointerUp: (_) {
 //                 if (barrier!.closeOnTapped) {
 //                   if (opDescendantContext != null) {
-//                     CalloutState? state = Callout.of(opDescendantContext!);
+//                     CalloutState? state = fca.of(opDescendantContext!);
 //                     state?.hideOP();
 //                   } else {
-//                     Callout.dismiss(feature);
+//                     fca.dismiss(feature);
 //                   }
 //                 }
 //                 barrier!.onTappedF?.call();

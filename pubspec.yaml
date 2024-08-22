@@ -42,7 +42,7 @@ dev_dependencies:
 #  vector_math: ^2.1.2
 #  text_editor: ^0.7.0
 #  bloc_test: ^9.1.1
-  flutter_lints: ^4.0.0
+  flutter_lints: any
 #  dart_mappable_builder: ^4.2.2
 #  analyzer: ^6.4.1
 

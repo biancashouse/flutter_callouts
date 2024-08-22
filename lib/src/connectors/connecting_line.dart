@@ -3,9 +3,6 @@ import 'dart:developer' as developer;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
-import 'package:flutter_callouts/src/typedefs.dart';
-import 'package:flutter_callouts/src/api/callouts/coord.dart';
-import 'package:flutter_callouts/src/api/callouts/line.dart';
 import 'package:flutter_callouts/src/api/callouts/pointing_line.dart';
 
 
@@ -177,7 +174,7 @@ class ConnectingLine {
     int? removeAfterMs,
   }) async {
     // skip if same overlay already found
-    if (Callout.anyPresent([line.feature])) return false;
+    if (fca.anyPresent([line.feature])) return false;
 
     await line.init();
 

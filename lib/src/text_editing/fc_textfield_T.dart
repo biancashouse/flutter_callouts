@@ -268,7 +268,7 @@ class FC_TextEditorState extends State<FC_TextField> {
           },
           onTapOutside: (_) {
             _focusNode.unfocus();
-            Callout.allowParentCalloutDrag(context);
+            fca.allowParentCalloutDrag(context);
           },
           autocorrect: false,
           enableInteractiveSelection: true,

@@ -165,7 +165,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         onNotification: (SizeChangedLayoutNotification notification) {
           // Callout.dismissAll(exceptFeatures: []);
           fca.afterMsDelayDo(300, () {
-            Callout.refreshAll();
+            fca.refreshAll();
           });
           return true;
         },

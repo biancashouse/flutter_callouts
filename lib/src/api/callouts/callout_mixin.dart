@@ -27,7 +27,7 @@ mixin CalloutMixin {
       {
     if (fca.alreadyGotit(calloutConfig.cId)) return;
 
-    if (Callout.anyPresent([calloutConfig.cId])) return;
+    if (fca.anyPresent([calloutConfig.cId])) return;
 
     if ((calloutConfig.calloutW ?? 0) < 0) {
       print('tbd');
@@ -37,7 +37,7 @@ mixin CalloutMixin {
     if (removeAfterMs != null) {
       Future.delayed(Duration(milliseconds: removeAfterMs), () {
         // calloutConfig.onDismissedF?.call();
-        Callout.dismiss(calloutConfig.cId);
+        dismiss(calloutConfig.cId);
       });
     }
 
@@ -158,7 +158,7 @@ mixin CalloutMixin {
 // fca.logi('${calloutConfig.cId} failed to measure pos and size from targetGkF - overlay not shown');
 // return const Icon(Icons.warning_amber);
       }
-      OE? oeObj = Callout.findOE(calloutConfig.cId);
+      OE? oeObj = findOE(calloutConfig.cId);
       if ((calloutConfig.calloutW ?? 0) <= 0) {
         fca.logi(
             'calloutW:${calloutConfig.calloutW} !!!  (cId:${calloutConfig
@@ -179,7 +179,7 @@ mixin CalloutMixin {
     OverlayEntry? lowestOverlay;
     int? pos;
     if (ensureLowestOverlay) {
-      final result = Callout.lowestEntry();
+      final result = lowestEntry();
       pos = result.$1;
       lowestOverlay = result.$2;
     }
@@ -246,7 +246,7 @@ mixin CalloutMixin {
     }
   }
 
-  static bool _sameType<T1, T2>() => T1 == T2;
+  bool _sameType<T1, T2>() => T1 == T2;
 
   void showToast({
     required CalloutConfig calloutConfig,
@@ -274,7 +274,7 @@ mixin CalloutMixin {
     );
     if (removeAfterMs > 0) {
       Future.delayed(Duration(milliseconds: removeAfterMs), () {
-        Callout.dismiss(toastCC.cId);
+        dismiss(toastCC.cId);
       });
     }
     showOverlay(
@@ -408,7 +408,7 @@ mixin CalloutMixin {
         ),
       );
     } else {
-      Callout.dismiss(reason);
+      dismiss(reason);
     }
   }
 
@@ -528,6 +528,238 @@ mixin CalloutMixin {
     // return Alignment.center;
   }
 
+  //------------------
+//---  static  -----
+//------------------
+  OE? findOE(Feature cId) {
+    for (OE oe in OE.list) {
+      if (oe.calloutConfig.cId == cId) {
+        return oe;
+      }
+    }
+    return null;
+  }
+
+  CalloutConfig? getCalloutConfig(Feature feature) {
+    OE? oe  = findOE(feature);
+    if (oe != null) return oe.calloutConfig;
+    return null;
+  }
+
+  void rebuild(Feature feature, {VoidCallback? f}) {
+    findOE(feature)?.calloutConfig.rebuild(f);
+  }
+
+  T? findCallout<T>(String cId) {
+    if (_sameType<T, OverlayEntry>()) {
+      OverlayEntry? entry = findOE(cId)?.entry;
+      return entry as T?;
+    }
+    if (_sameType<T, OverlayPortalController>()) {
+      OverlayPortalController? entry = findOE(cId)?.opC;
+      return entry as T?;
+    }
+    return null;
+  }
+
+  BuildContext? findCalloutCallerContext(String cId) {
+    var oe = findOE(cId);
+    var callerGK = oe?.calloutConfig.callerGK;
+    return callerGK?.currentContext;
+  }
+
+  State? findCalloutCallerState(String cId) {
+    var oe = findOE(cId);
+    var callerGK = oe?.calloutConfig.callerGK;
+    return callerGK?.currentState;
+  }
+
+  Widget? findCalloutCallerWidget(String cId) {
+    var oe = findOE(cId);
+    var callerGK = oe?.calloutConfig.callerGK;
+    return callerGK?.currentWidget;
+  }
+
+  void dismissAll(
+      {List<Feature> exceptFeatures = const [],
+        bool onlyToasts = false,
+        bool exceptToasts = false}) {
+    List<Feature> overlays2bRemoved = [];
+    for (OE oe in OE.list) {
+// if (oe.entry != null) {
+      bool isToast = oe.calloutConfig.gravity != null;
+      if ((onlyToasts && isToast) ||
+          (exceptToasts && !isToast) ||
+          (!onlyToasts && !exceptToasts)) {
+        overlays2bRemoved.add(oe.calloutConfig.cId);
+      }
+// }
+    }
+    for (Feature cId in overlays2bRemoved) {
+      if (!exceptFeatures.contains(cId)) dismiss(cId);
+    }
+  }
+
+  void dismiss(String cId, {bool skipOnDismiss = false}) {
+// fca.logi('-- dismiss -----------------------------------');
+// for (OE oe in OE.list) {
+//   fca.logi(oe.calloutConfig.cId);
+// }
+
+    OE? oeObj = findOE(cId);
+    if (oeObj != null) {
+      try {
+        oeObj
+          ..isHidden = true
+          ..opC?.hide()
+          ..entry?.remove();
+      } catch (e) {}
+      OE.deRegisterOE(oeObj);
+      if (oeObj.entry != null && !skipOnDismiss) {
+        oeObj.calloutConfig.onDismissedF?.call();
+      }
+      // fca.logi(
+      //     '-- dismissed $cId ${oeObj.opC != null ? "*" : ""} ---------------------------');
+    }
+  }
+
+  (int? i, OverlayEntry?) lowestEntry() {
+    if (OE.list.isNotEmpty) {
+      for (int i = 0; i < OE.list.length; i++) {
+        if (OE.list[i].entry != null) {
+          return (i, OE.list[i].entry);
+        }
+      }
+    }
+    return (null, null);
+  }
+
+  void dismissTopFeature() {
+    if (OE.list.isNotEmpty) {
+      OE topOE = OE.list.last;
+      dismiss(topOE.calloutConfig.cId);
+    }
+  }
+
+  CalloutConfig? findParentCalloutConfig(context) {
+    return context
+        .findAncestorWidgetOfExactType<PositionedBoxContent>()
+        ?.calloutConfig;
+  }
+
+// unhide OpenPortal overlay
+  void unhideParentCallout(BuildContext context,
+      {bool animateSeparation = false, int hideAfterMs = 0}) {
+    var op = context.findAncestorWidgetOfExactType<OverlayPortal>();
+    if (op != null) {
+      // find its cc
+      for (OE oe in OE.list) {
+        if (oe.opC == op.controller) {
+          CalloutConfig cc = oe.calloutConfig;
+          unhide(cc.cId);
+        }
+      }
+    }
+
+    CalloutConfig? config = findParentCalloutConfig(context);
+    if (config != null) {
+      unhide(config.cId);
+    } else {
+      WrappedCalloutState? c = WrappedCallout.of(context);
+      c?.unhide(animateSeparation: animateSeparation, hideAfterMs: hideAfterMs);
+    }
+  }
+
+  void hideParentCallout(context) {
+    CalloutConfig? config = findParentCalloutConfig(context);
+    if (config != null) {
+      hide(config.cId);
+    }
+  }
+
+  void removeParentCallout(context) {
+    CalloutConfig? config = findParentCalloutConfig(context);
+    if (config != null) {
+      dismiss(config.cId);
+    }
+  }
+
+  bool isHidden(String cId) => findOE(cId)?.isHidden ?? false;
+
+  void hide(String cId) {
+    OE? oeObj = findOE(cId);
+    if (oeObj != null /*  && !oeObj.isHidden*/) {
+      oeObj
+        ..isHidden = true
+        ..opC?.hide()
+        ..entry?.markNeedsBuild();
+      // OE.debug();
+    }
+  }
+
+  void unhide(String cId) {
+    OE? oe = findOE(cId);
+    if (oe != null /*&& oe.isHidden*/) {
+      oe
+        ..isHidden = false
+        ..opC?.show()
+        ..entry?.markNeedsBuild();
+      // OE.debug();
+    }
+  }
+
+  void refresh(String cId, {VoidCallback? f}) {
+    f?.call();
+    findCallout<OverlayEntry>(cId)?.markNeedsBuild();
+  }
+
+  void refreshAll({VoidCallback? f}) {
+    f?.call();
+    for (OE oe in OE.list) {
+      if (!oe.isHidden && oe.entry != null) {
+        oe.calloutConfig.calcEndpoints();
+        fca.logi('after calcEndpoints: tR is ${oe.calloutConfig.tR.toString()}');
+        oe.entry?.markNeedsBuild();
+      }
+      // if (!oe.isHidden && oe.opC != null) {
+      //   oe.opC?.show();
+      // }
+    }
+  }
+
+  bool anyPresent(List<Feature> cIds, {bool includeHidden = false}) {
+    bool result = false;
+    if (cIds.isEmpty) {
+      result = false;
+    } else {
+      for (OE oe in OE.list) {
+        if ((!oe.isHidden || includeHidden) &&
+            cIds.contains(oe.calloutConfig.cId)) {
+          result = true;
+        }
+      }
+    }
+    return result;
+  }
+
+  void preventParentCalloutDrag(BuildContext ctx) {
+    PositionedBoxContent? parent =
+    ctx.findAncestorWidgetOfExactType<PositionedBoxContent>();
+    if (parent != null) {
+      parent.calloutConfig.preventDrag = true;
+    }
+  }
+
+  void allowParentCalloutDrag(BuildContext ctx) {
+    PositionedBoxContent? parent =
+    ctx.findAncestorWidgetOfExactType<PositionedBoxContent>();
+    if (parent != null) {
+// delay to allow _onContentPointerUp to do its thing
+      fca.afterMsDelayDo(300, () {
+        parent.calloutConfig.preventDrag = false;
+      });
+    }
+  }
 }
 
 extension ExtendedOffset on Offset {
@@ -579,19 +811,19 @@ extension GlobalKeyExtension on GlobalKey {
                   "This might indicate that your target has an unbounded width constraint.\n"
                   "This occurs, for example, when your target is a child of a ListView.\n\n"
                   "If this is intentional, add 'skipContraintWarning:true' as an arg\n\n"
-                  "  to constructor Callout.wrapTarget\n\n"
-                  "  or to calls to Callout.showOverlay()\n\n"
+                  "  to constructor wrapTarget\n\n"
+                  "  or to calls to showOverlay()\n\n"
                   "Context: ${cc.toString()}"
                   : "\nThe hwight of your callout target is the same as the window hwight.\n"
                   "This might indicate that your target has an unbounded hwight constraint.\n"
                   "If this height is intentional, add 'skipContraintWarning:true' as an arg\n\n"
-                  "  to constructor Callout.wrapTarget\n\n"
-                  "  or to calls to Callout.showOverlay()\n\n"
+                  "  to constructor wrapTarget\n\n"
+                  "  or to calls to showOverlay()\n\n"
                   "Context: ${cc.toString()}",
             ),
             TextButton(
               onPressed: () {
-                Callout.dismissTopFeature();
+                fca.dismissTopFeature();
               },
               child: const Text('Close'),
             ),

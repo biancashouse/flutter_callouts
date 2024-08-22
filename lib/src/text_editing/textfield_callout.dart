@@ -69,7 +69,7 @@ void editText2({
           onTappedF: noBarrier
               ? null
               : () async {
-                  Callout.removeParentCallout(context);
+                  fca.removeParentCallout(context);
                   // Callout? parentCallout = feature:Callout.findCallout(feature);
                   // if (parentCallout != null) Callout.removeOverlay(parentCallout.feature, true);
                 },

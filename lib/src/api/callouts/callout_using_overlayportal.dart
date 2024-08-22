@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/scheduler/ticker.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
 
-import 'callout.dart';
 import 'overlay_entry_list.dart';
 
 export 'arrow_type.dart';
@@ -114,7 +113,7 @@ class WrappedCalloutState extends State<WrappedCallout>  implements TickerProvid
   @override
   void dispose() {
     fca.logi("callout disposed: ${_config.cId}");
-    OE.deRegisterOE(Callout.findOE(_config.cId), force: true);
+    OE.deRegisterOE(fca.findOE(_config.cId), force: true);
     super.dispose();
   }
 
