@@ -157,7 +157,7 @@ class ConnectingLine {
     });
   }
 
-  void completed(bool result) {
+  void _completed(bool result) {
     _lineEntry?.remove();
     onExpiredF?.call();
     // triggers caller with true = did something, or false = aborted
@@ -182,7 +182,7 @@ class ConnectingLine {
     if (removeAfterMs != null) {
       Future.delayed(Duration(milliseconds: removeAfterMs), () {
         line.onExpiredF?.call();
-        line.completed(true);
+        line._completed(true);
       });
     }
 

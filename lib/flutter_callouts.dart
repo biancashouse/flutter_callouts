@@ -2,7 +2,6 @@
 
 library flutter_callouts;
 
-
 import 'package:bh_shared/bh_shared.dart';
 
 import 'flutter_callouts.dart';
@@ -29,6 +28,7 @@ export 'src/measuring_mixin.dart';
 export 'src/mq_mixin.dart';
 export 'src/rootcontext_mixin.dart';
 export 'src/text_editing/fc_textfield_T.dart';
+export 'src/text_editing/textfield_callout.dart';
 export 'src/typedefs.dart';
 
 // client apps will only access this functionality thru this global instance
@@ -42,9 +42,9 @@ class FlutterCalloutMixins
         MQMixin,
         SystemMixin,
         WidgetHelperMixin,
+        GotitsMixin,
         CanvasMixin,
-        LocalStorageMixin,
-        GotitsMixin {
+        LocalStorageMixin {
   FlutterCalloutMixins._internal() // Private constructor
   {
     BaseMixins.instance;
@@ -57,4 +57,5 @@ class FlutterCalloutMixins
   static FlutterCalloutMixins get instance {
     return _instance;
   }
+
 }

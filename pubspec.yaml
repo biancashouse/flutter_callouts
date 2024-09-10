@@ -25,6 +25,8 @@ dependencies:
   logger: ^2.4.0
   pointer_interceptor: ^0.10.1+1
   gradient_borders: 1.0.1
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
 
   bh_shared:
     path: ../bh_shared
@@ -53,9 +55,4 @@ dev_dependencies:
 flutter:
 
   uses-material-design: true
-
-  assets:
-    - lib/assets/
-    - lib/assets/images/
-
 

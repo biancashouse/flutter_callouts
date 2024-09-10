@@ -1,12 +1,10 @@
 import 'dart:math';
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
 import 'package:flutter_callouts/src/api/callouts/overlay_entry_list.dart';
 
 mixin CalloutMixin {
-
   static const int separationAnimationMs = 500;
 
   // assumption: at least 1 build has been executed; after initState
@@ -18,16 +16,17 @@ mixin CalloutMixin {
     TargetKeyFunc? targetGkF,
     bool ensureLowestOverlay = false,
     int? removeAfterMs,
+    VoidCallback? onReadyF,
     final ValueNotifier<int>? targetChangedNotifier,
     // TargetModel? configurableTarget,
     final skipWidthConstraintWarning = false,
     final skipHeightConstraintWarning = false,
   }) async
   // #end
-      {
+  {
     if (fca.alreadyGotit(calloutConfig.cId)) return;
 
-    if (fca.anyPresent([calloutConfig.cId])) return;
+    if (anyPresent([calloutConfig.cId])) return;
 
     if ((calloutConfig.calloutW ?? 0) < 0) {
       print('tbd');
@@ -60,7 +59,7 @@ mixin CalloutMixin {
       fca
           .measureWidgetRect(context: fca.rootContext, widget: calloutContent)
           .then(
-            (rect) {
+        (rect) {
           calloutConfig.calloutW = rect.width;
           calloutConfig.calloutH = rect.height;
           fca.logi('measured content size: ${rect.toString()}');
@@ -71,6 +70,7 @@ mixin CalloutMixin {
             targetGkF,
             targetChangedNotifier,
             ensureLowestOverlay,
+            onReadyF,
           );
         },
       );
@@ -84,18 +84,22 @@ mixin CalloutMixin {
         targetGkF,
         targetChangedNotifier,
         ensureLowestOverlay,
+        onReadyF,
       );
     }
 
     await Future.delayed(Duration(milliseconds: 800));
   }
 
-  void _createOverlayDefinitelyHasSize(CalloutConfig calloutConfig,
-      Widget calloutContent,
-      // ZoomerState? zoomer,
-      TargetKeyFunc? targetGkF,
-      ValueNotifier<int>? targetChangedNotifier,
-      bool ensureLowestOverlay,) {
+  void _createOverlayDefinitelyHasSize(
+    CalloutConfig calloutConfig,
+    Widget calloutContent,
+    // ZoomerState? zoomer,
+    TargetKeyFunc? targetGkF,
+    ValueNotifier<int>? targetChangedNotifier,
+    bool ensureLowestOverlay,
+    VoidCallback? onReadyF,
+  ) {
     OverlayEntry oEntry = _createOverlay(
       // zoomer,
       calloutConfig,
@@ -111,18 +115,20 @@ mixin CalloutMixin {
     Future.delayed(const Duration(milliseconds: 300), () {
       if (calloutConfig.notToast) {
         // fca.logi('_possiblyAnimateSeparation');
-        _possiblyAnimateSeparation(calloutConfig);
+        _possiblyAnimateSeparation(calloutConfig, onReadyF);
       } else {
-        _possiblyAnimateToastPos(calloutConfig);
+        _possiblyAnimateToastPos(calloutConfig, onReadyF);
       }
     });
   }
 
-  OverlayEntry _createOverlay(// ZoomerState? zoomer,
-      CalloutConfig calloutConfig,
-      Widget boxContent,
-      TargetKeyFunc? targetGkF,
-      bool ensureLowestOverlay,) {
+  OverlayEntry _createOverlay(
+    // ZoomerState? zoomer,
+    CalloutConfig calloutConfig,
+    Widget boxContent,
+    TargetKeyFunc? targetGkF,
+    bool ensureLowestOverlay,
+  ) {
     late OverlayEntry entry;
     entry = OverlayEntry(builder: (BuildContext ctx) {
       // FCA.initWithContext(ctx);
@@ -161,8 +167,7 @@ mixin CalloutMixin {
       OE? oeObj = findOE(calloutConfig.cId);
       if ((calloutConfig.calloutW ?? 0) <= 0) {
         fca.logi(
-            'calloutW:${calloutConfig.calloutW} !!!  (cId:${calloutConfig
-                .cId}');
+            'calloutW:${calloutConfig.calloutW} !!!  (cId:${calloutConfig.cId}');
       }
       return Visibility(
         visible: oeObj == null || !oeObj.isHidden,
@@ -218,7 +223,10 @@ mixin CalloutMixin {
     return entry;
   }
 
-  Future<void> _possiblyAnimateSeparation(CalloutConfig calloutConfig) async {
+  Future<void> _possiblyAnimateSeparation(
+    CalloutConfig calloutConfig,
+    VoidCallback? onReadyF,
+  ) async {
     if (calloutConfig.finalSeparation > 0.0) {
       // animate separation, top or left
       AnimationController animationController = AnimationController(
@@ -226,7 +234,7 @@ mixin CalloutMixin {
         vsync: calloutConfig,
       );
       Tween<double> tween =
-      Tween<double>(begin: 0.0, end: calloutConfig.finalSeparation);
+          Tween<double>(begin: 0.0, end: calloutConfig.finalSeparation);
       Animation<double> animation = tween.animate(CurvedAnimation(
         parent: animationController,
         curve: Curves.bounceOut,
@@ -242,7 +250,7 @@ mixin CalloutMixin {
         calloutConfig.setSeparation(animation.value);
       });
       calloutConfig.startedAnimatingSeparation();
-      animationController.forward(from: 0.0);
+      animationController.forward(from: 0.0).then((value) => onReadyF?.call());
     }
   }
 
@@ -337,7 +345,10 @@ mixin CalloutMixin {
     return initialOffset;
   }
 
-  Future<void> _possiblyAnimateToastPos(CalloutConfig toastCC) async {
+  Future<void> _possiblyAnimateToastPos(
+    CalloutConfig toastCC,
+    VoidCallback? onReadyF,
+  ) async {
     if (toastCC.left != null && toastCC.top != null) {
       Offset initialPos = Offset(toastCC.left!, toastCC.top!);
       Offset finalPos = _finalOffsetFromGravity(
@@ -365,7 +376,7 @@ mixin CalloutMixin {
         toastCC.setPos(animation.value);
       });
       toastCC.startedAnimatingSeparation();
-      animationController.forward();
+      animationController.forward(from: 0.0).then((value) => onReadyF?.call());
     }
   }
 
@@ -414,12 +425,11 @@ mixin CalloutMixin {
 
   /// given a Rect, returns most appropriate alignment between target and callout within the wrapper
   /// NOTICE does not depend on callout size
-  Alignment calcTargetAlignmentWithinWrapper(Rect wrapperRect,
-      final Rect targetRect) {
+  Alignment calcTargetAlignmentWithinWrapper(
+      Rect wrapperRect, final Rect targetRect) {
     // Rect? wrapperRect = findGlobalRect(widget.key as GlobalKey);
 
-    Rect screenRect =
-    Rect.fromLTWH(0, 0, fca.scrW, fca.scrH);
+    Rect screenRect = Rect.fromLTWH(0, 0, fca.scrW, fca.scrH);
     wrapperRect = screenRect;
     Offset wrapperC = wrapperRect.center;
     Offset targetRectC = targetRect.center;
@@ -446,16 +456,15 @@ mixin CalloutMixin {
     return (renderObject as RenderBox).localToGlobal(Offset.zero);
   }
 
-  (double, double) ensureOnScreen(Rect calloutRect, double minVisibleH,
-      double minVisibleV) {
+  (double, double) ensureOnScreen(
+      Rect calloutRect, double minVisibleH, double minVisibleV) {
     double resultLeft = calloutRect.left;
     double resultTop = calloutRect.top;
     // adjust s.t entirely visible
     if (calloutRect.left > (fca.scrW - minVisibleH)) {
       resultLeft = fca.scrW - minVisibleH;
     }
-    if (calloutRect.top >
-        (fca.scrH - minVisibleV - fca.kbdH)) {
+    if (calloutRect.top > (fca.scrH - minVisibleV - fca.kbdH)) {
       resultTop = fca.scrH - minVisibleV - fca.kbdH;
     }
     if (calloutRect.right < minVisibleH)
@@ -482,10 +491,9 @@ mixin CalloutMixin {
     return Rect.fromLTWH(left, top, width, height);
   }
 
-  Alignment calcTargetAlignmentWholeScreen(final Rect targetRect,
-      double calloutW, double calloutH) {
-    Rect screenRect =
-    Rect.fromLTWH(0, 0, fca.scrW, fca.scrH);
+  Alignment calcTargetAlignmentWholeScreen(
+      final Rect targetRect, double calloutW, double calloutH) {
+    Rect screenRect = Rect.fromLTWH(0, 0, fca.scrW, fca.scrH);
     double T = targetRect.top;
     double L = targetRect.left;
     double B = screenRect.height - targetRect.bottom;
@@ -495,7 +503,7 @@ mixin CalloutMixin {
     double spareOnLeft = L - calloutW;
     double spareOnRight = R - calloutW;
     double maxSpare =
-    [spareAbove, spareBelow, spareOnLeft, spareOnRight].reduce(max);
+        [spareAbove, spareBelow, spareOnLeft, spareOnRight].reduce(max);
     if (maxSpare == spareOnRight) {
       return Alignment.centerRight;
     } else if (maxSpare == spareOnLeft)
@@ -528,7 +536,7 @@ mixin CalloutMixin {
     // return Alignment.center;
   }
 
-  //------------------
+//------------------
 //---  static  -----
 //------------------
   OE? findOE(Feature cId) {
@@ -541,7 +549,7 @@ mixin CalloutMixin {
   }
 
   CalloutConfig? getCalloutConfig(Feature feature) {
-    OE? oe  = findOE(feature);
+    OE? oe = findOE(feature);
     if (oe != null) return oe.calloutConfig;
     return null;
   }
@@ -582,8 +590,8 @@ mixin CalloutMixin {
 
   void dismissAll(
       {List<Feature> exceptFeatures = const [],
-        bool onlyToasts = false,
-        bool exceptToasts = false}) {
+      bool onlyToasts = false,
+      bool exceptToasts = false}) {
     List<Feature> overlays2bRemoved = [];
     for (OE oe in OE.list) {
 // if (oe.entry != null) {
@@ -718,7 +726,8 @@ mixin CalloutMixin {
     for (OE oe in OE.list) {
       if (!oe.isHidden && oe.entry != null) {
         oe.calloutConfig.calcEndpoints();
-        fca.logi('after calcEndpoints: tR is ${oe.calloutConfig.tR.toString()}');
+        fca.logi(
+            'after calcEndpoints: tR is ${oe.calloutConfig.tR.toString()}');
         oe.entry?.markNeedsBuild();
       }
       // if (!oe.isHidden && oe.opC != null) {
@@ -744,7 +753,7 @@ mixin CalloutMixin {
 
   void preventParentCalloutDrag(BuildContext ctx) {
     PositionedBoxContent? parent =
-    ctx.findAncestorWidgetOfExactType<PositionedBoxContent>();
+        ctx.findAncestorWidgetOfExactType<PositionedBoxContent>();
     if (parent != null) {
       parent.calloutConfig.preventDrag = true;
     }
@@ -752,7 +761,7 @@ mixin CalloutMixin {
 
   void allowParentCalloutDrag(BuildContext ctx) {
     PositionedBoxContent? parent =
-    ctx.findAncestorWidgetOfExactType<PositionedBoxContent>();
+        ctx.findAncestorWidgetOfExactType<PositionedBoxContent>();
     if (parent != null) {
 // delay to allow _onContentPointerUp to do its thing
       fca.afterMsDelayDo(300, () {
@@ -777,7 +786,8 @@ extension GlobalKeyExtension on GlobalKey {
   }
 
   Rect? globalPaintBounds(
-      {bool skipWidthConstraintWarning = true, bool skipHeightConstraintWarning = true}) {
+      {bool skipWidthConstraintWarning = true,
+      bool skipHeightConstraintWarning = true}) {
     // var cw = currentWidget;
     var cc = currentContext;
     Size? scrSize;
@@ -808,18 +818,18 @@ extension GlobalKeyExtension on GlobalKey {
             Text(
               paintBounds?.width == fca.scrW
                   ? "\nThe width of your callout target is the same as the window width.\n"
-                  "This might indicate that your target has an unbounded width constraint.\n"
-                  "This occurs, for example, when your target is a child of a ListView.\n\n"
-                  "If this is intentional, add 'skipContraintWarning:true' as an arg\n\n"
-                  "  to constructor wrapTarget\n\n"
-                  "  or to calls to showOverlay()\n\n"
-                  "Context: ${cc.toString()}"
+                      "This might indicate that your target has an unbounded width constraint.\n"
+                      "This occurs, for example, when your target is a child of a ListView.\n\n"
+                      "If this is intentional, add 'skipContraintWarning:true' as an arg\n\n"
+                      "  to constructor wrapTarget\n\n"
+                      "  or to calls to showOverlay()\n\n"
+                      "Context: ${cc.toString()}"
                   : "\nThe hwight of your callout target is the same as the window hwight.\n"
-                  "This might indicate that your target has an unbounded hwight constraint.\n"
-                  "If this height is intentional, add 'skipContraintWarning:true' as an arg\n\n"
-                  "  to constructor wrapTarget\n\n"
-                  "  or to calls to showOverlay()\n\n"
-                  "Context: ${cc.toString()}",
+                      "This might indicate that your target has an unbounded hwight constraint.\n"
+                      "If this height is intentional, add 'skipContraintWarning:true' as an arg\n\n"
+                      "  to constructor wrapTarget\n\n"
+                      "  or to calls to showOverlay()\n\n"
+                      "Context: ${cc.toString()}",
             ),
             TextButton(
               onPressed: () {
