@@ -698,10 +698,26 @@ mixin CalloutMixin {
     OE? oeObj = findOE(cId);
     if (oeObj != null /*  && !oeObj.isHidden*/) {
       oeObj
-        ..isHidden = true
-        ..opC?.hide()
+      ..isHidden = true
+      ..opC?.hide()
         ..entry?.markNeedsBuild();
       // OE.debug();
+    }
+  }
+
+  void zeroHeight(String cId) {
+    OE? oeObj = findOE(cId);
+    if (oeObj != null /*  && !oeObj.isHidden*/) {
+      oeObj.savedHeight = oeObj.calloutConfig.calloutH = 0;
+      oeObj.entry?.markNeedsBuild();
+    }
+  }
+
+  void restoreHeight(String cId) {
+    OE? oeObj = findOE(cId);
+    if (oeObj != null /*  && !oeObj.isHidden*/) {
+      oeObj.calloutConfig.calloutH = oeObj.savedHeight;
+      oeObj.entry?.markNeedsBuild();
     }
   }
 

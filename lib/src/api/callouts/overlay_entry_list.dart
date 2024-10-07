@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
 
@@ -12,14 +11,15 @@ class OE {
   OverlayPortalController? opC;
   CalloutConfig calloutConfig;
   bool isHidden;
+  double? savedHeight;
 
-  OE(
-      {this.entry,
-      this.opC,
-      required this.calloutConfig,
-      this.isHidden = false}) {
+  OE({this.entry,
+    this.opC,
+    required this.calloutConfig,
+    this.isHidden = false,
+    this.savedHeight}) {
     assert(opC != null || entry != null,
-        'OE(): must specify an Overlay or an OverlayPortal');
+    'OE(): must specify an Overlay or an OverlayPortal');
   }
 
   static final List<OE> list = [];
