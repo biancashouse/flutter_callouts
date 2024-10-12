@@ -46,7 +46,7 @@ mixin TextEditorMixin {
     // Callout.removeAllOverlays();
     fca.showOverlay(
         targetGkF: targetGK,
-        calloutContent: FC_TextField(
+        calloutContent: StringEditor_T(
           inputType: String,
           key: calloutChildGK,
           prompt: () => prompt,

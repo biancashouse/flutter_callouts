@@ -27,7 +27,7 @@ export 'src/measuring/measure_sizebox.dart';
 export 'src/measuring_mixin.dart';
 export 'src/mq_mixin.dart';
 export 'src/rootcontext_mixin.dart';
-export 'src/text_editing/fc_textfield_T.dart';
+export 'src/text_editing/string_editor.dart';
 export 'src/text_editing/textfield_callout.dart';
 export 'src/typedefs.dart';
 

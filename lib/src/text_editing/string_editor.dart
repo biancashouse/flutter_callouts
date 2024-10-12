@@ -4,7 +4,7 @@ import 'package:flutter_callouts/flutter_callouts.dart';
 
 /// https://www.flutterbeads.com/multiline-textfield-in-flutter/
 ///
-class FC_TextField extends StatefulWidget {
+class StringEditor_T extends StatefulWidget {
   final String Function()? prompt;
   final String Function()? inputDecorationLabel;
   final String originalS;
@@ -25,7 +25,7 @@ class FC_TextField extends StatefulWidget {
   final TextStyleF? textStyleF;
   final TextAlignF? textAlignF;
 
-  const FC_TextField({
+  const StringEditor_T({
     this.prompt,
     this.inputDecorationLabel,
     required this.originalS,
@@ -50,7 +50,7 @@ class FC_TextField extends StatefulWidget {
   FC_TextEditorState createState() => FC_TextEditorState();
 }
 
-class FC_TextEditorState extends State<FC_TextField> {
+class FC_TextEditorState extends State<StringEditor_T> {
   late TextEditingController _txtController;
   bool passwordVisible = false;
   late FocusNode _focusNode;
@@ -235,7 +235,6 @@ class FC_TextEditorState extends State<FC_TextField> {
         canRequestFocus: true,
         child: TextField(
           controller: _txtController,
-          focusNode: _focusNode,
           maxLines: widget.isPassword
               ? 1
               : widget.maxLines == 1
@@ -246,6 +245,7 @@ class FC_TextEditorState extends State<FC_TextField> {
           // let key handler decide whether enter completes or appends newline
           inputFormatters: inputFormatters,
           decoration: inputDecoration,
+          focusNode: _focusNode,
           autofocus: !widget.dontAutoFocus,
           obscureText: widget.isPassword && !passwordVisible,
           style: widget.textStyleF != null
