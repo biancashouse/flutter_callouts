@@ -12,10 +12,10 @@ packages:
   bh_shared:
     dependency: transitive
     description:
-      path: "../../bh_shared"
+      path: "../../bh_shared_pkg"
       relative: true
     source: path
-    version: "2.0.1"
+    version: "2.0.2"
   boolean_selector:
     dependency: transitive
     description:

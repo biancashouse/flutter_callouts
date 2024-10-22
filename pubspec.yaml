@@ -29,7 +29,7 @@ dependencies:
   hive_flutter: ^1.1.0
 
   bh_shared:
-    path: ../bh_shared
+    path: ../bh_shared_pkg
 
 #dependency_overrides:
 #  web: ^0.5.0 # latest version as of now
