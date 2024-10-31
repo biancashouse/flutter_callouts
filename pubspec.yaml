@@ -1,6 +1,6 @@
 name: flutter_callouts
 description: Point stuff out for your users => Target, Transform, Configure Callouts, Record to JSON in Dev, and Play in Producton
-version: 0.1.0
+version: 0.2.0
 maintainer: Ian White
 homepage: https://github.com/biancashouse/flutter_callouts
 repository: https://github.com/biancashouse/flutter-callouts
@@ -20,7 +20,7 @@ dependencies:
 
   logger: ^2.4.0
   pointer_interceptor: ^0.10.1+1
-  gradient_borders: 1.0.1
+  gradient_borders: ^1.0.1
   hive: ^2.2.3
   hive_flutter: ^1.1.0
 
@@ -29,8 +29,8 @@ dependencies:
 #dependency_overrides:
 #  web: ^0.5.0 # latest version as of now
 
-  vector_math: any
-  universal_platform: any
+  vector_math: ^2.1.4
+  universal_platform: ^1.1.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

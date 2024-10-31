@@ -1727,7 +1727,7 @@ class CalloutConfig implements TickerProvider {
     if (tR == null) return null;
 
 // account for possible offset X or Y as well
-    var tr = tR;
+//     var tr = tR;
     Offset tCentre = tR!.center;
     Offset cCentre = cR().center;
     Line line = Line.fromOffsets(cCentre, tCentre);

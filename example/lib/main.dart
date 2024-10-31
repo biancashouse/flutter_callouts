@@ -3,7 +3,7 @@ import 'package:flutter_callouts/flutter_callouts.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await fca.localStorage_init();
+  await fca.initLocalStorage();
   runApp(const FlutterCalloutsSimpleDemo());
 }
 
