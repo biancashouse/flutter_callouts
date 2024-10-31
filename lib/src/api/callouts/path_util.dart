@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
-import 'package:flutter_callouts/src/api/callouts/coord.dart';
 
 class PathUtil {
   static const int DEFAULT_THICKNESS = 10;

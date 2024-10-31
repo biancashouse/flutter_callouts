@@ -4,9 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
 
-import 'featured_widget.dart';
-import 'play_callout_button.dart';
-import 'play_overlays_button.dart';
 
 class DiscoveryController {
   final Function? _onFinishedPlaying;

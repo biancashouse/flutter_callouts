@@ -88,7 +88,7 @@ mixin CalloutMixin {
       );
     }
 
-    await Future.delayed(Duration(milliseconds: 800));
+    await Future.delayed(const Duration(milliseconds: 800));
   }
 
   void _createOverlayDefinitelyHasSize(
@@ -324,7 +324,7 @@ mixin CalloutMixin {
     if (alignment == Alignment.topCenter) {
       initialOffset = Offset((fca.scrW - w) / 2, 10);
     } else if (alignment == Alignment.topLeft) {
-      initialOffset = Offset(10, 10);
+      initialOffset = const Offset(10, 10);
     } else if (alignment == Alignment.topRight) {
       initialOffset = Offset(fca.scrW - w - 10, 10);
     } else if (alignment == Alignment.bottomCenter) {
@@ -467,10 +467,12 @@ mixin CalloutMixin {
     if (calloutRect.top > (fca.scrH - minVisibleV - fca.kbdH)) {
       resultTop = fca.scrH - minVisibleV - fca.kbdH;
     }
-    if (calloutRect.right < minVisibleH)
+    if (calloutRect.right < minVisibleH) {
       resultLeft = minVisibleH - calloutRect.width;
-    if (calloutRect.bottom < minVisibleV)
+    }
+    if (calloutRect.bottom < minVisibleV) {
       resultTop = minVisibleV - calloutRect.height;
+    }
 
     return (resultLeft, resultTop);
   }
@@ -830,7 +832,7 @@ extension GlobalKeyExtension on GlobalKey {
       fca.showOverlay(
         calloutContent: Column(
           children: [
-            Text('Warning - Target Size Constraint'),
+            const Text('Warning - Target Size Constraint'),
             Text(
               paintBounds?.width == fca.scrW
                   ? "\nThe width of your callout target is the same as the window width.\n"

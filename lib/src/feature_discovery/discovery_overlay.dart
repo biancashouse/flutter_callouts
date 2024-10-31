@@ -3,8 +3,6 @@ import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
 
-import 'featured_widget.dart';
-import 'overlay_builder.dart';
 
 /*
  * https://github.com/matthew-carroll/fluttery/pull/2/files

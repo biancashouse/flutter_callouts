@@ -2,8 +2,6 @@ import 'dart:math' as Math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
-import 'package:flutter_callouts/src/api/callouts/arrow_type.dart';
-import 'package:flutter_callouts/src/api/callouts/coord.dart';
 
 class PointingLine extends StatefulWidget {
   final Offset from;

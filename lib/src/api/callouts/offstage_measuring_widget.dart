@@ -29,13 +29,12 @@ mixin WidgetMeasuring {
 class _OffstageMeasuringWidget extends StatefulWidget {
   final Widget child;
   final ValueSetter<Size>? onSized;
-  final BoxConstraints? boxConstraints;
+  // final BoxConstraints? boxConstraints;
 
   const _OffstageMeasuringWidget({
-    super.key,
     required this.child,
     this.onSized,
-    this.boxConstraints,
+    // this.boxConstraints,
   });
 
   @override

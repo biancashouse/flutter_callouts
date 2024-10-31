@@ -3,11 +3,7 @@ description: Point stuff out for your users => Target, Transform, Configure Call
 version: 0.1.0
 maintainer: Ian White
 homepage: https://github.com/biancashouse/flutter_callouts
-# github mirrored from bitbucket
-#homepage: https://bitbucket:org/biancashouse/flutter_callouts/src/master/
-#issue_tracker: https://github.com/flutter/flutter/issues?q=is%3Aissue+is%3Aopen+label%3A%22p%3A+flutter_adaptive_scaffold%22
 repository: https://github.com/biancashouse/flutter-callouts
-publish_to: none
 
 environment:
   sdk: '>=3.3.0 <4.0.0'
@@ -33,6 +29,8 @@ dependencies:
 #dependency_overrides:
 #  web: ^0.5.0 # latest version as of now
 
+  vector_math: any
+  universal_platform: any
 dev_dependencies:
   flutter_test:
     sdk: flutter

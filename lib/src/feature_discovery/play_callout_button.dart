@@ -50,7 +50,7 @@ class PlayCalloutButtonState extends State<PlayCalloutButton> {
             child: IconButton(
               key: _gk,
               icon: fca.blink(
-                  Icon(
+                  const Icon(
                 Icons.info,
                 size: 26,
                 color: Colors.black,

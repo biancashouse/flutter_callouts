@@ -3,8 +3,6 @@ import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
 
-import 'discovery_controller.dart';
-import 'discovery_overlay.dart';
 
 // content builder passed in to container needs a handle to that container so it can get call its dismiss when the gitit button is tapped, or in the event of a timeout
 enum WhyDismissed { gotit, tappedOffDiscoveryShape, tappedAction }

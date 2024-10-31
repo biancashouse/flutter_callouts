@@ -4,14 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
 import 'package:flutter_callouts/src/api/callouts/bubble_shape.dart';
-import 'package:flutter_callouts/src/api/callouts/coord.dart';
 import 'package:flutter_callouts/src/api/callouts/draggable_corner.dart';
 import 'package:flutter_callouts/src/api/callouts/draggable_edge.dart';
-import 'package:flutter_callouts/src/api/callouts/line.dart';
 import 'package:flutter_callouts/src/api/callouts/pointing_line.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
 
-import 'decoration_shape_enum.dart';
 // import 'package:transparent_pointer/transparent_pointer.dart';
 
 // import 'callout_config_toolbar.dart';
@@ -188,9 +185,9 @@ class CalloutConfig implements TickerProvider {
 
   double? get calloutH => _calloutH;
 
-  void set calloutW(double? newW) => _calloutW = newW;
+  set calloutW(double? newW) => _calloutW = newW;
 
-  void set calloutH(double? newH) => _calloutH = newH;
+  set calloutH(double? newH) => _calloutH = newH;
 
   bool ignoreCalloutResult;
 
@@ -422,8 +419,8 @@ class CalloutConfig implements TickerProvider {
       initialCalloutPos: initialCalloutPos ?? this.initialCalloutPos,
       finalSeparation: finalSeparation ?? this.finalSeparation,
       barrier: barrier ?? this.barrier,
-      initialCalloutW: suppliedCalloutW ?? this.initialCalloutW,
-      initialCalloutH: suppliedCalloutH ?? this.initialCalloutH,
+      initialCalloutW: suppliedCalloutW ?? initialCalloutW,
+      initialCalloutH: suppliedCalloutH ?? initialCalloutH,
       borderRadius: borderRadius ?? this.borderRadius,
       borderColor: borderColor ?? this.borderColor,
       borderThickness: borderThickness ?? this.borderThickness,

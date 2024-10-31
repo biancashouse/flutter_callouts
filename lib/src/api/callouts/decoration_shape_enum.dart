@@ -30,35 +30,47 @@ enum DecorationShapeEnum {
     // if >1 colors supplied use the colors in a gradient
     Color? fillColor;
     List<Color> fillColors = [];
-    if (fillColorValues?.color1Value != null)
+    if (fillColorValues?.color1Value != null) {
       fillColors.add(Color(fillColorValues!.color1Value!));
-    if (fillColorValues?.color2Value != null)
+    }
+    if (fillColorValues?.color2Value != null) {
       fillColors.add(Color(fillColorValues!.color2Value!));
-    if (fillColorValues?.color3Value != null)
+    }
+    if (fillColorValues?.color3Value != null) {
       fillColors.add(Color(fillColorValues!.color3Value!));
-    if (fillColorValues?.color4Value != null)
+    }
+    if (fillColorValues?.color4Value != null) {
       fillColors.add(Color(fillColorValues!.color4Value!));
-    if (fillColorValues?.color5Value != null)
+    }
+    if (fillColorValues?.color5Value != null) {
       fillColors.add(Color(fillColorValues!.color5Value!));
-    if (fillColorValues?.color6Value != null)
+    }
+    if (fillColorValues?.color6Value != null) {
       fillColors.add(Color(fillColorValues!.color6Value!));
+    }
     Gradient? fillGradient =
         fillColors.length > 1 ? LinearGradient(colors: fillColors) : null;
     if (fillColors.length == 1) fillColor = fillColors.first;
     if (fillColors.isEmpty) fillColor = Colors.white;
     List<Color> borderColors = [];
-    if (borderColorValues?.color1Value != null)
+    if (borderColorValues?.color1Value != null) {
       borderColors.add(Color(borderColorValues!.color1Value!));
-    if (borderColorValues?.color2Value != null)
+    }
+    if (borderColorValues?.color2Value != null) {
       borderColors.add(Color(borderColorValues!.color2Value!));
-    if (borderColorValues?.color3Value != null)
+    }
+    if (borderColorValues?.color3Value != null) {
       borderColors.add(Color(borderColorValues!.color3Value!));
-    if (borderColorValues?.color4Value != null)
+    }
+    if (borderColorValues?.color4Value != null) {
       borderColors.add(Color(borderColorValues!.color4Value!));
-    if (borderColorValues?.color5Value != null)
+    }
+    if (borderColorValues?.color5Value != null) {
       borderColors.add(Color(borderColorValues!.color5Value!));
-    if (borderColorValues?.color6Value != null)
+    }
+    if (borderColorValues?.color6Value != null) {
       borderColors.add(Color(borderColorValues!.color6Value!));
+    }
     BoxBorder? border;
     if (borderColors.length == 1) {
       border = Border.all(color: borderColors.first, width: thickness ?? 3);

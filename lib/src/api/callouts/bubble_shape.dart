@@ -1,8 +1,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
-import 'package:flutter_callouts/src/api/callouts/coord.dart';
-import 'package:flutter_callouts/src/api/callouts/line.dart';
 import 'package:flutter_callouts/src/api/callouts/path_util.dart';
 
 class BubbleShape_OP extends CustomPainter {
