@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:flutter/src/scheduler/ticker.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
 
 import 'overlay_entry_list.dart';
@@ -9,6 +9,7 @@ export 'arrow_type.dart';
 export "rectangle.dart";
 export "side.dart";
 
+// ignore: non_constant_identifier_names
 int SECS(int s) => s * 1000;
 
 class WrappedCallout extends StatefulWidget {
@@ -63,6 +64,7 @@ class WrappedCalloutState extends State<WrappedCallout>  implements TickerProvid
 // OverlayPortal use
   late OverlayPortalController opController;
   late CalloutConfig _config;
+  // ignore: constant_identifier_names
   static const _AllowImagesToRenderMs = 2000;
   late GlobalKey _targetMeasuringGK;
   // late bool _waitingForAnyImagesToRender;
@@ -118,14 +120,14 @@ class WrappedCalloutState extends State<WrappedCallout>  implements TickerProvid
   }
 
   @override
-  Widget build(BuildContext contexT) {return OverlayPortal(
+  Widget build(BuildContext context) {return OverlayPortal(
     controller: opController,
 // the CalloutConfig + overlayPortalChild + overlayContent are combined to make the Overlay
     overlayChildBuilder: (_) {
       Rect r = Rect.fromLTWH(targetPos?.dx ?? 0, targetPos?.dy ?? 0,
           targetSize?.width ?? 0, targetSize?.height ?? 0);
       return _config.opContentWidget(
-        context: contexT,
+        context: context,
         targetRect: r,
         calloutContent: (ctx) => Builder(builder: (context) {
           return widget.calloutBoxContentBuilderF(context);

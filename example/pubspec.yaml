@@ -1,4 +1,4 @@
-name: flutter_callouts_example_1
+name: flutter_callouts_example
 description: "A Flutter Callouts demo project."
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
@@ -11,7 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  flutter_callouts: ^0.1.0
+  flutter_callouts: ^1.0.0
 
 dev_dependencies:
   flutter_test:

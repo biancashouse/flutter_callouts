@@ -181,8 +181,10 @@ class CalloutConfig implements TickerProvider {
   double? _calloutW;
   double? _calloutH;
 
+  // ignore: unnecessary_getters_setters
   double? get calloutW => _calloutW;
 
+  // ignore: unnecessary_getters_setters
   double? get calloutH => _calloutH;
 
   set calloutW(double? newW) => _calloutW = newW;

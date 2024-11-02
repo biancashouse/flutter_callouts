@@ -15,7 +15,7 @@ class DiscoveryController {
   Timer? startPlayTimer;
 
   static Map<int, Color>? featureBgColors;
-  static late Map<int, Color> featureFgColors;
+  static late Map<Feature, Color> featureFgColors;
 
   DiscoveryController(this._onFinishedPlaying);
 

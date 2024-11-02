@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
 import 'package:flutter_callouts/src/api/callouts/path_util.dart';
 
+// ignore: camel_case_types
 class BubbleShape_OP extends CustomPainter {
   final CalloutConfig calloutConfig;
   final Color? lineColor;
