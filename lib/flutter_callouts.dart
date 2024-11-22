@@ -1,7 +1,5 @@
 // ignore_for_file: constant_identifier_names
 
-import 'package:bh_shared/bh_shared.dart';
-
 import 'flutter_callouts.dart';
 
 // re-export
@@ -60,7 +58,7 @@ class FlutterCalloutMixins
         LocalStorageMixin {
   FlutterCalloutMixins._internal() // Private constructor
   {
-    BaseMixins.instance;
+    // BaseMixins.instance;
     logi('FlutterCallouts._internal()');
   }
 
