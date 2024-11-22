@@ -4,6 +4,7 @@ version: 1.0.0
 maintainer: Ian White
 homepage: https://github.com/biancashouse/flutter_callouts
 repository: https://github.com/biancashouse/flutter-callouts
+#publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 environment:
   sdk: '>=3.3.0 <4.0.0'
@@ -24,7 +25,8 @@ dependencies:
   hive: ^2.2.3
   hive_flutter: ^1.1.0
 
-  bh_shared:  ^2.3.0
+  bh_shared:  ^2.4.0
+#    path: ../bh_shared_pkg
 
 #dependency_overrides:
 #  web: ^0.5.0 # latest version as of now

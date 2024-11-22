@@ -11,7 +11,9 @@ dependencies:
   flutter:
     sdk: flutter
 
-  flutter_callouts: ^1.0.0
+  flutter_callouts:
+    path: ..
+
 
 dev_dependencies:
   flutter_test:

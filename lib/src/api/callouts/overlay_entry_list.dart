@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
 
@@ -12,6 +14,7 @@ class OE {
   CalloutConfig calloutConfig;
   bool isHidden;
   double? savedHeight;
+  int? id;
 
   OE({this.entry,
     this.opC,
@@ -20,6 +23,7 @@ class OE {
     this.savedHeight}) {
     assert(opC != null || entry != null,
     'OE(): must specify an Overlay or an OverlayPortal');
+    id = Random().nextInt(99999999);
   }
 
   static final List<OE> list = [];
@@ -35,11 +39,12 @@ class OE {
     }
   }
 
-  static void deRegisterOE(OE? oe, {bool force = false}) {
-    oe?.calloutConfig.onDismissedF?.call();
+  static void deRegisterOE(OE? oe, {bool force = false, bool skipOnDismiss = false}) {
+    if (oe?.entry != null && !skipOnDismiss) {
+      oe?.calloutConfig.onDismissedF?.call();
+    }
     if (oe?.entry != null || force) {
       OE.list.remove(oe);
-      // debug();
     }
   }
 

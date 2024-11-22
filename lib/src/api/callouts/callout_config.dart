@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
 import 'package:flutter_callouts/src/api/callouts/bubble_shape.dart';
+import 'package:flutter_callouts/src/api/callouts/color_values.dart';
 import 'package:flutter_callouts/src/api/callouts/draggable_corner.dart';
 import 'package:flutter_callouts/src/api/callouts/draggable_edge.dart';
 import 'package:flutter_callouts/src/api/callouts/pointing_line.dart';
