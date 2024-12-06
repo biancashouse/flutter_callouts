@@ -108,7 +108,7 @@ class CalloutConfig implements TickerProvider {
   final TxtChangedF? onTickedF;
   final VoidCallback? onHiddenF;
   final VoidCallback? onAcceptedF;
-  final double draggableEdgeThickness = 30.0;
+  final double draggableEdgeThickness = 16.0;
   final bool alwaysReCalcSize;
   Color? draggableColor;
 
