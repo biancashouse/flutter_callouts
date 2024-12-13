@@ -316,12 +316,12 @@ class CalloutConfig implements TickerProvider {
       initialCalloutAlignment = initialTargetAlignment = null;
     }
 
-    if (barrier != null) {
-      barrier!.gradientColors = [];
-      if (barrier!.opacity > 0.0) {} else {
-        barrier!.gradientColors ??= const [Colors.black12, Colors.black12];
-      }
-    }
+    // if (barrier != null) {
+    //   barrier!.gradientColors = [];
+    //   if (barrier!.opacity > 0.0) {} else {
+    //     barrier!.gradientColors ??= const [Colors.black12, Colors.black12];
+    //   }
+    // }
 
     initialised = true;
     // set gotit automatically once used
@@ -1770,7 +1770,7 @@ class CalloutBarrier {
   final bool hideOnTapped;
   final VoidCallback? onTappedF;
   final double opacity;
-  List<Color>? gradientColors;
+  final Color color;
   final bool hasCircularHole;
   final double holePadding;
 
@@ -1779,7 +1779,7 @@ class CalloutBarrier {
     this.hideOnTapped = false,
     this.onTappedF,
     this.opacity = 0.5,
-    this.gradientColors = const [],
+    this.color = Colors.black,
     this.hasCircularHole = false,
     this.holePadding = 0.0,
   });
