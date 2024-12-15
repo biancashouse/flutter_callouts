@@ -380,7 +380,7 @@ mixin CalloutMixin {
     }
   }
 
-  void showCircularProgressIndicator(bool show, {required String reason}) {
+  void showCircularProgressIndicator(bool show, ScrollControllerName? scName, {required String reason}) {
 // if (width != null && height == null) height = 60;
     BuildContext? cachedContext = fca.rootContext;
     if (show && (cachedContext.mounted)) {
@@ -397,6 +397,7 @@ mixin CalloutMixin {
           alwaysReCalcSize: true,
           arrowType: ArrowType.NONE,
           draggable: false,
+          scrollControllerName: scName,
         ),
         calloutContent: Center(
           child: Container(

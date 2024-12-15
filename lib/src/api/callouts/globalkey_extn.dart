@@ -70,6 +70,7 @@ extension GlobalKeyExtension on GlobalKey {
           initialCalloutW: fca.scrW * .7,
           initialCalloutH: 400,
           fillColor: Colors.white,
+          scrollControllerName: null,
         ),
       );
     }

@@ -14,6 +14,7 @@ class PlayCalloutButton extends StatefulWidget {
   final double? separation;
   final Axis? gotitAxis;
   final Function? onGotitF;
+  final ScrollControllerName? scName;
 
   const PlayCalloutButton({
     required this.feature,
@@ -29,6 +30,7 @@ class PlayCalloutButton extends StatefulWidget {
     this.onGotitF,
     super.key,
     this.arrowColor,
+    this.scName,
   });
 
   @override
@@ -80,6 +82,7 @@ class PlayCalloutButtonState extends State<PlayCalloutButton> {
                     fillColor: Colors.black,
                     borderRadius: 10,
                     barrier: CalloutBarrier(hasCircularHole: true),
+                    scrollControllerName: widget.scName,
                   ),
                   targetGkF: targetGK,
                   calloutContent: widget.calloutContents!,

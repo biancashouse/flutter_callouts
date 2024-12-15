@@ -33,6 +33,7 @@ mixin TextEditorMixin {
     final Color? bgColor,
     final TextStyleF? textStyleF,
     final TextAlignF? textAlignF,
+    final ScrollControllerName? scName,
   }) {
     GlobalKey<FC_TextEditorState> calloutChildGK =
         GlobalKey<FC_TextEditorState>();
@@ -63,6 +64,7 @@ mixin TextEditorMixin {
         ),
         calloutConfig: CalloutConfig(
           cId: feature,
+          scrollControllerName: scName,
           containsTextField: true,
           // focusNode: focusNode,
           barrier: CalloutBarrier(
@@ -129,6 +131,7 @@ mixin TextEditorMixin {
           initialCalloutW: 450,
           initialCalloutH: 140,
           onlyOnce: true,
+          scrollControllerName: scName,
         ),
         calloutContent: Padding(
           padding: const EdgeInsets.all(10),

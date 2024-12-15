@@ -225,7 +225,7 @@ class CalloutConfig implements TickerProvider {
     this.movedOrResizedNotifier,
     this.gravity,
     // this.scale = 1.0,
-    this.scrollControllerName,
+    required this.scrollControllerName, // force developer to consider scrolling
     this.forceMeasure = false,
     this.initialCalloutW,
     this.initialCalloutH,
@@ -412,6 +412,7 @@ class CalloutConfig implements TickerProvider {
   }) {
     return CalloutConfig(
       cId: cId,
+      scrollControllerName: scrollControllerName,
       gravity: gravity ?? this.gravity,
       initialTargetAlignment:
       initialTargetAlignment ?? this.initialTargetAlignment,
