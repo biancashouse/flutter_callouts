@@ -13,10 +13,10 @@ packages:
     dependency: transitive
     description:
       name: bh_shared
-      sha256: "2477be5eb4a0c76b40e49e7622afbb14c287eb306226e858e1f85c58159e8708"
+      sha256: "3e22ebcd2759df653cad688cb6b83c03a2fe186f0dc9fc37e85bd80f4285d163"
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.0"
+    version: "2.5.1"
   boolean_selector:
     dependency: transitive
     description:
@@ -116,7 +116,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "1.1.0"
+    version: "1.2.1"
   flutter_lints:
     dependency: "direct dev"
     description:

@@ -37,7 +37,7 @@ class CalloutConfig implements TickerProvider {
   final bool? onlyOnce;
 
   // final double scale;
-  final String? scrollControllerName;
+  final ScrollControllerName? scrollControllerName;
 
   final GlobalKey? callerGK; // option, allowing caller context to be tracked
 
@@ -346,7 +346,7 @@ class CalloutConfig implements TickerProvider {
     ValueNotifier<int>? movedOrResizedNotifier,
     Alignment? gravity,
     double? scale,
-    String? scrollControllerName,
+    ScrollControllerName? scrollControllerName,
     bool? forceMeasure,
     double? suppliedCalloutW,
     double? suppliedCalloutH,
@@ -1719,7 +1719,7 @@ class CalloutConfig implements TickerProvider {
 //         ),
 //       ));
 
-  Rect _calloutRect() => Rect.fromLTWH(left!, top!, _calloutW!, _calloutH!);
+  Rect _calloutRect() => Rect.fromLTWH(left??0.0, top??0.0, _calloutW??double.infinity, _calloutH??double.infinity);
 
 // Offset _calloutCentre() => _calloutRect().center;
 

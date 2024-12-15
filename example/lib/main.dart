@@ -37,7 +37,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   /// the CalloutConfig object is where you configure the callout and its pointer
   /// All params are shown, and many are commented out for this example callout
-  CalloutConfig basicCalloutConfig(ScrollController controller) =>
+  CalloutConfig
+  basicCalloutConfig(ScrollController controller) =>
       CalloutConfig(
         cId: 'basic',
         // -- initial pos and animation ---------------------------------
@@ -105,7 +106,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     /// target's key
     fabGK = GlobalKey();
 
-    controller.listenToOffset();
+    // controller.listenToOffset();
 
     fca.afterNextBuildDo(() {
       fca.showOverlay(

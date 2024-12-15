@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
 
@@ -6,20 +5,27 @@ typedef ScrollControllerName = String;
 
 class NamedScrollController extends ScrollController {
   final ScrollControllerName name;
-  final Axis axis;
+  final Axis axis; // need axis for bubble pos translate
 
-  static final Map<ScrollControllerName, NamedScrollController> _instanceMap = {};
+  static final Map<ScrollControllerName, NamedScrollController> _instanceMap = {
+  };
   static final Map<ScrollControllerName, double> _scrollOffsetMap = {};
 
-  NamedScrollController(this.name, this.axis, {super.initialScrollOffset, super.debugLabel}) {
-    _instanceMap..remove(name)..[name] = this;
+  NamedScrollController(this.name, this.axis,
+      {super.initialScrollOffset, super.debugLabel}) {
+    _instanceMap
+      ..remove(name)
+      ..[name] = this;
     fca.logi("new NamedScrollController($name)");
     // onAttach() {
     //   fca.logi('********************************** onAttach() - ${positions.length} positions' );
     // }
+    _listenToOffset();
+    fca.logi(
+        "NamedScrollController($name) listening for saving offset and refreshing callouts");
   }
 
-  void listenToOffset() {
+  void _listenToOffset() {
     addListener(() {
       if (hasClients) {
         _scrollOffsetMap[name] = offset;
@@ -30,21 +36,32 @@ class NamedScrollController extends ScrollController {
     });
   }
 
-  void refreshOffset() {
-    double? so = _scrollOffsetMap[name];
-    if (so != null && hasClients && offset != so) {
-      jumpTo(so);
+  static List<ScrollController> allControllers() => _instanceMap.values.toList();
+
+  static void restoreOffset(ScrollControllerName? scName) {
+    if (scName == null) return;
+    var sC = _instanceMap[scName];
+    if (sC == null) return;
+    double? so = _scrollOffsetMap[scName];
+    if (so != null && sC.hasClients && sC.offset != so) {
+      sC.jumpTo(so);
     }
   }
 
-  static double _scrollOffset(ScrollControllerName scName) =>
-      _scrollOffsetMap[scName] ?? 0.0;
+  static void restoreOffsetTo(ScrollControllerName? scName, double scOffset) {
+    if (scName == null) return;
+    var sC = _instanceMap[scName];
+    sC?.jumpTo(scOffset);
+  }
+
+  static double scrollOffset(ScrollControllerName? scName) =>
+      scName != null ? (_scrollOffsetMap[scName] ?? 0.0) : 0.0;
 
   static double hScrollOffset(ScrollControllerName? scName) {
     if (scName == null) return 0.0;
     var sC = _instanceMap[scName];
     double result = sC != null && sC.axis == Axis.horizontal
-        ? _scrollOffset(scName)
+        ? scrollOffset(scName)
         : 0.0;
     // if (result != 0.0) fca.logi('hScrollOffset!=0');
     return result;
@@ -54,7 +71,7 @@ class NamedScrollController extends ScrollController {
     if (scName == null) return 0.0;
     var sC = _instanceMap[scName];
     double result = sC != null && sC.axis == Axis.vertical
-        ? _scrollOffset(scName)
+        ? scrollOffset(scName)
         : 0.0;
     // if (result != 0.0) fca.logi('vScrollOffset!=0');
     return result;
