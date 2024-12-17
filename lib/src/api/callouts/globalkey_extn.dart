@@ -3,6 +3,8 @@ import 'package:flutter_callouts/flutter_callouts.dart';
 
 bool _alreadyGaveGlobalPosAndSizeWarning = false;
 
+Map<GlobalKey, Rect> _measuredKeys = {};
+
 extension GlobalKeyExtension on GlobalKey {
 
   (Offset?, Size?) globalPosAndSize() {
@@ -13,6 +15,8 @@ extension GlobalKeyExtension on GlobalKey {
   Rect? globalPaintBounds(
       {bool skipWidthConstraintWarning = true,
       bool skipHeightConstraintWarning = true}) {
+    if (_measuredKeys.containsKey(this)) return _measuredKeys[this];
+
     // var cw = currentWidget;
     var cc = currentContext;
     Size? scrSize;
@@ -76,7 +80,7 @@ extension GlobalKeyExtension on GlobalKey {
     }
     if (translation != null && paintBounds != null) {
       final offset = Offset(translation.x, translation.y);
-      return paintBounds.shift(offset);
+      return _measuredKeys[this] = paintBounds.shift(offset);
     } else {
       return null;
     }
