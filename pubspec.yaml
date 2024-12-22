@@ -4,7 +4,7 @@ version: 2.3.1
 maintainer: Ian White
 homepage: https://github.com/biancashouse/flutter_callouts
 repository: https://github.com/biancashouse/flutter-callouts
-#publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 environment:
   sdk: '>=3.3.0 <4.0.0'
@@ -22,17 +22,20 @@ dependencies:
   logger: ^2.4.0
   pointer_interceptor: ^0.10.1+2
   gradient_borders: ^1.0.1
-  hive: ^2.2.3
-  hive_flutter: ^1.1.0
-
-  bh_shared:  ^2.9.2
-#    path: ../bh_shared_pkg
+  package_info_plus: ^8.0.2
+  universal_platform: ^1.1.0
+  device_info_plus: ^11.1.0
+  path_provider: ^2.1.4
+  image_network: ^2.5.6
+  vector_math: ^2.1.4
+  intl: ^0.19.0
+  timeago: ^3.7.0
+  gap: ^3.0.1
+  shared_preferences: ^2.3.4
 
 #dependency_overrides:
 #  web: ^0.5.0 # latest version as of now
 
-  vector_math: ^2.1.4
-  universal_platform: ^1.1.0
 
 dev_dependencies:
   flutter_test:

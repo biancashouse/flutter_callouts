@@ -26,14 +26,18 @@ class NamedScrollController extends ScrollController {
   }
 
   void _listenToOffset() {
+    // update map with new offset
     addListener(() {
-      if (hasClients) {
-        _scrollOffsetMap[name] = offset;
-        fca.logi('NamedScrollController.listenToOffset: $name, $offset)');
-        fca.refreshAll();
-        fca.logi('NamedScrollController.listenToOffset: refreshAll');
-      }
+      listener.call();
     });
+  }
+  void listener() {
+    if (hasClients) {
+      _scrollOffsetMap[name] = offset;
+      fca.logi('NamedScrollController.listenToOffset: $name, $offset)');
+      fca.refreshAll();
+      fca.logi('NamedScrollController.listenToOffset: refreshAll');
+    }
   }
 
   static List<ScrollController> allControllers() => _instanceMap.values.toList();

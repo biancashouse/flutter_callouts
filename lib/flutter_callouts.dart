@@ -3,15 +3,14 @@
 import 'flutter_callouts.dart';
 
 // re-export
-export 'package:bh_shared/src/debouncer/debouncer.dart';
-export 'package:bh_shared/src/widget/error.dart';
-export 'package:bh_shared/src/widget/blink.dart';
-export 'package:bh_shared/src/widget/constant_scroll_behavior.dart';
-export 'package:bh_shared/src/system_mixin.dart';
-export 'package:bh_shared/src/canvas/canvas_mixin.dart';
-export 'package:bh_shared/src/widget/widget_helper_mixin.dart';
-export 'package:bh_shared/src/gotits_mixin.dart';
-export 'package:bh_shared/src/local_storage_mixin.dart';
+export 'src/debouncer/debouncer.dart';
+export 'src/widget/error.dart';
+export 'src/widget/blink.dart';
+export 'src/widget/constant_scroll_behavior.dart';
+export 'src/system_mixin.dart';
+export 'src/canvas/canvas_mixin.dart';
+export 'src/widget/widget_helper_mixin.dart';
+export 'src/gotits_mixin.dart';
 
 export 'src/api/callouts/arrow_type.dart';
 export 'src/api/callouts/callout_config.dart';
@@ -54,8 +53,7 @@ class FlutterCalloutMixins
         SystemMixin,
         WidgetHelperMixin,
         GotitsMixin,
-        CanvasMixin,
-        LocalStorageMixin {
+        CanvasMixin {
   FlutterCalloutMixins._internal() // Private constructor
   {
     // BaseMixins.instance;

@@ -29,11 +29,11 @@ class MyHomePage extends StatefulWidget {
 
 /// it's important to add the mixin, because callouts are animated
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
-  int _counter = 0;
+  late int _counter;
 
   late GlobalKey fabGK;
 
-  NamedScrollController controller = NamedScrollController('main', Axis.vertical);
+  NamedScrollController sC = NamedScrollController('main', Axis.vertical);
 
   /// the CalloutConfig object is where you configure the callout and its pointer
   /// All params are shown, and many are commented out for this example callout
@@ -90,18 +90,22 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         // draggable: false,
         // draggableColor: Colors.green,
         // dragHandleHeight: ,
-        scrollControllerName: 'main',
+        scrollControllerName: sC.name,
+        allowCalloutToScroll: false,
       );
 
   void _incrementCounter() {
     setState(() {
       _counter++;
+      fca.spwc?.setInt("counter", _counter);
     });
   }
 
   @override
   void initState() {
     super.initState();
+
+    _counter = fca.spwc?.getInt("counter") ?? 0;
 
     /// target's key
     fabGK = GlobalKey();
@@ -110,7 +114,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
     fca.afterNextBuildDo(() {
       fca.showOverlay(
-        calloutConfig: basicCalloutConfig(controller),
+        calloutConfig: basicCalloutConfig(sC),
         calloutContent: const Padding(
           padding: EdgeInsets.all(8.0),
           child: Column(
@@ -150,8 +154,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           borderRadius: 16,
           borderColor: Colors.yellow,
           elevation: 10,
-          scrollControllerName: 'main',
+          scrollControllerName: sC.name,
           onDismissedF: () => onDismissedF?.call(),
+          // allowCalloutToScroll: false,
         ),
         calloutContent: Center(
           child: Text(
@@ -176,7 +181,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           child: Scaffold(
             body: Center(
               child: SingleChildScrollView(
-                controller: controller,
+                controller: sC,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[

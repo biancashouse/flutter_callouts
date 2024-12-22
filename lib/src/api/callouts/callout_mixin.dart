@@ -279,6 +279,7 @@ mixin CalloutMixin {
       arrowType: ArrowType.NONE,
       // draggable: false,
       skipOnScreenCheck: true,
+      allowScrolling: calloutConfig.allowCalloutToScroll,
     );
     if (removeAfterMs > 0) {
       Future.delayed(Duration(milliseconds: removeAfterMs), () {

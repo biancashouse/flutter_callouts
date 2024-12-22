@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
@@ -6,6 +5,7 @@ import 'package:flutter_callouts/src/api/callouts/bubble_shape.dart';
 import 'package:flutter_callouts/src/api/callouts/draggable_corner.dart';
 import 'package:flutter_callouts/src/api/callouts/draggable_edge.dart';
 import 'package:flutter_callouts/src/api/callouts/pointing_line.dart';
+import 'package:flutter_callouts/src/widget/blink.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
 
 // import 'package:transparent_pointer/transparent_pointer.dart';
@@ -38,6 +38,7 @@ class CalloutConfig implements TickerProvider {
 
   // final double scale;
   final ScrollControllerName? scrollControllerName;
+  bool allowCalloutToScroll;
 
   final GlobalKey? callerGK; // option, allowing caller context to be tracked
 
@@ -126,8 +127,20 @@ class CalloutConfig implements TickerProvider {
 
   // WidgetBuilder? _cachedCalloutContent;
 
-  double scrollOffsetX() => NamedScrollController.hScrollOffset(scrollControllerName);
-  double scrollOffsetY() => NamedScrollController.vScrollOffset(scrollControllerName);
+  double scrollOffsetX() =>
+      allowCalloutToScroll
+          ? NamedScrollController.hScrollOffset(scrollControllerName)
+          : 0;
+
+  double scrollOffsetY() {
+    if (allowCalloutToScroll) {
+      double offset = NamedScrollController.vScrollOffset(scrollControllerName);
+      // print('$scrollControllerName scrollOffsetY: $offset');
+      return offset;
+    } else {
+      return 0;
+    }
+  }
 
   void setRebuildCallback(VoidCallback newCallback) =>
       _rebuildOverlayEntryF = newCallback;
@@ -210,7 +223,8 @@ class CalloutConfig implements TickerProvider {
 
   Rectangle cR() =>
       Rectangle.fromRect(_calloutRect()
-          .translate(contentTranslateX ?? 0.0, contentTranslateY ?? 0.0));
+          .translate(-scrollOffsetX() + (contentTranslateX ?? 0.0),
+          -scrollOffsetY() + (contentTranslateY ?? 0.0)));
 
   // TargetModel? _configurableTarget;
 
@@ -226,6 +240,7 @@ class CalloutConfig implements TickerProvider {
     this.gravity,
     // this.scale = 1.0,
     required this.scrollControllerName, // force developer to consider scrolling
+    this.allowCalloutToScroll = true,
     this.forceMeasure = false,
     this.initialCalloutW,
     this.initialCalloutH,
@@ -409,6 +424,7 @@ class CalloutConfig implements TickerProvider {
     VoidCallback? onAcceptedF,
     int? initialAnimatedPositionDurationMs,
     bool? notUsingHydratedStorage,
+    required bool allowScrolling,
   }) {
     return CalloutConfig(
       cId: cId,
@@ -454,6 +470,8 @@ class CalloutConfig implements TickerProvider {
       skipOnScreenCheck: skipOnScreenCheck ?? this.skipOnScreenCheck,
       onDismissedF: onDismissedF ?? this.onDismissedF,
       onTickedF: onTickedF ?? this.onTickedF,
+      allowCalloutToScroll: allowScrolling,
+
     );
   }
 
@@ -852,8 +870,7 @@ class CalloutConfig implements TickerProvider {
 
     // fca.logi('before adjusting for separation($_separation): pos is $left, $top');
 
-    if (
-    !_finishedAnimatingSeparation &&
+    if (!_finishedAnimatingSeparation &&
         (_separation) > 0.0 &&
         tR != null &&
         cE != null) {
@@ -1100,8 +1117,7 @@ class CalloutConfig implements TickerProvider {
         _calloutW!,
         _calloutH!,
       );
-    }
-    else if (_opGK?.currentWidget == null) {
+    } else if (_opGK?.currentWidget == null) {
       fca.logi("$cId _targetRectangle(): opGK!?.currentWidget == null");
       // Rect screenRect = Rect.fromLTWH(0, 0, Useful.scrW, Useful.scrH);
       return null;
@@ -1720,7 +1736,9 @@ class CalloutConfig implements TickerProvider {
 //         ),
 //       ));
 
-  Rect _calloutRect() => Rect.fromLTWH(left??0.0, top??0.0, _calloutW??double.infinity, _calloutH??double.infinity);
+  Rect _calloutRect() =>
+      Rect.fromLTWH(left ?? 0.0, top ?? 0.0,
+          _calloutW ?? double.infinity, _calloutH ?? double.infinity);
 
 // Offset _calloutCentre() => _calloutRect().center;
 
@@ -1825,8 +1843,10 @@ class PositionedBoxContent extends StatelessWidget {
     // }
 
     return Positioned(
-        top: (cc.top ?? 0) + (cc.contentTranslateY ?? 0.0),
-        left: (cc.left ?? 0) + (cc.contentTranslateX ?? 0.0),
+        top: -cc.scrollOffsetY() + (cc.top ?? 0) +
+            (cc.contentTranslateY ?? 0.0),
+        left:
+        -cc.scrollOffsetX() + (cc.left ?? 0) + (cc.contentTranslateX ?? 0.0),
         child: GestureDetector(
           onTap: () {
             fca.logi('PositionedBoxContent onTap');

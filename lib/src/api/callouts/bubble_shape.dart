@@ -30,10 +30,7 @@ class BubbleShape_OP extends CustomPainter {
     Path path = Path();
     callout.calcEndpoints();
     Offset tE = callout.tE?.asOffset ?? Offset.zero;
-    tE = tE.translate(
-      -NamedScrollController.hScrollOffset(calloutConfig.scrollControllerName),
-      -NamedScrollController.vScrollOffset(calloutConfig.scrollControllerName),
-    );
+    tE = tE.translate(callout.scrollOffsetX(), callout.scrollOffsetY());
 
     if (callout.arrowType == ArrowType.NONE || (callout.tE == null || callout.cR().contains(tE))) {
       /*
