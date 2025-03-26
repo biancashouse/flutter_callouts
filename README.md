@@ -38,7 +38,7 @@ We wanted to create a single package that would allow communication with the use
 
 - pop up a callout that points to a target widget
 - pop up a callout that has no target, but can be positioned on the screen
-- pop up a callout as a Toast in a variety of positions (using an Alignment properyy)
+- pop up a callout as a Toast in a variety of positions (using an Alignment property)
 <!-- // end of #include -->
 
 <!-- #include readme-features.md -->
@@ -103,7 +103,7 @@ A callout, or toast, is shown in a Flutter Overlay, so does not interfere with y
 ```dart
         ValueNotifier<int>? movedOrResizedNotifier; // bumps every time callout overlay moved or resized
         Function? onGotitPressedF;
-        VoidCallback? CalloutBarrier.onTapped;
+        VoidCallback? onTappedCalloutBarrier;
         VoidCallback? onCloseButtonPressF;
         ValueChanged<Offset>? onDragF;
         VoidCallback? onDragStartedF;
@@ -258,7 +258,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       Callout.showToast(
         removeAfterMs: showForMs,
         calloutConfig: CalloutConfig(
-          cId: 'initstate-toast',
+          cId: 'initState-toast',
           gravity: gravity,
           initialCalloutW: 500,
           initialCalloutH: 90,
