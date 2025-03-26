@@ -36,7 +36,7 @@ mixin MeasuringMixin {
     final Completer<Rect> completer = Completer<Rect>();
     OverlayEntry? entry;
     entry = OverlayEntry(builder: (BuildContext ctx) {
-      fca.logi(Theme.of(context).platform.toString());
+      fca.logger.i(Theme.of(context).platform.toString());
       return Material(
         child: _OffstageWidgetWrapper(
           onMeasuredRect: (Rect? rect) {
@@ -75,25 +75,25 @@ mixin MeasuringMixin {
         false, // should be true if a width was supplied
         final bool skipHeightConstraintWarning =
         false, // should be true if a height was supplied
-        final List<ScrollController>? scrollControllers,
+        // final List<ScrollController>? scrollControllers,
       }) {
-    Map<int, double> savedOffsets = {};
-    if (scrollControllers != null && scrollControllers.isNotEmpty) {
-      for (int i = 0; i < scrollControllers.length; i++) {
-        ScrollController sc = scrollControllers[i];
-        if (sc.positions.isNotEmpty) {
-          savedOffsets[i] = sc.offset;
-        }
-      }
-    }
+    // Map<int, double> savedOffsets = {};
+    // if (scrollControllers != null && scrollControllers.isNotEmpty) {
+    //   for (int i = 0; i < scrollControllers.length; i++) {
+    //     ScrollController sc = scrollControllers[i];
+    //     if (sc.positions.isNotEmpty) {
+    //       savedOffsets[i] = sc.offset;
+    //     }
+    //   }
+    // }
 
     fca.afterNextBuildDo((){
-      if (savedOffsets.isNotEmpty) {
-        for (int i in savedOffsets.keys) {
-          scrollControllers![i].jumpTo(savedOffsets[i]!);
-          // scrollControllers![i].animateTo(savedOffsets[i]!, duration: Duration(milliseconds: 500), curve: Curves.easeIn);
-        }
-      }
+      // if (savedOffsets.isNotEmpty) {
+      //   for (int i in savedOffsets.keys) {
+      //     scrollControllers![i].jumpTo(savedOffsets[i]!);
+      //     // scrollControllers![i].animateTo(savedOffsets[i]!, duration: Duration(milliseconds: 500), curve: Curves.easeIn);
+      //   }
+      // }
       Size size = _measureOffstageWidget(
           GlobalKey(debugLabel: 'offstage-gk'),
           skipWidthConstraintWarning, skipHeightConstraintWarning);
@@ -111,7 +111,7 @@ mixin MeasuringMixin {
         skipHeightConstraintWarning: skipHeightConstraintWarning,
       );
       if (rect != null) {
-        fca.logi(
+        fca.logger.i(
             '_measureThenRenderCallout: width:${rect.width}, height:${rect.height}');
         return rect.size;
       }

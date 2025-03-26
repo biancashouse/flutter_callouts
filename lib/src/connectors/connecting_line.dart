@@ -7,7 +7,7 @@ import 'package:flutter_callouts/src/api/callouts/pointing_line.dart';
 
 
 class ConnectingLine {
-  final Feature feature;
+  final CalloutId feature;
 
   final TargetKeyFunc fromGKF;
   final TargetKeyFunc toGKF;

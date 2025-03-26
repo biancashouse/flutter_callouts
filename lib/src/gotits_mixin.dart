@@ -5,18 +5,18 @@ mixin GotitsMixin {
 
   Future<void> gotit(String feature,
       {bool notUsingHydratedStorage = false}) async {
-    List<String> gotits = fca.spwc?.getStringList('gotits') ?? [];
+    List<String> gotits = fca.localStorage.read('gotits') ?? [];
     if (!gotits.contains(feature)) {
       gotits.add(feature);
-      await fca.spwc?.setStringList('gotits', gotits);
+      await fca.localStorage.write('gotits', gotits);
     }
   }
 
   bool alreadyGotit(String feature, {bool notUsingHydratedStorage = false}) =>
-      (fca.spwc?.getStringList('gotits') ?? []).contains(feature);
+      (fca.localStorage.read('gotits') ?? []).contains(feature);
 
-  void clearGotits({bool notUsingHydratedStorage = false}) {
-    fca.spwc?.remove('gotits');
+  Future<void> clearGotits({bool notUsingHydratedStorage = false}) async {
+    fca.localStorage.delete('gotits');
   }
 
   Widget gotitButton({required String feature,

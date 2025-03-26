@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
-import 'package:flutter_callouts/src/widget/blink.dart';
 import 'package:gap/gap.dart';
 import 'package:image_network/image_network.dart';
 
@@ -381,7 +380,9 @@ mixin WidgetHelperMixin {
             ? FadeInImage(
           fadeInDuration: const Duration(milliseconds: 200),
           alignment: alignment,
-          placeholder: const AssetImage('packages/bh_shared/assets/images/loading-icon-256x256.png'),
+          placeholder: const AssetImage(
+              'lib/assets/images/loading-icon-256x256.png',
+              package: 'flutter_callouts'),
           image: MemoryImage(bytes),
           width: width,
           height: height,
@@ -391,7 +392,9 @@ mixin WidgetHelperMixin {
             child: FadeInImage(
               fadeInDuration: const Duration(milliseconds: 200),
               alignment: alignment,
-              placeholder: const AssetImage('packages/bh_shared/assets/images/loading-icon-256x256.png'),
+              placeholder: const AssetImage(
+                  'lib/assets/images/loading-icon-256x256.png',
+                  package: 'flutter_callouts'),
               image: MemoryImage(bytes),
               width: width,
               height: height,
@@ -488,7 +491,9 @@ mixin WidgetHelperMixin {
         child: FadeInImage(
           key: key,
           alignment: alignment,
-          placeholder: const AssetImage('packages/bh_shared/assets/images/loading-icon-256x256.png'),
+          placeholder: const AssetImage(
+              'lib/assets/images/loading-icon-256x256.png',
+              package: 'flutter_callouts'),
           image: AssetImage(path),
           width: width,
           height: height,
@@ -787,8 +792,10 @@ mixin WidgetHelperMixin {
     String? fontFamily,
     double? letterSpacing,
     FontWeight? fontWeight,
+    FontStyle? fontStyle,
     double scaleFactor = 1.0,
     int? maxLines,
+    TextOverflow? overflow = TextOverflow.ellipsis,
   }) =>
       Text(
         s,
@@ -801,10 +808,11 @@ mixin WidgetHelperMixin {
           fontFamily: fontFamily,
           letterSpacing: letterSpacing,
           fontWeight: fontWeight,
+          fontStyle: fontStyle,
         ),
         maxLines: maxLines,
         softWrap: (maxLines ?? 0) > 1,
-        overflow: TextOverflow.ellipsis,
+        overflow: overflow,
       );
 
   Text purpleText(String s, {double? fontSize, String? family}) =>
@@ -855,6 +863,13 @@ mixin WidgetHelperMixin {
   }
 
   Widget gap(double gap) => Gap(gap);
+
+  Image loadingImage256() =>
+      Image(
+          image: AssetImage(
+            'lib/assets/images/loading-icon-256x256.png',
+            package: 'flutter_callouts',
+          ));
 }
 
 extension ExtendedOffset on Offset {
@@ -862,4 +877,3 @@ extension ExtendedOffset on Offset {
     return '(${dx.floor()}, ${dy.floor()})';
   }
 }
-

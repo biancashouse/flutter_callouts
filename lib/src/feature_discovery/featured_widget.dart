@@ -9,7 +9,7 @@ enum WhyDismissed { gotit, tappedOffDiscoveryShape, tappedAction }
 
 class FeaturedWidget extends StatefulWidget {
   final DiscoveryController discoveryController;
-  final Feature featureEnum;
+  final CalloutId featureEnum;
   final WidgetBuilder childBuilder;
   final FeaturedWidgetActionF? childTapActionF;
   final FeaturedWidgetActionF? childDoubleTapActionF;
@@ -254,7 +254,7 @@ class FeaturedWidgetState extends State<FeaturedWidget> with TickerProviderState
           setState(() => state = OverlayStatusEnum.activating);
         } else if (status == AnimationStatus.completed) {
           stopAnimationControllers();
-          //fca.logi('Actioned.');
+          //fca.logger.i('Actioned.');
           //discoveryController.stop();
           if (widget.childTapActionF != null) {
             /// arrive here when featured widget tapped while discovery overlay showing
@@ -278,7 +278,7 @@ class FeaturedWidgetState extends State<FeaturedWidget> with TickerProviderState
           setState(() => state = OverlayStatusEnum.activating);
         } else if (status == AnimationStatus.completed) {
           stopAnimationControllers();
-          //fca.logi('Actioned.');
+          //fca.logger.i('Actioned.');
           //discoveryController.stop();
           if (widget.childDoubleTapActionF != null) {
             widget.childDoubleTapActionF!(context, widget.discoveryController);
@@ -299,7 +299,7 @@ class FeaturedWidgetState extends State<FeaturedWidget> with TickerProviderState
         } else if (status == AnimationStatus.completed) {
           //FeatureDiscovery.dismiss(context);
           stopAnimationControllers();
-          //fca.logi('Dismissed.');
+          //fca.logger.i('Dismissed.');
           if (widget.overlayDismissedF != null) widget.overlayDismissedF!();
           /*
            * possibly move on to next feature
@@ -327,7 +327,7 @@ class FeaturedWidgetState extends State<FeaturedWidget> with TickerProviderState
   }
 
   void showOverlayIfActiveStep() {
-    Feature? activeEnum = widget.discoveryController.activeFeature();
+    CalloutId? activeEnum = widget.discoveryController.activeFeature();
     setState(() => showOverlay = (activeEnum != null && activeEnum == widget.featureEnum));
 
     if (activeEnum == widget.featureEnum) {

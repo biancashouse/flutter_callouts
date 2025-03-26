@@ -10,12 +10,12 @@ class DiscoveryController {
   final List<GlobalKey<PlayOverlaysButtonState>?> _playOverlayButtonsPresent = [];
   final List<GlobalKey<PlayCalloutButtonState>> _playBottomSheetButtonsPresent = [];
   final List<GlobalKey<FeaturedWidgetState>?> _featuredWidgetsPresent = [];
-  List<Feature> playList = [];
+  List<CalloutId> playList = [];
   int index = -1;
   Timer? startPlayTimer;
 
   static Map<int, Color>? featureBgColors;
-  static late Map<Feature, Color> featureFgColors;
+  static late Map<CalloutId, Color> featureFgColors;
 
   DiscoveryController(this._onFinishedPlaying);
 
@@ -32,7 +32,7 @@ class DiscoveryController {
   }
 
   /// find the featured widget having this id
-  FeaturedWidget? findFeaturedWidget(Feature theFeature) {
+  FeaturedWidget? findFeaturedWidget(CalloutId theFeature) {
     List<FeaturedWidget> found = [];
     for (var fwgk in _featuredWidgetsPresent) {
       FeaturedWidget? fw = fwgk!.currentWidget as FeaturedWidget?;
@@ -65,7 +65,7 @@ class DiscoveryController {
 //    container?.play();
 //  }
 
-  void startPlay(List<Feature> theFeatures, {int afterSecs = 0}) {
+  void startPlay(List<CalloutId> theFeatures, {int afterSecs = 0}) {
     startPlayTimer = Timer(Duration(seconds: afterSecs), () {
       startPlayTimer = null;
       playList = theFeatures;
@@ -74,21 +74,21 @@ class DiscoveryController {
     });
   }
 
-  void playNext() {
-//    //fca.logi('Gotits: ${repo.gotits()}');
+  Future<void> playNext() async {
+//    //fca.logger.i('Gotits: ${repo.gotits()}');
 //    _present.forEach((f, g) {
 //      //String key = repo.shortFeatureKey(f);
-//      //fca.logi('Present: $key');
+//      //fca.logger.i('Present: $key');
 //    });
 //    playList.forEach((f) {
 //      //String key = repo.shortFeatureKey(f);
-//      //fca.logi('playList: $key');
+//      //fca.logger.i('playList: $key');
 //    });
     while (++index < playList.length) {
-      Feature playItem = playList[index];
+      CalloutId playItem = playList[index];
       FeaturedWidget? foundW = findFeaturedWidget(playItem);
-      if (foundW != null && !fca.alreadyGotit(playItem)) {
-        //fca.logi('Playing: ${repo.shortFeatureKey(playItem)}');
+      if (foundW != null && !(await fca.alreadyGotit(playItem))) {
+        //fca.logger.i('Playing: ${repo.shortFeatureKey(playItem)}');
         foundW.play();
         return;
       }
@@ -97,17 +97,17 @@ class DiscoveryController {
     if (_onFinishedPlaying != null) {
       _onFinishedPlaying();
     }
-    // fca.logi('End of Feature Discovery');
+    // fca.logger.i('End of Feature Discovery');
   }
 
   void stopPlay({Function? afterStopF}) {
-    //fca.logi('DISCOVERY STOPPED');
+    //fca.logger.i('DISCOVERY STOPPED');
     if (startPlayTimer?.isActive ?? false) {
       startPlayTimer!.cancel();
       startPlayTimer = null;
     }
     if (index > -1 && index < playList.length) {
-      Feature playItem = playList[index];
+      CalloutId playItem = playList[index];
       FeaturedWidget? foundW = findFeaturedWidget(playItem);
       if (foundW != null) {
         index = 99999;
@@ -121,20 +121,20 @@ class DiscoveryController {
     });
   }
 
-  void triggerPlayButtonRebuild(Feature theFeature) {
+  void triggerPlayButtonRebuild(CalloutId theFeature) {
     // find players for given featured widget
     for (var pbgk in _playOverlayButtonsPresent) {
       PlayOverlaysButtonState? pbs = pbgk!.currentState;
       PlayOverlaysButton? pb = pbgk.currentWidget as PlayOverlaysButton?;
       if (pbs != null && pb!.features.contains(theFeature)) {
         pbs.refresh(() {
-          //fca.logi('setState for playbuttons for $theFeature}');
+          //fca.logger.i('setState for playbuttons for $theFeature}');
         });
       }
     }
   }
 
-  Feature? activeFeature() {
+  CalloutId? activeFeature() {
     return index > -1 && index < playList.length ? playList[index] : null;
   }
 }

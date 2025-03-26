@@ -103,7 +103,7 @@ class DraggableCorner_OP extends StatelessWidget {
             }
           }
           // parent.calloutSize = Size(parent.calloutW!, parent.calloutH!);
-          // fca.logi('new height: ${parent.calloutH!}');
+          // fca.logger.i('new height: ${parent.calloutH!}');
           parent.movedOrResizedNotifier?.value++;
           parent.rebuild(() {
             if (_debounce?.isActive ?? false) _debounce?.cancel();
@@ -172,7 +172,7 @@ class DraggableCorner_OP extends StatelessWidget {
       }
     }
     // parent.calloutSize = Size(parent.calloutW!, parent.calloutH!);
-    // fca.logi('new height: ${parent.calloutH!}');
+    // fca.logger.i('new height: ${parent.calloutH!}');
     parent.movedOrResizedNotifier?.value++;
     parent.rebuild(() {
       if (_debounce?.isActive ?? false) _debounce?.cancel();

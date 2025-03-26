@@ -4,7 +4,7 @@ import 'package:flutter_callouts/flutter_callouts.dart';
 
 class PlayOverlaysButton extends StatefulWidget {
   final DiscoveryController discoveryController;
-  final List<Feature> features;
+  final List<CalloutId> features;
 
   PlayOverlaysButton(this.discoveryController, this.features)
       : super(key: GlobalKey<PlayOverlaysButtonState>()) {
@@ -14,10 +14,10 @@ class PlayOverlaysButton extends StatefulWidget {
   @override
   PlayOverlaysButtonState createState() => PlayOverlaysButtonState();
 
-  bool alreadyGotAllFeatures(BuildContext context) {
+  Future<bool> alreadyGotAllFeatures() async {
     bool result = true;
     for (var fe in features) {
-      if (!fca.alreadyGotit(fe)) result = false;
+      if (! await fca.alreadyGotit(fe)) result = false;
     }
     return result;
   }
@@ -30,27 +30,37 @@ class PlayOverlaysButtonState extends State<PlayOverlaysButton> {
 
   @override
   Widget build(BuildContext context) {
-    //fca.logi('alreadyGotIt ${widget.features} is ${alreadyGotAllFeatures(context)}');
-    Feature? activeFeature = widget.discoveryController.activeFeature();
+    //fca.logger.i('alreadyGotIt ${widget.features} is ${alreadyGotAllFeatures(context)}');
+    CalloutId? activeFeature = widget.discoveryController.activeFeature();
     Color? featureColor = activeFeature != null ? DiscoveryController.featureFgColors[activeFeature] :Colors.white;
     //FeaturedWidget activeFw = widget.discoveryController.widgetOf(activeFeature);
-    return alreadyGotAllFeatures(context)
-        ? Container()
-        : SizedBox(
-            width: 50,
-            child: IconButton(
-              icon: fca.blink(Icon(
-                Icons.info,
-                size: fca.narrowWidth ? 24.0 : 32.0,
-                color: featureColor,
-              )),
-              onPressed: () {
-                widget.discoveryController.startPlay(widget.features);
-              },
-            ));
+
+    return FutureBuilder<bool>(
+      future: widget.alreadyGotAllFeatures(),
+      builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+        if (snapshot.hasData) {
+          // If the Future completed successfully and has data
+          bool alreadyGotAllFeatures = snapshot.data!; // The bool value
+          return alreadyGotAllFeatures
+              ? Container()
+              : SizedBox(
+              width: 50,
+              child: IconButton(
+                icon: fca.blink(Icon(
+                  Icons.info,
+                  size: fca.narrowWidth ? 24.0 : 32.0,
+                  color: featureColor,
+                )),
+                onPressed: () {
+                  widget.discoveryController.startPlay(widget.features);
+                },
+              ));
+        } else {
+          return const CircularProgressIndicator();
+        }
+      },
+    );
+
   }
 
-  bool alreadyGotAllFeatures(BuildContext context) {
-    return widget.alreadyGotAllFeatures(context);
-  }
 }

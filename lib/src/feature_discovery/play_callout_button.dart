@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
 
 class PlayCalloutButton extends StatefulWidget {
-  final Feature feature;
+  final CalloutId feature;
   final Widget? calloutContents;
   final double? contentsWidth;
   final double? contentsHeight;
@@ -81,7 +81,7 @@ class PlayCalloutButtonState extends State<PlayCalloutButton> {
                     arrowType: ArrowType.MEDIUM_REVERSED,
                     fillColor: Colors.black,
                     borderRadius: 10,
-                    barrier: CalloutBarrier(hasCircularHole: true),
+                    barrier: CalloutBarrierConfig(excludeTargetFromBarrier: true),
                     scrollControllerName: widget.scName,
                   ),
                   targetGkF: targetGK,

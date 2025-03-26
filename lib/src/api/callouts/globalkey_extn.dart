@@ -21,7 +21,7 @@ extension GlobalKeyExtension on GlobalKey {
     var cc = currentContext;
     Size? scrSize;
     if (cc == null) {
-      //fca.logi('GlobalKeyExtension: currentContext NULL!');
+      //fca.logger.i('GlobalKeyExtension: currentContext NULL!');
     } else {
       scrSize = MediaQuery.sizeOf(cc);
     }
@@ -31,7 +31,7 @@ extension GlobalKeyExtension on GlobalKey {
     try {
       paintBounds = renderObject?.paintBounds;
     } catch (e) {
-      fca.logi('paintBounds = renderObject?.paintBounds - ${e.toString()}');
+      fca.logger.i('paintBounds = renderObject?.paintBounds - ${e.toString()}');
     }
     // possibly warn about the target having an infinite width
     if (!_alreadyGaveGlobalPosAndSizeWarning &&

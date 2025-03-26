@@ -1,120 +1,63 @@
+// import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  fca.logger.d('Running example app');
+  fca.loggerNs.i('Info message');
+  fca.loggerNs.w('Just a warning!');
+  fca.logger.e('Error! Something bad happened', error: 'Test Error');
+  fca.loggerNs.t({'key': 5, 'value': 'something'});
+
   await fca.initLocalStorage();
-  runApp(const FlutterCalloutsSimpleDemo());
+
+  runApp(const MaterialApp(
+    title: 'flutter_callouts demo',
+    home: CounterDemoPage(),
+  ));
 }
 
-class FlutterCalloutsSimpleDemo extends StatelessWidget {
-  const FlutterCalloutsSimpleDemo({super.key});
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: 'flutter_callouts demo',
-      home: MyHomePage(),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
+class CounterDemoPage extends StatefulWidget {
+  const CounterDemoPage({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<CounterDemoPage> createState() => _CounterDemoPageState();
 }
 
 /// it's important to add the mixin, because callouts are animated
-class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
-  late int _counter;
-
+class _CounterDemoPageState extends State<CounterDemoPage>
+    with TickerProviderStateMixin {
   late GlobalKey fabGK;
+  late GlobalKey countGK;
 
-  NamedScrollController sC = NamedScrollController('main', Axis.vertical);
+  NamedScrollController namedSC = NamedScrollController('main', Axis.vertical);
 
-  /// the CalloutConfig object is where you configure the callout and its pointer
-  /// All params are shown, and many are commented out for this example callout
-  CalloutConfig
-  basicCalloutConfig(ScrollController controller) =>
-      CalloutConfig(
-        cId: 'basic',
-        // -- initial pos and animation ---------------------------------
-        initialTargetAlignment: Alignment.topLeft,
-        initialCalloutAlignment: Alignment.bottomRight,
-        // initialCalloutPos:
-        finalSeparation: 100,
-        // fromDelta: 0.0,
-        // toDelta : 0.0,
-        // initialAnimatedPositionDurationMs:
-        // -- optional barrier (when opacity > 0) ----------------------
-        // barrier: CalloutBarrier(
-        //   opacity: .5,
-        //   onTappedF: () {
-        //     Callout.dismiss("basic");
-        //   },
-        // ),
-        // -- callout appearance ----------------------------------------
-        // suppliedCalloutW: 280, // if not supplied, callout content widget gets measured
-        // suppliedCalloutH: 200, // if not supplied, callout content widget gets measured
-        // borderRadius: 12,
-        borderThickness: 3,
-        fillColor: Colors.yellow[700],
-        // elevation: 10,
-        // frameTarget: true,
-        // -- optional close button and got it button -------------------
-        // showGotitButton: true,
-        // showCloseButton: true,
-        // closeButtonColor:
-        // closeButtonPos:
-        // gotitAxis:
-        // -- pointer -------------------------------------------------
-        // arrowColor: Colors.green,
-        arrowType: ArrowType.POINTY,
-        animate: true,
-        // lineLabel: Text('line label'),
-        // fromDelta: -20,
-        // toDelta: -20,
-        // lengthDeltaPc: ,
-        // contentTranslateX: ,
-        // contentTranslateY:
-        // targetTranslateX:
-        // targetTranslateY:
-        // scaleTarget:
-        // -- resizing -------------------------------------------------
-        // resizeableH: true,
-        // resizeableV: true,
-        // -- dragging -------------------------------------------------
-        // draggable: false,
-        // draggableColor: Colors.green,
-        // dragHandleHeight: ,
-        scrollControllerName: sC.name,
-        allowCalloutToScroll: false,
-      );
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-      fca.spwc?.setInt("counter", _counter);
-    });
-  }
+  late List<Alignment> alignments;
 
   @override
   void initState() {
     super.initState();
 
-    _counter = fca.spwc?.getInt("counter") ?? 0;
-
     /// target's key
     fabGK = GlobalKey();
+    countGK = GlobalKey();
 
-    // controller.listenToOffset();
+    alignments = [
+      Alignment.topCenter, Alignment.topRight,
+      Alignment.centerRight, Alignment.bottomRight,
+      Alignment.bottomCenter,Alignment.bottomLeft,
+      Alignment.centerLeft, Alignment.topLeft,
+      Alignment.center,
+    ];
 
     fca.afterNextBuildDo(() {
       fca.showOverlay(
-        calloutConfig: basicCalloutConfig(sC),
+        calloutConfig: basicCalloutConfig(namedSC),
         calloutContent: const Padding(
           padding: EdgeInsets.all(8.0),
           child: Column(
@@ -131,6 +74,12 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         () => _showToast(Alignment.topCenter),
       );
     });
+  }
+
+  @override
+  void dispose() {
+    namedSC.dispose();
+    super.dispose();
   }
 
   @override
@@ -154,7 +103,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           borderRadius: 16,
           borderColor: Colors.yellow,
           elevation: 10,
-          scrollControllerName: sC.name,
+          scrollControllerName: namedSC.name,
           onDismissedF: () => onDismissedF?.call(),
           // allowCalloutToScroll: false,
         ),
@@ -168,70 +117,208 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       );
 
   @override
-  Widget build(BuildContext context) =>
-      NotificationListener<SizeChangedLayoutNotification>(
-        onNotification: (SizeChangedLayoutNotification notification) {
-          // Callout.dismissAll(exceptFeatures: []);
-          fca.afterMsDelayDo(300, () {
-            fca.refreshAll();
-          });
-          return true;
-        },
-        child: SizeChangedLayoutNotifier(
-          child: Scaffold(
-            body: Center(
-              child: SingleChildScrollView(
-                controller: sC,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height - 200,
+  Widget build(BuildContext context) {
+    return BlocProvider<CounterBloc>(
+      create: (_) => CounterBloc(),
+      child: CounterView(namedSC, fabGK, countGK, basicCalloutConfig(namedSC), alignments),
+    );
+  }
+}
+
+class CounterView extends StatelessWidget {
+  final NamedScrollController namedSC;
+  final GlobalKey fabGK;
+  final GlobalKey countGK;
+  final CalloutConfig cc;
+  final List<Alignment> alignments;
+
+  const CounterView(this.namedSC, this.fabGK, this.countGK, this.cc, this.alignments, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Counter')),
+      body: Center(
+        child: BlocBuilder<CounterBloc, int>(
+          builder: (context, state) {
+            return NotificationListener<SizeChangedLayoutNotification>(
+              onNotification: (SizeChangedLayoutNotification notification) {
+                fca.afterMsDelayDo(300, () {
+                  fca.refreshAll();
+                });
+                return true;
+              },
+              child: SizeChangedLayoutNotifier(
+                child: Scaffold(
+                  body: Center(
+                    child: SingleChildScrollView(
+                      controller: namedSC,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            'You have pushed the + button this many times:',
+                        children: <Widget>[
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height - 200,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  key: countGK,
+                                  '$state',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headlineMedium,
+                                ),
+                              ],
+                            ),
                           ),
-                          Text(
-                            '$_counter',
-                            style: Theme.of(context).textTheme.headlineMedium,
+                          SizedBox(
+                            width: double.infinity,
+                            height: 100,
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Padding(
+                                padding: const EdgeInsets.all(18.0),
+                                child: FloatingActionButton(
+                                  key: fabGK,
+                                  onPressed: () {
+                                    context
+                                        .read<CounterBloc>()
+                                        .add(CounterIncrementPressed());
+                                    // point out the number using a callout
+                                    fca.dismissAll();
+                                    int index = state%alignments.length;
+                                    Alignment ca = alignments[index];
+                                    Alignment ta = -ca;
+                                    fca.showOverlay(
+                                      calloutConfig: basicCalloutConfig(namedSC)
+                                        ..initialCalloutAlignment =
+                                            ca
+                                        ..initialTargetAlignment =
+                                            ta
+                                        ..calloutW = 200
+                                        ..calloutH = 80,
+                                      calloutContent:  Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: const Text(
+                                          'You have pushed the +\nbutton this many times:',
+                                        ),
+                                      ),
+                                      targetGkF: () => countGK,
+                                      removeAfterMs: 2000,
+                                    );
+                                  },
+                                  tooltip: 'Increment',
+                                  child: const Icon(Icons.add),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            height: 1000,
+                            width: double.infinity,
+                            color: Colors.blue[50],
+                            child: const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text(
+                                  'Scroll to see that the yellow callout is Scroll-aware  --  '
+                                  'Resize the window to see the pointer refreshing --  '
+                                  'The yellow callout is draggable'),
+                            ),
                           ),
                         ],
                       ),
                     ),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 100,
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: Padding(
-                          padding: const EdgeInsets.all(18.0),
-                          child: FloatingActionButton(
-                            key: fabGK,
-                            onPressed: _incrementCounter,
-                            tooltip: 'Increment',
-                            child: const Icon(Icons.add),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      height: 1000,
-                      width: double.infinity,
-                      color: Colors.blue[50],
-                      child: const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text(
-                            'Scroll to see that the yellow callout is Scroll-aware.\n'
-                            'Resize the window to see the pointer refreshing.'),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
-            ),
-          ),
+            );
+          },
         ),
-      );
+      ),
+    );
+  }
 }
+
+sealed class CounterEvent {}
+
+final class CounterIncrementPressed extends CounterEvent {}
+
+final class CounterDecrementPressed extends CounterEvent {}
+
+class CounterBloc extends HydratedBloc<CounterEvent, int> {
+  CounterBloc() : super(0) {
+    on<CounterIncrementPressed>((event, emit) => emit(state + 1));
+    on<CounterDecrementPressed>((event, emit) => emit(state - 1));
+  }
+
+  @override
+  int fromJson(Map<String, dynamic> json) => json['value'] as int;
+
+  @override
+  Map<String, int> toJson(int state) => {'value': state};
+}
+
+/// the CalloutConfig object is where you configure the callout and its pointer
+/// All params are shown, and many are commented out for this example callout
+CalloutConfig basicCalloutConfig(NamedScrollController nsc) =>
+    CalloutConfig(
+      cId: 'basic',
+      // -- initial pos and animation ---------------------------------
+      initialTargetAlignment: Alignment.topLeft,
+      initialCalloutAlignment: Alignment.bottomRight,
+      // initialCalloutPos:
+      finalSeparation: 100,
+      // fromDelta: 0.0,
+      // toDelta : 0.0,
+      // initialAnimatedPositionDurationMs:
+      // -- optional barrier (when opacity > 0) ----------------------
+      // barrier: CalloutBarrier(
+      //   opacity: .5,
+      //   onTappedF: () {
+      //     Callout.dismiss("basic");
+      //   },
+      // ),
+      // -- callout appearance ----------------------------------------
+      // suppliedCalloutW: 280, // if not supplied, callout content widget gets measured
+      // suppliedCalloutH: 200, // if not supplied, callout content widget gets measured
+      // borderRadius: 12,
+      borderThickness: 3,
+      fillColor: Colors.yellow[700],
+      // elevation: 10,
+      // frameTarget: true,
+      // -- optional close button and got it button -------------------
+      // showGotitButton: true,
+      // showCloseButton: true,
+      // closeButtonColor:
+      // closeButtonPos:
+      // gotitAxis:
+      // -- pointer -------------------------------------------------
+      // arrowColor: Colors.green,
+      arrowType: ArrowType.THIN,
+      animate: true,
+      // lineLabel: Text('line label'),
+      // fromDelta: -20,
+      // toDelta: -20,
+      // lengthDeltaPc: ,
+      // contentTranslateX: ,
+      // contentTranslateY:
+      // targetTranslateX:
+      // targetTranslateY:
+      // scaleTarget:
+      // -- resizing -------------------------------------------------
+      // resizeableH: true,
+      // resizeableV: true,
+      // -- dragging -------------------------------------------------
+      // draggable: false,
+      // draggableColor: Colors.green,
+      // dragHandleHeight: ,
+      scrollControllerName: nsc.name,
+      followScroll: false,
+      barrier: CalloutBarrierConfig(
+        cutoutPadding: 30,
+        excludeTargetFromBarrier: true,
+        closeOnTapped: true,
+        color: Colors.grey,
+        opacity: .5,
+      ),
+    );

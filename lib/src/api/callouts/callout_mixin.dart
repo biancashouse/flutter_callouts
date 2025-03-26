@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
 import 'package:flutter_callouts/src/api/callouts/overlay_entry_list.dart';
 
@@ -24,12 +25,12 @@ mixin CalloutMixin {
   }) async
   // #end
   {
-    if (fca.alreadyGotit(calloutConfig.cId)) return;
+    if (await fca.alreadyGotit(calloutConfig.cId)) return;
 
     if (anyPresent([calloutConfig.cId])) return;
 
     if ((calloutConfig.calloutW ?? 0) < 0) {
-      print('tbd');
+      fca.logger.w('negative width ?');
     }
 
     // target's GlobalKey supplied
@@ -40,12 +41,23 @@ mixin CalloutMixin {
       });
     }
 
+    // has a barrier means allow escape to dismiss
+    if (calloutConfig.barrier != null) {
+      fca.registerKeystrokeHandler(calloutConfig.cId, (k) {
+        if (k.logicalKey == LogicalKeyboardKey.escape) {
+          fca.dismiss(calloutConfig.cId);
+          fca.hide(calloutConfig.cId);
+        }
+        return false;
+      });
+    }
+
     // // get this target's context
     // if (targetGkF != null) {
     //   GlobalKey? gk = targetGkF.call();
     //   var cc = gk?.currentContext;
     //   if (cc == null) {
-    //     fca.logi(
+    //     fca.logger.i(
     //         '${calloutConfig.cId} missing target gk - overlay not shown');
     //     return;
     //   } else {
@@ -62,7 +74,7 @@ mixin CalloutMixin {
         (rect) {
           calloutConfig.calloutW = rect.width;
           calloutConfig.calloutH = rect.height;
-          fca.logi('measured content size: ${rect.toString()}');
+          fca.logger.i('measured content size: ${rect.toString()}');
           _createOverlayDefinitelyHasSize(
             calloutConfig,
             calloutContent,
@@ -109,12 +121,12 @@ mixin CalloutMixin {
     ); // will be null if target not present
     // if a notifer was passed in, means inside another overlay, so the target would change as the overlay gets moved or resized
     targetChangedNotifier?.addListener(() {
-      // fca.logi("\n\ntime to update the target\n\n");
+      // fca.logger.i("\n\ntime to update the target\n\n");
       fca.afterNextBuildDo(() => oEntry.markNeedsBuild());
     });
     Future.delayed(const Duration(milliseconds: 300), () {
       if (calloutConfig.notToast) {
-        // fca.logi('_possiblyAnimateSeparation');
+        // fca.logger.i('_possiblyAnimateSeparation');
         _possiblyAnimateSeparation(calloutConfig, onReadyF);
       } else {
         _possiblyAnimateToastPos(calloutConfig, onReadyF);
@@ -129,58 +141,75 @@ mixin CalloutMixin {
     TargetKeyFunc? targetGkF,
     bool ensureLowestOverlay,
   ) {
+    // in the event that finalSeparation specified, ensure initial callout at zero separation
+    double? savedFinalSeparation = calloutConfig.finalSeparation;
+    if ((calloutConfig.finalSeparation ?? 0.0) > 0.0) {
+      calloutConfig.setSeparation(0.0);
+    }
+
+    var targetGK = targetGkF?.call();
+    var r = targetGK?.globalPaintBounds(
+    skipWidthConstraintWarning: calloutConfig.calloutW != null,
+    skipHeightConstraintWarning: calloutConfig.calloutH != null);
+
     late OverlayEntry entry;
-    entry = OverlayEntry(builder: (BuildContext ctx) {
-      // FCA.initWithContext(ctx);
-      // fca.logi('...');
-      // fca.logi("${calloutConfig.cId} OverlayEntry.builder...");
-      // fca.logi('...');
+    entry = OverlayEntry(
+      builder: (BuildContext ctx) {
+        // FCA.initWithContext(ctx);
+        // fca.logger.i('...');
+        // fca.logger.i("${calloutConfig.cId} OverlayEntry.builder...");
+        // fca.logger.i('...');
 // if (calloutConfig.cId == 'root'){
-//   fca.logi('root');
+//   fca.logger.i('root');
 // }
 
-      // if no target and no initialPos, use scren dimension
-      if (calloutConfig.initialCalloutW == null &&
-          calloutConfig.initialCalloutH == null &&
-          calloutConfig.initialCalloutPos == null) {
-        calloutConfig.initialCalloutW = fca.scrW;
-        calloutConfig.initialCalloutH = fca.scrH;
-      }
-      Rect? r = targetGkF?.call()?.globalPaintBounds(
-          skipWidthConstraintWarning: calloutConfig.calloutW != null,
-          skipHeightConstraintWarning: calloutConfig.calloutH != null);
-      if (r == null) {
+      var scrSize = fca.scrSize;
+
+        // if no target and no initialPos, use scren dimension
+        if (calloutConfig.initialCalloutW == null &&
+            calloutConfig.initialCalloutH == null &&
+            calloutConfig.initialCalloutPos == null) {
+          calloutConfig.initialCalloutW = fca.scrW;
+          calloutConfig.initialCalloutH = fca.scrH;
+        }
+
+        // Rect? r = targetGK?.globalPaintBounds(
+        //     skipWidthConstraintWarning: calloutConfig.calloutW != null,
+        //     skipHeightConstraintWarning: calloutConfig.calloutH != null);
+        if (r == null) {
 // for toast targetgk will be null, and we have to use the gravity to get a rect
-        calloutConfig.initialCalloutPos ??= Offset(
-          fca.scrW / 2 - calloutConfig.initialCalloutW! / 2,
-          fca.scrH / 2 - calloutConfig.initialCalloutH! / 2,
-        );
-        r = Rect.fromLTWH(
-          calloutConfig.initialCalloutPos!.dx,
-          calloutConfig.initialCalloutPos!.dy,
-          calloutConfig.initialCalloutW!,
-          calloutConfig.initialCalloutH!,
-        );
-// fca.logi('${calloutConfig.cId} failed to measure pos and size from targetGkF - overlay not shown');
+          calloutConfig.initialCalloutPos ??= Offset(
+            fca.scrW / 2 - calloutConfig.initialCalloutW! / 2,
+            fca.scrH / 2 - calloutConfig.initialCalloutH! / 2,
+          );
+          r = Rect.fromLTWH(
+            calloutConfig.initialCalloutPos!.dx,
+            calloutConfig.initialCalloutPos!.dy,
+            calloutConfig.initialCalloutW!,
+            calloutConfig.initialCalloutH!,
+          );
+// fca.logger.i('${calloutConfig.cId} failed to measure pos and size from targetGkF - overlay not shown');
 // return const Icon(Icons.warning_amber);
-      }
-      OE? oeObj = findOE(calloutConfig.cId);
-      if ((calloutConfig.calloutW ?? 0) <= 0) {
-        fca.logi(
-            'calloutW:${calloutConfig.calloutW} !!!  (cId:${calloutConfig.cId}');
-      }
-      return Visibility(
-        visible: oeObj == null || !oeObj.isHidden,
-        child: calloutConfig.oeContentWidget(
+        }
+        OE? oeObj = findOE(calloutConfig.cId);
+        if ((calloutConfig.calloutW ?? 0) <= 0) {
+          fca.logger.i(
+              'calloutW:${calloutConfig.calloutW} !!!  (cId:${calloutConfig.cId}');
+        }
+        return Visibility(
+          visible: oeObj == null || !oeObj.isHidden,
+          child: calloutConfig.oeContentWidget(
 // zoomer: zoomer,
-          targetRect: r,
-          calloutContent: (_) => boxContent,
-          rebuildF: () {
-            entry.markNeedsBuild();
-          },
-        ),
-      );
-    });
+            targetRect: r!,
+            calloutContent: (_) => boxContent,
+            rebuildF: () {
+              entry.markNeedsBuild();
+            },
+          ),
+        );
+      },
+    );
+    calloutConfig.finalSeparation = savedFinalSeparation;
     OverlayEntry? lowestOverlay;
     int? pos;
     if (ensureLowestOverlay) {
@@ -227,7 +256,7 @@ mixin CalloutMixin {
     CalloutConfig calloutConfig,
     VoidCallback? onReadyF,
   ) async {
-    if (calloutConfig.finalSeparation > 0.0) {
+    if ((calloutConfig.finalSeparation ?? 0.0) > 0.0) {
       // animate separation, top or left
       AnimationController animationController = AnimationController(
         duration: const Duration(milliseconds: separationAnimationMs),
@@ -246,7 +275,7 @@ mixin CalloutMixin {
         }
       });
       animation.addListener(() {
-        //fca.logi('new separation: ${animation.value}');
+        //fca.logger.i('new separation: ${animation.value}');
         calloutConfig.setSeparation(animation.value);
       });
       calloutConfig.startedAnimatingSeparation();
@@ -279,7 +308,7 @@ mixin CalloutMixin {
       arrowType: ArrowType.NONE,
       // draggable: false,
       skipOnScreenCheck: true,
-      allowScrolling: calloutConfig.allowCalloutToScroll,
+      allowScrolling: calloutConfig.followScroll,
     );
     if (removeAfterMs > 0) {
       Future.delayed(Duration(milliseconds: removeAfterMs), () {
@@ -289,6 +318,52 @@ mixin CalloutMixin {
     showOverlay(
       calloutConfig: toastCC,
       calloutContent: calloutContent,
+    );
+  }
+
+  void showToastBlueOnYellow({
+    required CalloutId cId,
+    required String msg,
+    int removeAfterMs = 0,
+  }) {
+    var cc = CalloutConfig(
+      cId: cId,
+      gravity: Alignment.topCenter,
+      fillColor: Colors.yellow,
+      initialCalloutW: fca.scrW * .8,
+      initialCalloutH: 40,
+      scrollControllerName: null,
+    );
+
+    showToast(
+      calloutConfig: cc,
+      calloutContent: Center(child: fca.coloredText(msg, color: Colors.blue)),
+      removeAfterMs: removeAfterMs,
+    );
+  }
+
+  void showToastPurpleOnLightWhite({
+    required CalloutId cId,
+    required String msg,
+    int removeAfterMs = 0,
+    double? widthPC,
+  }) {
+    var cc = CalloutConfig(
+      cId: cId,
+      gravity: Alignment.topCenter,
+      fillColor: Colors.white,
+      initialCalloutW:
+          widthPC == null ? fca.scrW * .8 : fca.scrW * widthPC / 100,
+      initialCalloutH: 80,
+      scrollControllerName: null,
+    );
+
+    showToast(
+      calloutConfig: cc,
+      calloutContent: Center(
+          child: fca.coloredText(msg,
+              fontSize: 16, fontWeight: FontWeight.bold, color: Colors.purple)),
+      removeAfterMs: removeAfterMs,
     );
   }
 
@@ -381,49 +456,50 @@ mixin CalloutMixin {
     }
   }
 
-  void showCircularProgressIndicator(bool show, ScrollControllerName? scName, {required String reason}) {
-// if (width != null && height == null) height = 60;
-    BuildContext? cachedContext = fca.rootContext;
-    if (show && (cachedContext.mounted)) {
-      showOverlay(
-        calloutConfig: CalloutConfig(
-          cId: reason,
-          gravity: Alignment.topCenter,
-          // scale: 1.0,
-          initialCalloutW: 600,
-          initialCalloutH: 50,
-          fillColor: Colors.white70,
-          elevation: 5,
-          borderRadius: 10,
-          alwaysReCalcSize: true,
-          arrowType: ArrowType.NONE,
-          draggable: false,
-          scrollControllerName: scName,
-        ),
-        calloutContent: Center(
-          child: Container(
-//width: w,
-// decoration: BoxDecoration(
-//   color: background,
-//   borderRadius: BorderRadius.circular(backgroundRadius),
-// ),
-            margin: const EdgeInsets.symmetric(horizontal: 20),
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Center(
-              child: Row(
-                children: [
-                  const CircularProgressIndicator(),
-                  Text(reason),
-                ],
-              ),
-            ),
-          ),
-        ),
-      );
-    } else {
-      dismiss(reason);
-    }
-  }
+//   void showCircularProgressIndicator(bool show,
+//       {ScrollControllerName? scName, required String reason}) {
+// // if (width != null && height == null) height = 60;
+//     BuildContext? cachedContext = fca.rootContext;
+//     if (show && (cachedContext.mounted)) {
+//       showOverlay(
+//         calloutConfig: CalloutConfig(
+//           cId: reason,
+//           gravity: Alignment.topCenter,
+//           // scale: 1.0,
+//           initialCalloutW: 600,
+//           initialCalloutH: 50,
+//           fillColor: Colors.white70,
+//           elevation: 5,
+//           borderRadius: 10,
+//           alwaysReCalcSize: true,
+//           arrowType: ArrowType.NONE,
+//           draggable: false,
+//           scrollControllerName: scName,
+//         ),
+//         calloutContent: Center(
+//           child: Container(
+// //width: w,
+// // decoration: BoxDecoration(
+// //   color: background,
+// //   borderRadius: BorderRadius.circular(backgroundRadius),
+// // ),
+//             margin: const EdgeInsets.symmetric(horizontal: 20),
+//             padding: const EdgeInsets.symmetric(horizontal: 16.0),
+//             child: Center(
+//               child: Row(
+//                 children: [
+//                   const CircularProgressIndicator(),
+//                   Text(reason),
+//                 ],
+//               ),
+//             ),
+//           ),
+//         ),
+//       );
+//     } else {
+//       dismiss(reason);
+//     }
+//   }
 
   /// given a Rect, returns most appropriate alignment between target and callout within the wrapper
   /// NOTICE does not depend on callout size
@@ -448,7 +524,7 @@ mixin CalloutMixin {
     } else if (y > 0.75) {
       y = 1.0;
     }
-    // fca.logi("$x, $y");
+    // fca.logger.i("$x, $y");
     return Alignment(x, y);
   }
 
@@ -543,7 +619,7 @@ mixin CalloutMixin {
 //------------------
 //---  static  -----
 //------------------
-  OE? findOE(Feature cId) {
+  OE? findOE(CalloutId cId) {
     for (OE oe in OE.list) {
       if (oe.calloutConfig.cId == cId) {
         return oe;
@@ -552,13 +628,13 @@ mixin CalloutMixin {
     return null;
   }
 
-  CalloutConfig? getCalloutConfig(Feature feature) {
+  CalloutConfig? getCalloutConfig(CalloutId feature) {
     OE? oe = findOE(feature);
     if (oe != null) return oe.calloutConfig;
     return null;
   }
 
-  void rebuild(Feature feature, {VoidCallback? f}) {
+  void rebuild(CalloutId feature, {VoidCallback? f}) {
     findOE(feature)?.calloutConfig.rebuild(f);
   }
 
@@ -593,11 +669,11 @@ mixin CalloutMixin {
   }
 
   void dismissAll(
-      {List<Feature> exceptFeatures = const [],
+      {List<CalloutId> exceptFeatures = const [],
       bool onlyToasts = false,
       bool exceptToasts = false}) {
-    debugPrint("dismaissAll");
-    List<Feature> overlays2bRemoved = [];
+    fca.logger.d("dismaissAll");
+    List<CalloutId> overlays2bRemoved = [];
     for (OE oe in OE.list) {
 // if (oe.entry != null) {
       bool isToast = oe.calloutConfig.gravity != null;
@@ -608,7 +684,7 @@ mixin CalloutMixin {
       }
 // }
     }
-    for (Feature cId in overlays2bRemoved) {
+    for (CalloutId cId in overlays2bRemoved) {
       if (!exceptFeatures.contains(cId)) dismiss(cId);
     }
   }
@@ -693,8 +769,8 @@ mixin CalloutMixin {
     OE? oeObj = findOE(cId);
     if (oeObj != null /*  && !oeObj.isHidden*/) {
       oeObj
-      ..isHidden = true
-      ..opC?.hide()
+        ..isHidden = true
+        ..opC?.hide()
         ..entry?.markNeedsBuild();
       // OE.debug();
     }
@@ -737,8 +813,8 @@ mixin CalloutMixin {
     for (OE oe in OE.list) {
       if (!oe.isHidden && oe.entry != null) {
         oe.calloutConfig.calcEndpoints();
-        fca.logi(
-            'after calcEndpoints: tR is ${oe.calloutConfig.tR.toString()}');
+        fca.logger
+            .i('after calcEndpoints: tR is ${oe.calloutConfig.tR.toString()}');
         oe.entry?.markNeedsBuild();
       }
       // if (!oe.isHidden && oe.opC != null) {
@@ -747,7 +823,7 @@ mixin CalloutMixin {
     }
   }
 
-  bool anyPresent(List<Feature> cIds, {bool includeHidden = false}) {
+  bool anyPresent(List<CalloutId> cIds, {bool includeHidden = false}) {
     bool result = false;
     if (cIds.isEmpty) {
       result = false;

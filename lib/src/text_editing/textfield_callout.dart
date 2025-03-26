@@ -5,7 +5,7 @@ mixin TextEditorMixin {
   /// returning false means user tapped the x
   void editText2({
     required final String prompt,
-    required final Feature feature,
+    required final CalloutId feature,
     required final double minHeight,
     required final String originalS,
     required final ValueChanged<String> onTextChangedF,
@@ -67,7 +67,7 @@ mixin TextEditorMixin {
           scrollControllerName: scName,
           containsTextField: true,
           // focusNode: focusNode,
-          barrier: CalloutBarrier(
+          barrier: CalloutBarrierConfig(
             opacity: noBarrier ? 0.0 : .25,
             onTappedF: noBarrier
                 ? null

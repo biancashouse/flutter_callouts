@@ -260,7 +260,7 @@ class FC_TextEditorState extends State<StringEditor_T> {
               : TextAlign.left,
           textAlignVertical: TextAlignVertical.top,
           onTap: () {
-            // fca.logi("TextField tapped");
+            // fca.logger.i("TextField tapped");
             // widget.focusNode.requestFocus();
           },
           onChanged: (s) {

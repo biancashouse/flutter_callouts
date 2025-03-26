@@ -49,18 +49,18 @@ class OE {
   }
 
   static void printFeatures() {
-    fca.logi('------------');
+    fca.logger.i('------------');
     for (OE oe in OE.list) {
-      fca.logi('${oe.calloutConfig.cId} ${oe.opC != null ? "*" : ""}');
+      fca.logger.i('${oe.calloutConfig.cId} ${oe.opC != null ? "*" : ""}');
     }
-    fca.logi('------------');
+    fca.logger.i('------------');
   }
 
   // static void debug() {
-  //   fca.logi('${list.length} overlays');
-  //   fca.logi('------------');
+  //   fca.logger.i('${list.length} overlays');
+  //   fca.logger.i('------------');
   //   for (OE oe in OE.list) {
-  //     fca.logi(
+  //     fca.logger.i(
   //         '${oe.calloutConfig.cId}: ${oe.entry != null ? Overlay : OverlayPortal}, ${oe.isHidden ? "hidden" : "showing"}, ${oe.isToast ? "TOAST" : ""}');
   //   }
   // }

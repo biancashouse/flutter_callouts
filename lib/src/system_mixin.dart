@@ -8,19 +8,25 @@ import 'package:flutter_callouts/flutter_callouts.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:universal_platform/universal_platform.dart';
+
+import 'logger_filter.dart';
 
 mixin SystemMixin {
   String? _deviceInfo;
   PlatformEnum? _platform;
-  final Logger _logger = Logger(
-    printer: PrettyPrinter(),
+  Logger logger = Logger(
+    filter: MyFilter(),
+    printer: PrettyPrinter(
+      colors: true,
+      printEmojis: false,
+
+    ),
   );
-  final Logger _loggerNs = Logger(
+  final Logger loggerNs = Logger(
+    filter: MyFilter(),
     printer: PrettyPrinter(methodCount: 0),
   );
-  SharedPreferencesWithCache? _spwc;
 
   bool get isWeb => kIsWeb;
 
@@ -37,16 +43,6 @@ mixin SystemMixin {
   String? get deviceInfo => _deviceInfo;
 
   PlatformEnum? get platform => _platform;
-
-  SharedPreferencesWithCache? get spwc => _spwc;
-
-  Future<void> initLocalStorage() async {
-    _spwc = await SharedPreferencesWithCache.create(
-      cacheOptions: const SharedPreferencesWithCacheOptions(
-          // allowList: <String>{'repeat', 'action'},
-          ),
-    );
-  }
 
   void initDeviceInfoAndPlatform() {
     if (_deviceInfo == null) {
@@ -77,10 +73,10 @@ mixin SystemMixin {
   Future<bool> canInformUserOfNewVersion() async {
     // decide whether new version loaded
     // var box = Hive.box(await yamlAppName);
-    String? storedVersionAndBuild = await spwc?.getString("versionAndBuild");
+    String? storedVersionAndBuild = fca.localStorage.read("versionAndBuild");
     String latestVersionAndBuild = '$yamlVersion-$yamlBuildNumber';
     if (latestVersionAndBuild != (storedVersionAndBuild ?? '')) {
-      await fca.spwc?.setString('versionAndBuild', latestVersionAndBuild);
+      await fca.localStorage.write('versionAndBuild', latestVersionAndBuild);
       if (storedVersionAndBuild != null) return true;
     }
     return false;
@@ -142,50 +138,46 @@ mixin SystemMixin {
   /// Docs about CFBundleVersion: https://developer.apple.com/documentation/bundleresources/information_property_list/cfbundleversion
 
   void afterNextBuildDo(VoidCallback fn, {bool maintainSCOffsets = false}) {
-    Map<ScrollController, double> savedOffsets = maintainSCOffsets
-    ? saveScrollOffsets()
-    : {};
+    // Map<ScrollController, double> savedOffsets = maintainSCOffsets
+    // ? saveScrollOffsets()
+    // : {};
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      restoreScrollOffsets(savedOffsets);
+      // restoreScrollOffsets(savedOffsets);
       fn.call();
     });
   }
 
-  Future afterMsDelayDo(int millis, VoidCallback fn, {bool maintainSCOffsets = false}) async {
-    Map<ScrollController, double> savedOffsets = maintainSCOffsets
-        ? saveScrollOffsets()
-        : {};
+  Future afterMsDelayDo(int millis, VoidCallback fn,
+      {bool maintainSCOffsets = false}) async {
+    // Map<ScrollController, double> savedOffsets = maintainSCOffsets
+    //     ? saveScrollOffsets()
+    //     : {};
     Future.delayed(Duration(milliseconds: millis), () {
-      restoreScrollOffsets(savedOffsets);
+      // restoreScrollOffsets(savedOffsets);
       fn.call();
     });
   }
 
-  Map<ScrollController, double> saveScrollOffsets() {
-    Map<ScrollController, double> offsets = {};
-    for (ScrollController sC in NamedScrollController.allControllers()) {
-      if (sC.positions.isNotEmpty) {
-        offsets[sC] = sC.offset;
-      }
-    }
-    return offsets;
-  }
+  // Map<ScrollController, double> saveScrollOffsets() {
+  //   Map<ScrollController, double> offsets = {};
+  //   for (ScrollController sC in NamedScrollController.allControllers()) {
+  //     if (sC.positions.isNotEmpty) {
+  //       offsets[sC] = sC.offset;
+  //     }
+  //   }
+  //   return offsets;
+  // }
 
-  void restoreScrollOffsets(Map<ScrollController, double> offsets) {
-    if (offsets.isNotEmpty) {
-      for (ScrollController sC in offsets.keys.toList()) {
-        if (sC.hasClients) {
-          double offset = offsets[sC]!;
-          sC.jumpTo(offset);
-        }
-      }
-    }
-  }
-
-  // Logger pkg ---------------------------------------------------------------
-  void logi(String? s) => _loggerNs.i(s);
-
-  void loge(String? s) => _logger.e(s);
+  // void restoreScrollOffsets(Map<ScrollController, double> offsets) {
+  //   if (offsets.isNotEmpty) {
+  //     for (ScrollController sC in offsets.keys.toList()) {
+  //       if (sC.hasClients) {
+  //         double offset = offsets[sC]!;
+  //         sC.jumpTo(offset);
+  //       }
+  //     }
+  //   }
+  // }
 
   // Logger pkg ---------------------------------------------------------------
 
@@ -195,6 +187,7 @@ mixin SystemMixin {
 
   String removeNonNumeric(s) => s.replaceAll(RegExp(r"\D"), "");
 }
+
 
 enum PlatformEnum { android, ios, web, windows, osx, fuchsia, linux }
 

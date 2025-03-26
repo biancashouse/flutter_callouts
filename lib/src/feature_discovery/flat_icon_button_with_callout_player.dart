@@ -24,7 +24,7 @@ class FlatIconButtonWithHelpCalloutButton extends StatefulWidget {
   final MaterialTapTargetSize? materialTapTargetSize;
   final Widget? optionalIcon;
   final Widget? label;
-  final Feature feature;
+  final CalloutId feature;
   final Widget? calloutContentsWidget;
   final double contentsWidth;
   final double contentsHeight;

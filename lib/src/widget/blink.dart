@@ -10,7 +10,9 @@ class Blink extends StatefulWidget {
   // ignore: library_private_types_in_public_api
   _BlinkState createState() => _BlinkState();
 
-  const Blink({required this.child, this.dontAnimate = false, this.bgColor = Colors.yellowAccent, this.animateColor = false, super.key});
+  const Blink(
+      {required this.child, this.dontAnimate = false, this.bgColor = Colors
+          .yellowAccent, this.animateColor = false, super.key});
 }
 
 class _BlinkState extends State<Blink> with TickerProviderStateMixin {
@@ -22,10 +24,14 @@ class _BlinkState extends State<Blink> with TickerProviderStateMixin {
   initState() {
     super.initState();
 
-    controller = AnimationController(duration: const Duration(milliseconds: 700), vsync: this);
-    final CurvedAnimation curve = CurvedAnimation(parent: controller, curve: Curves.linear);
+    controller = AnimationController(
+        duration: const Duration(milliseconds: 700), vsync: this);
+    final CurvedAnimation curve = CurvedAnimation(
+        parent: controller, curve: Curves.linear);
     if (widget.animateColor) {
-      colorAnimation = ColorTween(begin: Colors.transparent, end: widget.bgColor).animate(curve);
+      colorAnimation =
+          ColorTween(begin: Colors.transparent, end: widget.bgColor).animate(
+              curve);
       colorAnimation.addStatusListener((status) {
         if (status == AnimationStatus.completed) {
           Future.delayed(const Duration(milliseconds: 0), () {
@@ -43,17 +49,17 @@ class _BlinkState extends State<Blink> with TickerProviderStateMixin {
           Future.delayed(const Duration(milliseconds: 0), () {
             try {
               controller.reverse();
-            } catch(e) {}
+            } catch (e) {}
           });
         } else if (status == AnimationStatus.dismissed) {
           try {
             controller.forward();
-          } catch(e) {}
+          } catch (e) {}
         }
         setState(() {});
       });
     }
-    controller.forward();
+    if (mounted) controller.forward();
   }
 
   @override
@@ -67,28 +73,31 @@ class _BlinkState extends State<Blink> with TickerProviderStateMixin {
       color = Colors.yellow;
       opacity = opacityAnimation.value;
     }
-      return widget.dontAnimate
+    return widget.dontAnimate
         ? widget.child
         : widget.animateColor
-          ? AnimatedBuilder(
-            animation: controller,
-            builder: (BuildContext context, Widget? child) => Container(
-              color: color.withOpacity(opacity),
-              child: widget.child,
-            ),
-          )
-      : AnimatedBuilder(
-        animation: controller,
-        builder: (BuildContext context, Widget? child) => Opacity(
-          opacity: opacity,
-          child: widget.child,
-        ),
-      );
+        ? AnimatedBuilder(
+      animation: controller,
+      builder: (BuildContext context, Widget? child) =>
+          Container(
+            color: color.withOpacity(opacity),
+            child: widget.child,
+          ),
+    )
+        : AnimatedBuilder(
+      animation: controller,
+      builder: (BuildContext context, Widget? child) =>
+          Opacity(
+            opacity: opacity,
+            child: widget.child,
+          ),
+    );
   }
 
   @override
   dispose() {
-    controller.dispose();
+    if (mounted)
+      controller.dispose();
     super.dispose();
   }
 }

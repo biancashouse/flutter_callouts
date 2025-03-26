@@ -59,14 +59,14 @@ class Coord {
     if (toCentre == null || toCentre.samePointAs(from)) return from;
 
     var lineLen = Math.sqrt(Math.pow(toCentre.x - from!.x, 2.0) + Math.pow(toCentre.y - from.y, 2.0));
-    //fca.logi('line length before = $lineLen');
+    //fca.logger.i('line length before = $lineLen');
     // extend line by delta
     from = Coord(
         x: from.x + (from.x - toCentre.x) / lineLen * lineLenDelta!,
         y: from.y + (from.y - toCentre.y) / lineLen * lineLenDelta);
-    //fca.logi('new endpoint is ${from.asOffset}');
+    //fca.logger.i('new endpoint is ${from.asOffset}');
     lineLen = Math.sqrt(Math.pow(toCentre.x - from.x, 2.0) + Math.pow(toCentre.y - from.y, 2.0));
-    //fca.logi('line length after = $lineLen');
+    //fca.logger.i('line length after = $lineLen');
     return from;
   }
 }

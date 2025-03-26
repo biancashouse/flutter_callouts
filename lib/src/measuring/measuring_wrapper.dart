@@ -25,7 +25,7 @@
 //
 //   @override
 //   void performLayout() {
-//     fca.logi("performLayout");
+//     fca.logger.i("performLayout");
 //     super.performLayout();
 //
 //     fca.afterNextBuildDo(() {

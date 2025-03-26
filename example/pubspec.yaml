@@ -5,13 +5,17 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.4.3 <4.0.0'
+  sdk: ^3.5.4
 
 dependencies:
   flutter:
     sdk: flutter
 
-  flutter_callouts:
+  flutter_bloc: ^9.0.0
+  hydrated_bloc: ^10.0.0
+  path_provider: ^2.1.5
+
+  flutter_callouts: #^4.0.0
     path: ..
 
 

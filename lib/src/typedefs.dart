@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_callouts/src/feature_discovery/discovery_controller.dart';
 import 'package:flutter_callouts/src/feature_discovery/featured_widget.dart';
 
-typedef Feature = String;
+typedef CalloutId = String;
 // typedef TextStyleName = String;
 // typedef SnippetName = String;
 // typedef BucketName = String;
@@ -24,6 +24,9 @@ typedef TargetId = int;
 
 // typedef OverlayContentFunc = Widget Function({GlobalKey callerGK});
 typedef TargetKeyFunc = GlobalKey? Function();
+
+typedef KeystrokeHandler = bool Function(KeyEvent event);
+
 // typedef CalloutConfigChangedF = void Function(AlignmentEnum newTA, ArrowTypeEnum newAT);
 
 // typedef HandlerName = String;
@@ -45,7 +48,7 @@ typedef FeaturedWidgetActionF = void Function(
 typedef TextStyleF = TextStyle Function();
 typedef TextAlignF = TextAlign Function();
 
-typedef JSON = Map<String, dynamic>;
+// typedef JSON = Map<String, dynamic>;
 typedef SnippetJson = String;
 
 typedef SetStateF = void Function(VoidCallback f);
@@ -55,6 +58,7 @@ typedef SetStateF = void Function(VoidCallback f);
 typedef RectFunc = Rect? Function();
 typedef BoolFunc = bool Function();
 
+// typedef PageWidget = Widget Function(final String pagePath);
 // typedef PassBlocF = void Function(CAPIBloc);
 // typedef PassGlobalKeyF = void Function(GlobalKey);
 

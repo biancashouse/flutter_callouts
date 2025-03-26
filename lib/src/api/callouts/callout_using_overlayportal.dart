@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
 
 import 'overlay_entry_list.dart';
@@ -36,7 +37,7 @@ class WrappedCallout extends StatefulWidget {
     this.skipHeightConstraintWarning = false,
     super.key,
   }) {
-// fca.logi("Callout.wrapTarget");
+// fca.logger.i("Callout.wrapTarget");
   }
 
   static WrappedCalloutState? of(BuildContext context) =>
@@ -85,6 +86,16 @@ class WrappedCalloutState extends State<WrappedCallout>  implements TickerProvid
     OE.registerOE(
         OE(opC: opController, calloutConfig: _config, isHidden: false));
 
+    // has a barrier means allow escape to dismiss
+    if (_config.barrier != null) {
+      fca.registerKeystrokeHandler(_config.cId, (k){
+        if (k.logicalKey == LogicalKeyboardKey.escape) {
+          fca.hide(_config.cId);
+        }
+        return false;
+      });
+    }
+
     // _waitingForAnyImagesToRender = true;
     fca.afterNextBuildDo(() {
       fca.afterMsDelayDo(_AllowImagesToRenderMs, () {
@@ -101,7 +112,7 @@ class WrappedCalloutState extends State<WrappedCallout>  implements TickerProvid
 
 // if a notifer was passed in, means inside another overlay, so the target would change as the overlay gets moved or resized
     widget.targetChangedNotifier?.addListener(() {
-      fca.logi("\n\ntime to update the target\n\n");
+      fca.logger.i("\n\ntime to update the target\n\n");
 // measure target again
       Rect? r = _targetMeasuringGK
           .globalPaintBounds(); //Measuring.findGlobalRect(_targetMeasuringGK);
@@ -114,7 +125,7 @@ class WrappedCalloutState extends State<WrappedCallout>  implements TickerProvid
 
   @override
   void dispose() {
-    fca.logi("callout disposed: ${_config.cId}");
+    fca.logger.i("callout disposed: ${_config.cId}");
     OE.deRegisterOE(fca.findOE(_config.cId), force: true);
     super.dispose();
   }
@@ -136,9 +147,9 @@ class WrappedCalloutState extends State<WrappedCallout>  implements TickerProvid
       );
     },
 //     (BuildContext ctx) {
-//   fca.logi("overlayChildBuilder...");
-//   if (targetSize != null && targetPos != null) fca.logi("target not measured!");
-//   if (calloutSize != null) fca.logi("callout boxContent not measured!");
+//   fca.logger.i("overlayChildBuilder...");
+//   if (targetSize != null && targetPos != null) fca.logger.i("target not measured!");
+//   if (calloutSize != null) fca.logger.i("callout boxContent not measured!");
 //   return targetSize != null && targetPos != null
 //       ? _config.calloutOverlayEntryAlreadyMeasured(
 //           context: ctx,
@@ -212,7 +223,7 @@ class WrappedCalloutState extends State<WrappedCallout>  implements TickerProvid
   }
 
   void _possiblyAnimateSeparationOP(BuildContext context) {
-    if (_config.finalSeparation > 0.0) {
+    if ((_config.finalSeparation??0.0) > 0.0) {
 // animate separation, top or left
       AnimationController animationController = AnimationController(
         duration: const Duration(milliseconds: 300),
@@ -222,7 +233,7 @@ class WrappedCalloutState extends State<WrappedCallout>  implements TickerProvid
       Tween<double>(begin: 0.0, end: _config.finalSeparation);
       Animation<double> animation = tween.animate(animationController);
       animation.addListener(() {
-// fca.logi('--- ${_config.feature} --- animation value ${animation.value}');
+// fca.logger.i('--- ${_config.feature} --- animation value ${animation.value}');
         _config.setSeparation(animation.value);//, () => opController.show());
       });
       _config.startedAnimatingSeparation();
@@ -247,7 +258,7 @@ class WrappedCalloutState extends State<WrappedCallout>  implements TickerProvid
 //   OverlayEntry offstageEntry = OverlayEntry(
 //     builder: (BuildContext ctx) => MeasureSizeBox(
 //       onSizedCallback: (newSize) {
-//         fca.logi("measured callout: ${newSize.toString()}");
+//         fca.logger.i("measured callout: ${newSize.toString()}");
 //         calloutSize = newSize;
 //         _config.calloutW = newSize.width;
 //         _config.calloutH = newSize.height;

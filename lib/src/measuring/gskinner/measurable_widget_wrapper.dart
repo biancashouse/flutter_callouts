@@ -34,7 +34,7 @@
 //
 //   @override
 //   Widget build(BuildContext context) {
-//     fca.logi('MeasurableWidget.build()');
+//     fca.logger.i('MeasurableWidget.build()');
 //     Size? size = (context.findRenderObject() as RenderBox?)?.size;
 //     if (size != Size.zero) {
 //       if (size != null) {

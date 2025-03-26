@@ -37,7 +37,7 @@ class BubbleShape_OP extends CustomPainter {
 			 * rectangle around calloutR
 			 */
       //PathUtil.roundedRect(path, callout.top!, callout.left!, callout.cR().width, callout.cR().height, callout.roundedCorners);
-      // fca.logi('no pointy');
+      // fca.logger.i('no pointy');
     } else {
       Rectangle calloutR = callout.cR();
       Offset cspCentre = calloutR.center;
@@ -96,7 +96,7 @@ class BubbleShape_OP extends CustomPainter {
       /*
 				 * finally, close shape by drawing pb2 to pointy and back to pb1
 				 */
-      // fca.logi("path.lineTo(${callout.tE!.x}, ${callout.tE!.y})");
+      // fca.logger.i("path.lineTo(${callout.tE!.x}, ${callout.tE!.y})");
       path.lineTo(callout.tE!.x, callout.tE!.y);
       path.lineTo(pointyBase1.x, pointyBase1.y);
     }
@@ -105,13 +105,13 @@ class BubbleShape_OP extends CustomPainter {
   }
 
   void _partialRectWithAll4CornersRounded(Path path, Coord pb1, Coord pb2, Rectangle theRect, callout) {
-    // fca.logi("partialRectWith4CornersRounded");
+    // fca.logger.i("partialRectWith4CornersRounded");
     Coord pos = Coord.clone(pb1);
     path.moveTo(pos.x, pos.y);
     // path.addOval(Rect.fromCenter(center: pos.asOffset, width: 4, height: 4)); //TODO TBD
     Side? startingSide = theRect.whichSide(pos);
     if (startingSide == null) {
-      fca.logi('startSide NULL!');
+      fca.logger.i('startSide NULL!');
       return;
     }
     Side side = startingSide;
@@ -128,12 +128,12 @@ class BubbleShape_OP extends CustomPainter {
   }
 
   void _partialRectWith3CornersRounded(Path path, Coord pb1, Coord pb2, Rectangle theRect, callout) {
-    // fca.logi("partialRectWith3CornersRounded");
+    // fca.logger.i("partialRectWith3CornersRounded");
     Coord pos = Coord.clone(pb1);
     path.moveTo(pos.x, pos.y);
     Side? startingSide = theRect.whichSide(pos);
     if (startingSide == null) {
-      fca.logi('startSide NULL!');
+      fca.logger.i('startSide NULL!');
       return;
     }
     Side side = startingSide;

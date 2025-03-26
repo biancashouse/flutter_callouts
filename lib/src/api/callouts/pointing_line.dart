@@ -30,7 +30,7 @@ class _PointingLineState extends State<PointingLine> with TickerProviderStateMix
       animation = Tween(begin: 0.95, end: 1.0).animate(controller!)
         ..addListener(() {
           setState(() {
-            //fca.logi('value: ${animation.value}');
+            //fca.logger.i('value: ${animation.value}');
           });
         });
 
@@ -90,7 +90,7 @@ class PointingLinePainter extends CustomPainter {
       );
     }
 
-    // fca.logi('to: (${toAfter.x}, ${toAfter.y})');
+    // fca.logger.i('to: (${toAfter.x}, ${toAfter.y})');
 
     canvas.drawLine(
       from,
