@@ -317,6 +317,7 @@ CalloutConfig basicCalloutConfig(NamedScrollController nsc) =>
       barrier: CalloutBarrierConfig(
         cutoutPadding: 30,
         excludeTargetFromBarrier: true,
+        roundExclusion: true,
         closeOnTapped: true,
         color: Colors.grey,
         opacity: .5,

@@ -1,5 +1,7 @@
 // flutter's ModalBarrier cloned and ColoredBox replaced with cutout painter
 
+import 'dart:math';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -127,8 +129,9 @@ class ModalBarrierWithCutout extends StatelessWidget {
     super.key,
     required this.color,
     required this.opacity,
-    required this.cutoutRect,
-    this.cutoutPadding,
+    this.cutoutRect,
+    this.cutoutPadding = 0.0,
+    this.round = false,
     this.dismissible = true,
     this.onDismiss,
     this.semanticsLabel,
@@ -145,8 +148,9 @@ class ModalBarrierWithCutout extends StatelessWidget {
   ///    [ModalBarrierWithCutout] built by [ModalRoute] pages.
   final Color color;
   final double opacity;
-  final Rect cutoutRect;
-  final double? cutoutPadding;
+  final Rect? cutoutRect;
+  final double cutoutPadding;
+  final bool round;
 
   /// Specifies if the barrier will be dismissed when the user taps on it.
   ///
@@ -255,14 +259,18 @@ class ModalBarrierWithCutout extends StatelessWidget {
           constraints: const BoxConstraints.expand(),
           child: Opacity(
             opacity: opacity,
-            child: CustomPaint(
-              painter: BarrierCutoutPainter(
-                barrierColor: color,
-                target: cutoutPadding != null
-                    ? cutoutRect.inflate(cutoutPadding!)
-                    : cutoutRect,
-              ),
-            ),
+            child: !round
+                ? CustomPaint(
+                    painter: BarrierWithRectangularCutoutPainter(
+                      barrierColor: color,
+                      target: cutoutRect!.inflate(cutoutPadding),
+                    ),
+                  )
+                : _barrierWithCircularHole(
+                    barrierColor: color,
+              target: cutoutRect!.inflate(cutoutPadding),
+                    padding: cutoutPadding,
+                  ),
           ),
         ),
       ),
@@ -289,6 +297,46 @@ class ModalBarrierWithCutout extends StatelessWidget {
           onDismiss: handleDismiss,
           child: barrier,
         ),
+      ),
+    );
+  }
+
+  Widget _barrierWithCircularHole({
+    required Color barrierColor,
+    required Rect target,
+    double padding = 0,
+  }) {
+    return ColorFiltered(
+      colorFilter: ColorFilter.mode(Colors.black54, BlendMode.srcOut),
+      child: Stack(
+        children: [
+          Positioned(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.transparent,
+              ),
+              child: Stack(
+                children: [
+                  Positioned(
+                    top: target.top, left: target.left,
+                    child: Container(
+                      padding: EdgeInsets.all(padding),
+                      height: target.height,
+                      width: target.width,
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        // Color does not matter but should not be transparent
+                        borderRadius: BorderRadius.circular(
+                          max(target.width,target.height)
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -401,12 +449,11 @@ class _ModalBarrierGestureDetector extends StatelessWidget {
   }
 }
 
-
-class BarrierCutoutPainter extends CustomPainter {
+class BarrierWithRectangularCutoutPainter extends CustomPainter {
   Color barrierColor;
   Rect target;
 
-  BarrierCutoutPainter({
+  BarrierWithRectangularCutoutPainter({
     required this.target,
     required this.barrierColor,
   });
@@ -469,12 +516,8 @@ class BarrierCutoutPainter extends CustomPainter {
     // 6
     if (size.width > target.left + target.width)
       canvas.drawRect(
-          Rect.fromLTWH(
-              target.left + target.width,
-              target.top,
-              size.width - target.left - target.width,
-              target.height
-          ),
+          Rect.fromLTWH(target.left + target.width, target.top,
+              size.width - target.left - target.width, target.height),
           backgroundPaint);
     // 7
     if (target.left > 0 && size.height > target.top + target.height)
@@ -514,3 +557,59 @@ class BarrierCutoutPainter extends CustomPainter {
     return true;
   }
 }
+
+// class BarrierWithCircularCutoutPainter extends CustomPainter {
+//   Color barrierColor;
+//   Rect target;
+//
+//   BarrierWithCircularCutoutPainter({
+//     required this.target,
+//     required this.barrierColor,
+//   });
+//
+//   @override
+//   void paint(Canvas canvas, Size size) {
+//     Paint backgroundPaint = Paint();
+//     backgroundPaint.blendMode = BlendMode.multiply;
+//     backgroundPaint.color = Colors.red; //barrierColor;
+//     // // Step 1: Draw the background:
+//     // canvas.drawRect(Rect.fromLTWH(0, 0, size.width, target.top), backgroundPaint);
+//     // canvas.drawRect(Rect.fromLTWH(0, 0, target.left, size.height), backgroundPaint);
+//     // canvas.drawRect(Rect.fromLTWH(target.left + target.width, 0, target.left, size.height), backgroundPaint);
+//     // canvas.drawRect(Rect.fromLTWH(0, target.top + target.height, size.width, target.top), backgroundPaint);
+//
+//     if (target.width == 0.0 || target.height == 0.0) return;
+//
+//     canvas.drawRect(
+//       Rect.fromLTWH(
+//         target.left,
+//         target.top,
+//         target.width,
+//         target.height,
+//       ),
+//       backgroundPaint,
+//     );
+//
+//     final circleCenter = Offset(target.left + target.width / 2, target.height + target.height / 2);
+//
+//     final circleRadius = min(target.width, target.height);
+//     final circlePath = Path()..addOval(Rect.fromCircle(center: circleCenter, radius: circleRadius));
+//
+//     // 3. Clip the Canvas
+//     canvas.save(); // Save the current canvas state
+//     canvas.clipPath(circlePath);
+//
+//     // 4. Clear the Hole
+//     final clearPaint = Paint()..blendMode = BlendMode.clear;
+//     canvas.drawRect(target, clearPaint);
+//
+//     // 5. Restore the canvas
+//     canvas.restore(); // Restore the canvas to its previous state
+//
+//   }
+//
+//   @override
+//   bool shouldRepaint(CustomPainter oldDelegate) {
+//     return true;
+//   }
+// }
