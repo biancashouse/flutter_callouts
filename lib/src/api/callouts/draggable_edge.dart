@@ -11,7 +11,8 @@ class DraggableEdge_OP extends StatelessWidget {
   final CalloutConfig parent;
   final Color color;
 
-  const DraggableEdge_OP({required this.side, required this.thickness, required this.parent, required this.color, super.key});
+  const DraggableEdge_OP(
+      {required this.side, required this.thickness, required this.parent, required this.color, super.key});
 
   Axis axis() {
     switch (side) {
@@ -39,8 +40,10 @@ class DraggableEdge_OP extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double top = _topLeft().dy;
-    double left = _topLeft().dx;
+    final soY = -parent.scrollOffsetY();
+    final soX = -parent.scrollOffsetX();
+    double top = _topLeft(soX, soY).dy;
+    double left = _topLeft(soX, soY).dx;
     return Positioned(
       top: top,
       left: left,
@@ -52,13 +55,16 @@ class DraggableEdge_OP extends StatelessWidget {
           var deltaX = event.delta.dx;
           var deltaY = event.delta.dy;
           if (side == Side.LEFT) {
-            if (deltaX < 0 || parent.calloutW! + deltaX >= (parent.minWidth ?? 30)) {
+            if (deltaX < 0 ||
+                parent.calloutW! + deltaX >= (parent.minWidth ?? 30)) {
               parent.left = newLeft;
               parent.calloutW = parent.calloutW! - deltaX;
             }
           } else if (side == Side.TOP) {
-            if (deltaY < 0 || parent.calloutH! + deltaY >= (parent.minHeight ?? 30)) {
+            if (deltaY < 0 ||
+                parent.calloutH! + deltaY >= (parent.minHeight ?? 30)) {
               parent.top = newTop;
+              parent.left = newLeft;
               parent.calloutH = parent.calloutH! - deltaY;
             }
           } else if (side == Side.RIGHT) {
@@ -94,16 +100,18 @@ class DraggableEdge_OP extends StatelessWidget {
     );
   }
 
-  Offset _topLeft() {
-    Rect calloutRect = Rect.fromLTWH(parent.left!, parent.top!, parent.calloutW!, parent.calloutH!);
+  Offset _topLeft(soX, soY) {
+    Rect calloutRect = Rect.fromLTWH(
+        parent.left!, parent.top!, parent.calloutW!, parent.calloutH!)
+        .translate(soX, soY);
     if (side == Side.LEFT) {
-      return (calloutRect.topLeft.translate(-thickness, 0));
+      return calloutRect.topLeft.translate(-thickness, 0);
     } else if (side == Side.RIGHT) {
-      return (calloutRect.topRight.translate(0, 0));
+      return calloutRect.topRight;
     } else if (side == Side.TOP) {
-      return (calloutRect.topLeft.translate(0, -thickness));
+      return calloutRect.topLeft.translate(0, -thickness);
     } else {
-      return (calloutRect.bottomLeft.translate(0, 0));
+      return calloutRect.bottomLeft;
     }
   }
 

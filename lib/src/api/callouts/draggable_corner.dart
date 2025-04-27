@@ -184,8 +184,11 @@ class DraggableCorner_OP extends StatelessWidget {
   }
 
   Offset _pos() {
+    final soY = -parent.scrollOffsetY();
+    final soX = -parent.scrollOffsetX();
     Rect calloutRect = Rect.fromLTWH(
-        parent.left!, parent.top!, parent.calloutW!, parent.calloutH!);
+        parent.left!, parent.top!, parent.calloutW!, parent.calloutH!)
+    .translate(soX,soY);
     if (alignment == Alignment.topLeft) {
       return calloutRect.topLeft.translate(-thickness, -thickness);
     } else if (alignment == Alignment.topRight) {

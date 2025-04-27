@@ -1502,14 +1502,14 @@ class CalloutConfig implements TickerProvider {
               height: calloutH,
               child: SingleChildScrollView(
                 scrollDirection: Axis.vertical,
-                child: contents,
+                child: Hero(tag: 'callout-content', child: contents),
               ),
             )
           : SizedBox(
               width: _calloutW!,
               height: _calloutH!,
               child: Builder(builder: (context) {
-                return contents;
+                return Hero(tag: 'callout-content', child: contents);
               }),
             );
 

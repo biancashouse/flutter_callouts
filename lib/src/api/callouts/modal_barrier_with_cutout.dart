@@ -301,6 +301,7 @@ class ModalBarrierWithCutout extends StatelessWidget {
     );
   }
 
+  // https://www.reddit.com/r/FlutterDev/comments/hhhm0s/how_to_cut_a_hole_in_an_overlay/
   Widget _barrierWithCircularHole({
     required Color barrierColor,
     required Rect target,
