@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
 
-export 'arrow_type.dart';
 export "rectangle.dart";
 export "side.dart";
 

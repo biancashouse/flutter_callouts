@@ -3,20 +3,33 @@ import 'package:flutter_callouts/flutter_callouts.dart';
 
 mixin GotitsMixin {
 
+  static bool initCalled = false;
+  static List<String> gotits = const [];
+
+  Future<void> initGotits() async {
+    if (initCalled) return;
+    initCalled = true;
+    (await fca.localStorage).read('gotits') ?? [];
+  }
+
   Future<void> gotit(String feature,
       {bool notUsingHydratedStorage = false}) async {
-    List<String> gotits = fca.localStorage.read('gotits') ?? [];
+    assert(initCalled, "Didn't call initGotits() !");
     if (!gotits.contains(feature)) {
       gotits.add(feature);
-      await fca.localStorage.write('gotits', gotits);
+      (await fca.localStorage).write('gotits', gotits);
     }
   }
 
-  bool alreadyGotit(String feature, {bool notUsingHydratedStorage = false}) =>
-      (fca.localStorage.read('gotits') ?? []).contains(feature);
+  /// assumes initGotits called
+  bool alreadyGotit(String feature, {bool notUsingHydratedStorage = false}) {
+    assert(initCalled, "Didn't call initGotits() !");
+    return (fca.localStorage.read('gotits') ?? []).contains(feature);
+  }
 
   Future<void> clearGotits({bool notUsingHydratedStorage = false}) async {
-    fca.localStorage.delete('gotits');
+    (await fca.localStorage).delete('gotits');
+    gotits.clear();
   }
 
   Widget gotitButton({required String feature,

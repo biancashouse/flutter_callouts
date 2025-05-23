@@ -6,7 +6,6 @@ import 'package:flutter_callouts/flutter_callouts.dart';
 
 import 'overlay_entry_list.dart';
 
-export 'arrow_type.dart';
 export "rectangle.dart";
 export "side.dart";
 

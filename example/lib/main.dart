@@ -1,6 +1,5 @@
 // import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
@@ -26,14 +25,15 @@ class CounterDemoPage extends StatefulWidget {
   const CounterDemoPage({super.key});
 
   @override
-  State<CounterDemoPage> createState() => _CounterDemoPageState();
+  State<CounterDemoPage> createState() => CounterDemoPageState();
 }
 
 /// it's important to add the mixin, because callouts are animated
-class _CounterDemoPageState extends State<CounterDemoPage>
+class CounterDemoPageState extends State<CounterDemoPage>
     with TickerProviderStateMixin {
   late GlobalKey fabGK;
   late GlobalKey countGK;
+  late CalloutConfig fabCC;
 
   NamedScrollController namedSC = NamedScrollController('main', Axis.vertical);
 
@@ -48,16 +48,22 @@ class _CounterDemoPageState extends State<CounterDemoPage>
     countGK = GlobalKey();
 
     alignments = [
-      Alignment.topCenter, Alignment.topRight,
-      Alignment.centerRight, Alignment.bottomRight,
-      Alignment.bottomCenter,Alignment.bottomLeft,
-      Alignment.centerLeft, Alignment.topLeft,
+      Alignment.topCenter,
+      Alignment.topRight,
+      Alignment.centerRight,
+      Alignment.bottomRight,
+      Alignment.bottomCenter,
+      Alignment.bottomLeft,
+      Alignment.centerLeft,
+      Alignment.topLeft,
       Alignment.center,
     ];
 
+    fabCC = basicCalloutConfig(namedSC)..arrowType = ArrowTypeEnum.POINTY;
+
     fca.afterNextBuildDo(() {
       fca.showOverlay(
-        calloutConfig: basicCalloutConfig(namedSC),
+        calloutConfig: fabCC,
         calloutContent: const Padding(
           padding: EdgeInsets.all(8.0),
           child: Column(
@@ -69,10 +75,10 @@ class _CounterDemoPageState extends State<CounterDemoPage>
         ),
         targetGkF: () => fabGK,
       );
-      fca.afterMsDelayDo(
-        800,
-        () => _showToast(Alignment.topCenter),
-      );
+      // fca.afterMsDelayDo(
+      //   800,
+      //   () => _showToast(Alignment.topCenter),
+      // );
     });
   }
 
@@ -80,6 +86,20 @@ class _CounterDemoPageState extends State<CounterDemoPage>
   void dispose() {
     namedSC.dispose();
     super.dispose();
+  }
+
+  void toggleFollowScroll() {
+    setState(() {
+      fabCC.followScroll = !fabCC.followScroll;
+      fabCC.rebuild((){});
+    });
+  }
+
+  void updateArrowType(ArrowTypeEnum newType) {
+    setState(() {
+      fabCC.arrowType = newType;
+      fabCC.rebuild((){});
+    });
   }
 
   @override
@@ -120,24 +140,86 @@ class _CounterDemoPageState extends State<CounterDemoPage>
   Widget build(BuildContext context) {
     return BlocProvider<CounterBloc>(
       create: (_) => CounterBloc(),
-      child: CounterView(namedSC, fabGK, countGK, basicCalloutConfig(namedSC), alignments),
+      child: CounterView(this, namedSC, fabGK, countGK, alignments),
     );
   }
 }
 
 class CounterView extends StatelessWidget {
+  final CounterDemoPageState parentState;
   final NamedScrollController namedSC;
   final GlobalKey fabGK;
   final GlobalKey countGK;
-  final CalloutConfig cc;
   final List<Alignment> alignments;
 
-  const CounterView(this.namedSC, this.fabGK, this.countGK, this.cc, this.alignments, {super.key});
+  const CounterView(
+      this.parentState, this.namedSC, this.fabGK, this.countGK, this.alignments,
+      {super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Counter')),
+      appBar: AppBar(
+        title: const Text('Counter'),
+        actions: [
+          SizedBox(
+            width: 200,
+            child: Row(
+              children: [
+                Text('followScroll?'),
+                Checkbox(
+                    value: parentState.fabCC.followScroll,
+                    onChanged: (_) {
+                      parentState.toggleFollowScroll();
+                    }),
+              ],
+            ),
+          ),
+          SizedBox(
+            width: 300,
+            child: Row(
+              children: [
+                SegmentedButton<CalloutPointerTypeEnum?>(
+                  style: const ButtonStyle(
+                    backgroundColor: WidgetStatePropertyAll(Colors.white),
+                    foregroundColor: WidgetStatePropertyAll(Colors.purple),
+                    side: WidgetStatePropertyAll(
+                        BorderSide(color: Colors.purple)),
+                    visualDensity: VisualDensity(horizontal: -4, vertical: -4),
+                  ),
+                  segments: const <ButtonSegment<CalloutPointerTypeEnum?>>[
+                    ButtonSegment<CalloutPointerTypeEnum?>(
+                      value: CalloutPointerTypeEnum.ARROW,
+                      label: Text('arrow'),
+                    ),
+                    ButtonSegment<CalloutPointerTypeEnum?>(
+                      value: CalloutPointerTypeEnum.BUBBLE,
+                      label: Text('bubble'),
+                    ),
+                  ],
+                  selected: <CalloutPointerTypeEnum?>{
+                    parentState.fabCC.arrowType == ArrowTypeEnum.POINTY
+                        ? CalloutPointerTypeEnum.BUBBLE
+                        : CalloutPointerTypeEnum.ARROW
+                  },
+                  onSelectionChanged:
+                      (Set<CalloutPointerTypeEnum?> newSelection) {
+                    // By default there is only a single segment that can be
+                    // selected at one time, so its value is always the first
+                    // item in the selected set.
+                    CalloutPointerTypeEnum value = newSelection.first!;
+                    ArrowTypeEnum newType = value == CalloutPointerTypeEnum.ARROW
+                        ? ArrowTypeEnum.THIN
+                        : ArrowTypeEnum.POINTY;
+                    parentState.updateArrowType(newType);
+                  },
+                ),
+                Spacer(),
+              ],
+            ),
+          )
+        ],
+      ),
       body: Center(
         child: BlocBuilder<CounterBloc, int>(
           builder: (context, state) {
@@ -185,19 +267,17 @@ class CounterView extends StatelessWidget {
                                         .read<CounterBloc>()
                                         .add(CounterIncrementPressed());
                                     // point out the number using a callout
-                                    fca.dismissAll();
-                                    int index = state%alignments.length;
+                                    fca.dismissAll(exceptToasts: true);
+                                    int index = state % alignments.length;
                                     Alignment ca = alignments[index];
                                     Alignment ta = -ca;
                                     fca.showOverlay(
                                       calloutConfig: basicCalloutConfig(namedSC)
-                                        ..initialCalloutAlignment =
-                                            ca
-                                        ..initialTargetAlignment =
-                                            ta
+                                        ..initialCalloutAlignment = ca
+                                        ..initialTargetAlignment = ta
                                         ..calloutW = 200
                                         ..calloutH = 80,
-                                      calloutContent:  Padding(
+                                      calloutContent: Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: const Text(
                                           'You have pushed the +\nbutton this many times:',
@@ -260,8 +340,7 @@ class CounterBloc extends HydratedBloc<CounterEvent, int> {
 
 /// the CalloutConfig object is where you configure the callout and its pointer
 /// All params are shown, and many are commented out for this example callout
-CalloutConfig basicCalloutConfig(NamedScrollController nsc) =>
-    CalloutConfig(
+CalloutConfig basicCalloutConfig(NamedScrollController nsc) => CalloutConfig(
       cId: 'basic',
       // -- initial pos and animation ---------------------------------
       initialTargetAlignment: Alignment.topLeft,
@@ -294,7 +373,7 @@ CalloutConfig basicCalloutConfig(NamedScrollController nsc) =>
       // gotitAxis:
       // -- pointer -------------------------------------------------
       // arrowColor: Colors.green,
-      arrowType: ArrowType.THIN,
+      arrowType: ArrowTypeEnum.THIN,
       animate: true,
       // lineLabel: Text('line label'),
       // fromDelta: -20,
@@ -313,13 +392,15 @@ CalloutConfig basicCalloutConfig(NamedScrollController nsc) =>
       // draggableColor: Colors.green,
       // dragHandleHeight: ,
       scrollControllerName: nsc.name,
-      followScroll: false,
-      barrier: CalloutBarrierConfig(
-        cutoutPadding: 30,
-        excludeTargetFromBarrier: true,
-        roundExclusion: true,
-        closeOnTapped: true,
-        color: Colors.grey,
-        opacity: .5,
-      ),
+      followScroll: true,
+      // barrier: CalloutBarrierConfig(
+      //   cutoutPadding: 30,
+      //   excludeTargetFromBarrier: true,
+      //   roundExclusion: true,
+      //   closeOnTapped: true,
+      //   color: Colors.grey,
+      //   opacity: .5,
+      // ),
     );
+
+enum CalloutPointerTypeEnum { ARROW, BUBBLE }

@@ -4,7 +4,7 @@ version: 5.1.1
 maintainer: Ian White
 homepage: https://github.com/biancashouse/flutter_callouts
 repository: https://github.com/biancashouse/flutter-callouts
-#publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 environment:
   sdk: ^3.5.4
@@ -34,6 +34,8 @@ dependencies:
   gap: ^3.0.1
   #  shared_preferences: ^2.3.4
   device_info_plus: ^11.2.0
+  json_annotation: ^4.9.0
+  dart_mappable: ^4.5.0
 
 #dependency_overrides:
 #  web: ^0.5.0 # latest version as of now
@@ -42,15 +44,15 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  test: ^1.25.2
-  mockito: ^5.4.4
-  #  build_runner: ^2.4.9
-  #  json_serializable: ^6.5.3
+#  test: ^1.26.0
+#  mockito: ^5.4.4
+  build_runner: ^2.4.15
+  json_serializable: ^6.9.5
   #  vector_math: ^2.1.2
   #  text_editor: ^0.7.0
   #  bloc_test: ^9.1.1
   flutter_lints: any
-#  dart_mappable_builder: ^4.2.2
+  dart_mappable_builder: ^4.5.0
 #  analyzer: ^6.4.1
 
 #false_secrets:

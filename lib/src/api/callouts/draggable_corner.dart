@@ -60,12 +60,12 @@ class DraggableCorner_OP extends StatelessWidget {
           if (alignment == Alignment.topLeft) {
             if (deltaX < 0 ||
                 parent.calloutW! + deltaX >= (parent.minWidth ?? 30)) {
-              parent.left = newLeft;
+              parent.setLeft(newLeft);
               parent.calloutW = parent.calloutW! - deltaX;
             }
             if (deltaY < 0 ||
                 parent.calloutH! + deltaY >= (parent.minHeight ?? 30)) {
-              parent.top = newTop;
+              parent.setTop(newTop);
               parent.calloutH = parent.calloutH! - deltaY;
             }
           } else if (alignment == Alignment.topRight) {
@@ -76,13 +76,13 @@ class DraggableCorner_OP extends StatelessWidget {
             }
             if (deltaY < 0 ||
                 parent.calloutH! + deltaY >= (parent.minHeight ?? 30)) {
-              parent.top = newTop;
+              parent.setTop(newTop);
               parent.calloutH = parent.calloutH! - deltaY;
             }
           } else if (alignment == Alignment.bottomLeft) {
             if (deltaX < 0 ||
                 parent.calloutW! + deltaX >= (parent.minWidth ?? 30)) {
-              parent.left = newLeft;
+              parent.setLeft(newLeft);
               parent.calloutW = parent.calloutW! - deltaX;
             }
             if (parent.calloutH! + deltaY < (parent.minHeight ?? 30)) {
@@ -132,11 +132,11 @@ class DraggableCorner_OP extends StatelessWidget {
     var deltaY = delta.dy;
     if (alignment == Alignment.topLeft) {
       if (deltaX < 0 || parent.calloutW! + deltaX >= (parent.minWidth ?? 30)) {
-        parent.left = newLeft;
+        parent.setLeft(newLeft);
         parent.calloutW = parent.calloutW! - deltaX;
       }
       if (deltaY < 0 || parent.calloutH! + deltaY >= (parent.minHeight ?? 30)) {
-        parent.top = newTop;
+        parent.setTop(newTop);
         parent.calloutH = parent.calloutH! - deltaY;
       }
     } else if (alignment == Alignment.topRight) {
@@ -146,12 +146,12 @@ class DraggableCorner_OP extends StatelessWidget {
         parent.calloutW = parent.calloutW! + deltaX;
       }
       if (deltaY < 0 || parent.calloutH! + deltaY >= (parent.minHeight ?? 30)) {
-        parent.top = newTop;
+        parent.setTop(newTop);
         parent.calloutH = parent.calloutH! - deltaY;
       }
     } else if (alignment == Alignment.bottomLeft) {
       if (deltaX < 0 || parent.calloutW! + deltaX >= (parent.minWidth ?? 30)) {
-        parent.left = newLeft;
+        parent.setLeft(newLeft);
         parent.calloutW = parent.calloutW! - deltaX;
       }
       if (parent.calloutH! + deltaY < (parent.minHeight ?? 30)) {

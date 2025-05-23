@@ -17,14 +17,18 @@ import 'src/rootcontext_mixin.dart';
 import 'src/system_mixin.dart';
 import 'src/widget/widget_helper_mixin.dart';
 
-export 'src/api/callouts/arrow_type.dart';
+export 'src/api/callouts/model/alignment_model.dart';
+export 'src/api/callouts/model/color_model.dart';
+export 'src/api/callouts/model/offset_model.dart';
+export 'src/api/callouts/model/arrow_type_enum.dart';
 export 'src/api/callouts/callout_config.dart';
+export 'src/api/callouts/model/callout_config_model.dart';
 // export mixin
 export 'src/api/callouts/callout_mixin.dart';
 export 'src/api/callouts/callout_using_overlayportal.dart';
 export 'src/api/callouts/color_values.dart';
 export 'src/api/callouts/coord.dart';
-export 'src/api/callouts/decoration_shape_enum.dart';
+export 'src/api/callouts/model/decoration_shape_enum.dart';
 export 'src/api/callouts/dotted_decoration.dart';
 export 'src/api/callouts/globalkey_extn.dart';
 export 'src/api/callouts/line.dart';

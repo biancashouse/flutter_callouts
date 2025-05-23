@@ -57,14 +57,14 @@ class DraggableEdge_OP extends StatelessWidget {
           if (side == Side.LEFT) {
             if (deltaX < 0 ||
                 parent.calloutW! + deltaX >= (parent.minWidth ?? 30)) {
-              parent.left = newLeft;
+              parent.setLeft(newLeft);
               parent.calloutW = parent.calloutW! - deltaX;
             }
           } else if (side == Side.TOP) {
             if (deltaY < 0 ||
                 parent.calloutH! + deltaY >= (parent.minHeight ?? 30)) {
-              parent.top = newTop;
-              parent.left = newLeft;
+              parent.setTop(newTop);
+              parent.setLeft(newLeft);
               parent.calloutH = parent.calloutH! - deltaY;
             }
           } else if (side == Side.RIGHT) {

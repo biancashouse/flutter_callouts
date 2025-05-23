@@ -1,10 +1,13 @@
 
+import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_callouts/src/api/callouts/color_values.dart';
 import 'package:flutter_callouts/src/api/callouts/dotted_decoration.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 
+part 'decoration_shape_enum.mapper.dart';
 
+@MappableEnum()
 enum DecorationShapeEnum {
   rectangle,
   rounded_rectangle,

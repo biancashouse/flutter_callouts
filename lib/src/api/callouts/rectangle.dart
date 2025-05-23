@@ -13,6 +13,9 @@ class Rectangle extends Rect {
 
   Rectangle.fromRect(Rect r) : super.fromPoints(r.topLeft, r.bottomRight);
 
+  Rectangle.fromLTWH(double l, double t, double w, double h)
+      : super.fromLTWH(l, t, w, h);
+
   /*
 	 * allow margin of error
 	 */
@@ -61,13 +64,17 @@ class Rectangle extends Rect {
 
     switch (theSide) {
       case Side.BOTTOM:
-        return Coord.sameValue2(thePoint.y, b) && roughlyWithin(thePoint.x, l, r);
+        return Coord.sameValue2(thePoint.y, b) &&
+            roughlyWithin(thePoint.x, l, r);
       case Side.LEFT:
-        return Coord.sameValue2(thePoint.x, l) && roughlyWithin(thePoint.y, t, b);
+        return Coord.sameValue2(thePoint.x, l) &&
+            roughlyWithin(thePoint.y, t, b);
       case Side.RIGHT:
-        return Coord.sameValue2(thePoint.x, r) && roughlyWithin(thePoint.y, t, b);
+        return Coord.sameValue2(thePoint.x, r) &&
+            roughlyWithin(thePoint.y, t, b);
       case Side.TOP:
-        return Coord.sameValue2(thePoint.y, t) && roughlyWithin(thePoint.x, l, r);
+        return Coord.sameValue2(thePoint.y, t) &&
+            roughlyWithin(thePoint.x, l, r);
       default:
         return false;
     }
@@ -114,7 +121,8 @@ class Rectangle extends Rect {
         (theOtherRect.top + theOtherRect.height > top);
   }
 
-  static bool rectanglesIntersect(int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h2) {
+  static bool rectanglesIntersect(
+      int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h2) {
     if (x2 < x1 || y1 < y2) {
       int t1, t2, t3, t4;
       t1 = x1;
@@ -138,7 +146,8 @@ class Rectangle extends Rect {
 	 * be right on a corner, so in that case just return that corner point. if
 	 * inside the rect, return (-999,-999)
 	 */
-  static Coord NO_INTERSECTION_FOUND = Coord.fromOffset(const Offset(-999,-999));
+  static Coord NO_INTERSECTION_FOUND =
+      Coord.fromOffset(const Offset(-999, -999));
 
   static Coord getBubbleIntersectionPoint(Line theLine, Rectangle theRect) {
     Coord result = Coord();
@@ -232,14 +241,16 @@ class Rectangle extends Rect {
       }
       // bottom left
       else if (bottomSideIP != null && leftSideIP != null) {
-        return rectCentre.deltaX(bottomSideIP) > rectCentre.deltaX(leftSideIP) &&
+        return rectCentre.deltaX(bottomSideIP) >
+                    rectCentre.deltaX(leftSideIP) &&
                 rectCentre.deltaY(bottomSideIP) > rectCentre.deltaY(leftSideIP)
             ? leftSideIP
             : bottomSideIP;
       }
       // bottom right
       else if (bottomSideIP != null && rightSideIP != null) {
-        return rectCentre.deltaX(bottomSideIP) > rectCentre.deltaX(rightSideIP) &&
+        return rectCentre.deltaX(bottomSideIP) >
+                    rectCentre.deltaX(rightSideIP) &&
                 rectCentre.deltaY(bottomSideIP) > rectCentre.deltaY(rightSideIP)
             ? rightSideIP
             : bottomSideIP;
@@ -277,24 +288,44 @@ class Rectangle extends Rect {
     List<Coord> ips = [];
 
     // Top line
-    Coord? topLineIP = line.getIntersectionPoint(
-        Line.fromPoints(targetRectangle.left, targetRectangle.top, targetRectangle.left + targetRectangle.width, targetRectangle.top));
-    if (topLineIP != null && targetRectangle.hasPointOnSide(topLineIP, Side.TOP)) ips.add(topLineIP);
+    Coord? topLineIP = line.getIntersectionPoint(Line.fromPoints(
+      targetRectangle.left,
+      targetRectangle.top,
+      targetRectangle.left + targetRectangle.width,
+      targetRectangle.top,
+    ));
+    if (topLineIP != null &&
+        targetRectangle.hasPointOnSide(topLineIP, Side.TOP)) ips.add(topLineIP);
 
     // Bottom line
-    Coord? bottomLineIP = line.getIntersectionPoint(Line.fromPoints(targetRectangle.left,
-        targetRectangle.top + targetRectangle.height, targetRectangle.left + targetRectangle.width, targetRectangle.top + targetRectangle.height));
-    if (bottomLineIP != null && targetRectangle.hasPointOnSide(bottomLineIP, Side.BOTTOM)) ips.add(bottomLineIP);
+    Coord? bottomLineIP = line.getIntersectionPoint(Line.fromPoints(
+        targetRectangle.left,
+        targetRectangle.top + targetRectangle.height,
+        targetRectangle.left + targetRectangle.width,
+        targetRectangle.top + targetRectangle.height));
+    if (bottomLineIP != null &&
+        targetRectangle.hasPointOnSide(bottomLineIP, Side.BOTTOM))
+      ips.add(bottomLineIP);
 
     // Right side
-    Coord? rightLineIP = line.getIntersectionPoint(Line.fromPoints(targetRectangle.left + targetRectangle.width,
-        targetRectangle.top, targetRectangle.left + targetRectangle.width, targetRectangle.top + targetRectangle.height));
-    if (rightLineIP != null && targetRectangle.hasPointOnSide(rightLineIP, Side.RIGHT)) ips.add(rightLineIP);
+    Coord? rightLineIP = line.getIntersectionPoint(Line.fromPoints(
+        targetRectangle.left + targetRectangle.width,
+        targetRectangle.top,
+        targetRectangle.left + targetRectangle.width,
+        targetRectangle.top + targetRectangle.height));
+    if (rightLineIP != null &&
+        targetRectangle.hasPointOnSide(rightLineIP, Side.RIGHT))
+      ips.add(rightLineIP);
 
     // Left side...
-    Coord? leftLineIP = line.getIntersectionPoint(
-        Line.fromPoints(targetRectangle.left, targetRectangle.top, targetRectangle.left, targetRectangle.top + targetRectangle.height));
-    if (leftLineIP != null && targetRectangle.hasPointOnSide(leftLineIP, Side.LEFT)) ips.add(leftLineIP);
+    Coord? leftLineIP = line.getIntersectionPoint(Line.fromPoints(
+        targetRectangle.left,
+        targetRectangle.top,
+        targetRectangle.left,
+        targetRectangle.top + targetRectangle.height));
+    if (leftLineIP != null &&
+        targetRectangle.hasPointOnSide(leftLineIP, Side.LEFT))
+      ips.add(leftLineIP);
 
     if (ips.length == 1) {
       return ips[0];
@@ -365,12 +396,14 @@ class Rectangle extends Rect {
   //   return null;
   // }
 
-  static bool linesIntersect(
-      double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4) {
-    double x = ((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)) /
-        ((x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4));
-    double y = ((x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4)) /
-        ((x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4));
+  static bool linesIntersect(double x1, double y1, double x2, double y2,
+      double x3, double y3, double x4, double y4) {
+    double x =
+        ((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)) /
+            ((x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4));
+    double y =
+        ((x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4)) /
+            ((x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4));
     if (x1 >= x2) {
       if (!(x2 <= x && x <= x1)) {
         return false;
@@ -645,6 +678,13 @@ class Rectangle extends Rect {
 
   bool sameAs(double a, double b) {
     return (a - b).abs() < RECTANGLE_MOE;
+  }
+
+  bool exactMatch(Rectangle? otherRectangle) {
+    return top == otherRectangle?.top &&
+        left == otherRectangle?.left &&
+        width == otherRectangle?.width &&
+        height == otherRectangle?.height;
   }
 
   bool onSameSide(Coord pos1, Coord pos2) {

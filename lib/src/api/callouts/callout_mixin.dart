@@ -121,7 +121,7 @@ mixin CalloutMixin {
     ); // will be null if target not present
     // if a notifer was passed in, means inside another overlay, so the target would change as the overlay gets moved or resized
     targetChangedNotifier?.addListener(() {
-      // fca.logger.i("\n\ntime to update the target\n\n");
+      print("\n\ntime to update the target\n\n");
       fca.afterNextBuildDo(() => oEntry.markNeedsBuild());
     });
     Future.delayed(const Duration(milliseconds: 300), () {
@@ -256,10 +256,11 @@ mixin CalloutMixin {
     CalloutConfig calloutConfig,
     VoidCallback? onReadyF,
   ) async {
+    print('_possiblyAnimateSeparation finalSep: ${calloutConfig.finalSeparation}');
     if ((calloutConfig.finalSeparation ?? 0.0) > 0.0) {
       // animate separation, top or left
       AnimationController animationController = AnimationController(
-        duration: const Duration(milliseconds: separationAnimationMs),
+        duration: const Duration(milliseconds: 500),
         vsync: calloutConfig,
       );
       Tween<double> tween =
@@ -275,10 +276,11 @@ mixin CalloutMixin {
         }
       });
       animation.addListener(() {
-        //fca.logger.i('new separation: ${animation.value}');
+        fca.logger.i('new separation: ${animation.value}');
         calloutConfig.setSeparation(animation.value);
       });
       calloutConfig.startedAnimatingSeparation();
+      animationController.reset();
       animationController.forward(from: 0.0).then((value) => onReadyF?.call());
     }
   }
@@ -305,7 +307,7 @@ mixin CalloutMixin {
         calloutConfig.initialCalloutW!,
         calloutConfig.initialCalloutH!,
       ),
-      arrowType: ArrowType.NONE,
+      arrowType: ArrowTypeEnum.NONE,
       // draggable: false,
       skipOnScreenCheck: true,
       allowScrolling: calloutConfig.followScroll,
@@ -324,6 +326,7 @@ mixin CalloutMixin {
   void showToastBlueOnYellow({
     required CalloutId cId,
     required String msg,
+    bool showCPI = false,
     int removeAfterMs = 0,
   }) {
     var cc = CalloutConfig(
@@ -333,6 +336,7 @@ mixin CalloutMixin {
       initialCalloutW: fca.scrW * .8,
       initialCalloutH: 40,
       scrollControllerName: null,
+      showcpi: showCPI,
     );
 
     showToast(
@@ -504,10 +508,13 @@ mixin CalloutMixin {
   /// given a Rect, returns most appropriate alignment between target and callout within the wrapper
   /// NOTICE does not depend on callout size
   Alignment calcTargetAlignmentWithinWrapper(
-      Rect wrapperRect, final Rect targetRect) {
+  {Rect? wrapperRect, required Rect targetRect}) {
     // Rect? wrapperRect = findGlobalRect(widget.key as GlobalKey);
 
     Rect screenRect = Rect.fromLTWH(0, 0, fca.scrW, fca.scrH);
+    if (wrapperRect == null) {
+      wrapperRect = screenRect;
+    }
     wrapperRect = screenRect;
     Offset wrapperC = wrapperRect.center;
     Offset targetRectC = targetRect.center;
@@ -813,6 +820,7 @@ mixin CalloutMixin {
     for (OE oe in OE.list) {
       if (!oe.isHidden && oe.entry != null) {
         oe.calloutConfig.calcEndpoints();
+       // oe.calloutConfig.refreshAlignment();
         fca.logger
             .i('after calcEndpoints: tR is ${oe.calloutConfig.tR.toString()}');
         oe.entry?.markNeedsBuild();

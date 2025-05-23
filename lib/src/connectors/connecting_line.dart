@@ -19,7 +19,7 @@ class ConnectingLine {
   final double? toDelta;
 
   final Function? onExpiredF;
-  final ArrowType arrowThickness;
+  final ArrowTypeEnum arrowThickness;
   final Color arrowColor;
 
   final bool animate;
@@ -48,7 +48,7 @@ class ConnectingLine {
     required this.fromGKF,
     this.fromDelta,
     this.onExpiredF,
-    this.arrowThickness = ArrowType.THIN,
+    this.arrowThickness = ArrowTypeEnum.THIN,
     this.arrowColor = Colors.grey,
     this.animate = false,
   });

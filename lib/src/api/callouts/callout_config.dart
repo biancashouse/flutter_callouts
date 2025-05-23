@@ -26,7 +26,7 @@ class CalloutConfig implements TickerProvider {
   double? initialCalloutW;
   double? initialCalloutH;
 
-  Rect? _targetRect;
+  late Rect _targetRect;
 
   final Alignment? gravity; // not null indictates Toast
 
@@ -51,7 +51,7 @@ class CalloutConfig implements TickerProvider {
 
   // extend line in the from direction by delta
   double? toDelta;
-  ArrowType arrowType;
+  ArrowTypeEnum arrowType;
 
   Color? arrowColor;
   Alignment? initialTargetAlignment;
@@ -129,19 +129,11 @@ class CalloutConfig implements TickerProvider {
 
   // WidgetBuilder? _cachedCalloutContent;
 
-  double scrollOffsetX() => followScroll
-      ? NamedScrollController.hScrollOffset(scrollControllerName)
-      : 0;
+  double scrollOffsetX() =>
+      NamedScrollController.hScrollOffset(scrollControllerName);
 
-  double scrollOffsetY() {
-    if (followScroll) {
-      double offset = NamedScrollController.vScrollOffset(scrollControllerName);
-      // print('$scrollControllerName scrollOffsetY: $offset');
-      return offset;
-    } else {
-      return 0;
-    }
-  }
+  double scrollOffsetY() =>
+      NamedScrollController.vScrollOffset(scrollControllerName);
 
   void setRebuildCallback(VoidCallback newCallback) =>
       _rebuildOverlayEntryF = newCallback;
@@ -220,11 +212,9 @@ class CalloutConfig implements TickerProvider {
   // can be set by children in the callout content
   bool preventDrag = false;
 
-  Rectangle? get tR => _targetRectangle();
-
   Rectangle cR() => Rectangle.fromRect(_calloutRect().translate(
-      -scrollOffsetX() + (contentTranslateX ?? 0.0),
-      -scrollOffsetY() + (contentTranslateY ?? 0.0)));
+      followScroll ? -scrollOffsetX() : 0.0 + (contentTranslateX ?? 0.0),
+      followScroll ? -scrollOffsetY() : 0.0 + (contentTranslateY ?? 0.0)));
 
   // TargetModel? _configurableTarget;
 
@@ -257,7 +247,7 @@ class CalloutConfig implements TickerProvider {
     this.contentTranslateY,
     this.targetTranslateX,
     this.targetTranslateY,
-    this.arrowType = ArrowType.THIN,
+    this.arrowType = ArrowTypeEnum.THIN,
     this.arrowColor,
     this.barrier,
     this.modal = false,
@@ -378,7 +368,7 @@ class CalloutConfig implements TickerProvider {
     double? contentTranslateY,
     double? targetTranslateX,
     double? targetTranslateY,
-    ArrowType? arrowType,
+    ArrowTypeEnum? arrowType,
     Color? arrowColor,
     CalloutBarrierConfig? barrier,
     bool? modal,
@@ -542,11 +532,11 @@ class CalloutConfig implements TickerProvider {
   //     //     (sh - Useful.kbdH - height!) / 2,
   //     //   );
   //     // } else {
-  //     //   targetC = tR!.center;
+  //     //   targetC = tR().center;
   //     // }
   //
   //     Rect screenRect = Rect.fromLTWH(0, 0, Useful.scrW, Useful.scrH);
-  //     initialTargetAlignment = -Useful.calcTargetAlignmentWithinWrapper(screenRect, tR!);
+  //     initialTargetAlignment = -Useful.calcTargetAlignmentWithinWrapper(screenRect, tR());
   //     initialCalloutAlignment = -initialTargetAlignment!;
   //
   //     // fca.logger.i("initialCalloutAlignment: ${initialCalloutAlignment.toString()}");
@@ -571,7 +561,7 @@ class CalloutConfig implements TickerProvider {
   //   _initialLeft ??= left;
   //
   //   if (!_finishedAnimatingSeparation && separation > 0.0 && tR != null && cE != null) {
-  //     var adjustedTopLeft = _adjustTopLeftForSeparation(separation, _initialTop!, _initialLeft!, cE!, tR!);
+  //     var adjustedTopLeft = _adjustTopLeftForSeparation(separation, _initialTop!, _initialLeft!, cE!, tR());
   //     top = adjustedTopLeft.$1;
   //     left = adjustedTopLeft.$2;
   //   }
@@ -660,11 +650,11 @@ class CalloutConfig implements TickerProvider {
   //     //     (sh - Useful.kbdH - height!) / 2,
   //     //   );
   //     // } else {
-  //     //   targetC = tR!.center;
+  //     //   targetC = tR().center;
   //     // }
   //
   //     Rect screenRect = Rect.fromLTWH(0, 0, Useful.scrW, Useful.scrH);
-  //     initialTargetAlignment = -Useful.calcTargetAlignmentWithinWrapper(screenRect, tR!);
+  //     initialTargetAlignment = -Useful.calcTargetAlignmentWithinWrapper(screenRect, tR());
   //     initialCalloutAlignment = -initialTargetAlignment!;
   //
   //     // fca.logger.i("initialCalloutAlignment: ${initialCalloutAlignment.toString()}");
@@ -689,7 +679,7 @@ class CalloutConfig implements TickerProvider {
   //   _initialLeft ??= left;
   //
   //   if (!_finishedAnimatingSeparation && (separation ?? 0.0) > 0.0 && tR != null && cE != null) {
-  //     var adjustedTopLeft = _adjustTopLeftForSeparation(separation!, _initialTop!, _initialLeft!, cE!, tR!);
+  //     var adjustedTopLeft = _adjustTopLeftForSeparation(separation!, _initialTop!, _initialLeft!, cE!, tR());
   //     top = adjustedTopLeft.$1;
   //     left = adjustedTopLeft.$2;
   //   }
@@ -751,11 +741,8 @@ class CalloutConfig implements TickerProvider {
     // _zoomer = zoomer;
     // _configurableTarget = configurableTarget;
     // opDescendantContext = context; // used to find nearest parent OverlayPortal for barrier tap to close
-    Rect r = Rect.fromLTWH(
-        targetRect.left - scrollOffsetX(),
-        targetRect.top - scrollOffsetY(),
-        targetRect.width * scaleTarget,
-        targetRect.height * scaleTarget);
+    Rect r = Rect.fromLTWH(targetRect.left, targetRect.top,
+        targetRect.width * scaleTarget, targetRect.height * scaleTarget);
 
     return (fca.isHidden(cId))
         ? const Offstage()
@@ -832,7 +819,7 @@ class CalloutConfig implements TickerProvider {
       //     (sh - Useful.kbdH - height!) / 2,
       //   );
       // } else {
-      //   targetC = tR!.center;
+      //   targetC = tR().center;
       // }
 
       Rect screenRect = Rect.fromLTWH(0, 0, fca.scrW, fca.scrH);
@@ -840,11 +827,11 @@ class CalloutConfig implements TickerProvider {
           screenRect.height == targetRect.height) {
         initialTargetAlignment = initialCalloutAlignment = Alignment.center;
       } else {
-        initialTargetAlignment =
-            -fca.calcTargetAlignmentWithinWrapper(screenRect, tR!);
+        initialTargetAlignment = -fca.calcTargetAlignmentWithinWrapper(
+            wrapperRect: screenRect, targetRect: tR());
         initialCalloutAlignment = -initialTargetAlignment!;
         initialTargetAlignment =
-            fca.calcTargetAlignmentWholeScreen(tR!, _calloutW!, _calloutH!);
+            fca.calcTargetAlignmentWholeScreen(tR(), _calloutW!, _calloutH!);
         initialCalloutAlignment = -initialTargetAlignment!;
       }
     }
@@ -876,7 +863,7 @@ class CalloutConfig implements TickerProvider {
         cE != null) {
       // fca.logger.i('ADJUSTING.');
       var adjustedTopLeft = _adjustTopLeftForSeparation(
-          _separation, _initialTop!, _initialLeft!, cE!, tR!);
+          _separation, _initialTop!, _initialLeft!, cE!, tR());
       top = adjustedTopLeft.$1;
       left = adjustedTopLeft.$2;
     } else {
@@ -971,16 +958,16 @@ class CalloutConfig implements TickerProvider {
               thickness: draggableEdgeThickness,
               color: draggableColor!,
               parent: this),
-        if (notToast && arrowType == ArrowType.POINTY) _positionedBubbleBg(),
+        if (notToast && arrowType == ArrowTypeEnum.POINTY) _positionedBubbleBg(),
         PositionedBoxContent(this, content),
         if (notToast &&
-            arrowType != ArrowType.NONE &&
-            arrowType != ArrowType.POINTY &&
+            arrowType != ArrowTypeEnum.NONE &&
+            arrowType != ArrowTypeEnum.POINTY &&
             tR != null)
           _createPointingLine(),
         if (notToast &&
-            arrowType != ArrowType.NONE &&
-            arrowType != ArrowType.POINTY &&
+            arrowType != ArrowTypeEnum.NONE &&
+            arrowType != ArrowTypeEnum.POINTY &&
             tR != null &&
             lineLabel != null)
           _createLineLabel(),
@@ -1101,46 +1088,45 @@ class CalloutConfig implements TickerProvider {
 //   return Alignment(newX, newY);
 // }
 
+  Rectangle tR() => Rectangle.fromRect(
+        _targetRect.translate(-scrollOffsetX(), -scrollOffsetY()),
+      );
+
 // if target is CalloutTarget, it automatically measures itself after a build,
 // otherwise, just measure the widget having this key
-  Rectangle? _targetRectangle() {
-    Rect? rect;
-    if (_targetRect != null) {
-      // fca.logger.i('targetRect != null');
-      rect = _targetRect!;
-    }
-    // can supply target globalkey directly or via a function
-    else if (initialCalloutPos != null) {
-      fca.logger.i('initialCalloutPos != null');
-      rect = Rect.fromLTWH(
-        initialCalloutPos!.dx,
-        initialCalloutPos!.dy,
-        _calloutW!,
-        _calloutH!,
-      );
-    } else if (_opGK?.currentWidget == null) {
-      fca.logger.i("$cId _targetRectangle(): opGK!?.currentWidget == null");
-      // Rect screenRect = Rect.fromLTWH(0, 0, Useful.scrW, Useful.scrH);
-      return null;
-    } else {
-      fca.logger.i('_opGK!.globalPaintBounds()');
-      Rect? r = _opGK!.globalPaintBounds(); //Measuring.findGlobalRect(_opGK!);
-      if (r == null) return null;
-      fca.logger.i("$cId findGlobalRect(_opGK!) = ${r.toString()}");
-      // adjust for possible scroll
-      rect = Rect.fromLTWH(
-        r.left,
-        r.top,
-        r.width, // * scaleTarget,
-        r.height,
-      ); // * scaleTarget));
-    }
-    return Rectangle.fromRect(Rect.fromLTWH(
-        rect.left + scrollOffsetX(),
-        rect.top + scrollOffsetY(),
-        rect.width, // * scaleTarget,
-        rect.height));
-  }
+//   Rectangle tR() {
+//     Rect? rect;
+//     if (initialCalloutPos != null) {
+//       fca.logger.i('initialCalloutPos != null');
+//       rect = Rect.fromLTWH(
+//         initialCalloutPos!.dx,
+//         initialCalloutPos!.dy,
+//         _calloutW!,
+//         _calloutH!,
+//       );
+//     } else if (_opGK?.currentWidget == null) {
+//       fca.logger.i("$cId _targetRectangle(): opGK!?.currentWidget == null");
+//       // Rect screenRect = Rect.fromLTWH(0, 0, Useful.scrW, Useful.scrH);
+//       return Rectangle.fromRect(Rect.zero);
+//     } else {
+//       fca.logger.i('_opGK!.globalPaintBounds()');
+//       Rect? r = _opGK!.globalPaintBounds(); //Measuring.findGlobalRect(_opGK!);
+//       if (r == null) return Rectangle.fromRect(Rect.zero);
+//       fca.logger.i("$cId findGlobalRect(_opGK!) = ${r.toString()}");
+//       // adjust for possible scroll
+//       rect = Rect.fromLTWH(
+//         r.left,
+//         r.top,
+//         r.width, // * scaleTarget,
+//         r.height,
+//       ); // * scaleTarget));
+//     }
+//     return Rectangle.fromRect(Rect.fromLTWH(
+//         rect.left + scrollOffsetX(),
+//         rect.top + scrollOffsetY(),
+//         rect.width, // * scaleTarget,
+//         rect.height));
+//   }
 
   Coord? tE, cE;
 
@@ -1157,7 +1143,7 @@ class CalloutConfig implements TickerProvider {
 
       // these positions are relative to the target and callout local origins (just taking account of sizes)
       final targetAlignmentIntersectionPos = initialTargetAlignment!
-          .withinRect(Rect.fromLTWH(0, 0, tR!.width, tR!.height));
+          .withinRect(Rect.fromLTWH(0, 0, tR().width, tR().height));
       final calloutAlignmentIntersectionPos = initialCalloutAlignment!
           .withinRect(Rect.fromLTWH(0, 0, _calloutW!, _calloutH!));
 
@@ -1165,11 +1151,11 @@ class CalloutConfig implements TickerProvider {
           targetAlignmentIntersectionPos - calloutAlignmentIntersectionPos;
 
       startingCalloutLeft =
-          tR!.left + startingCalloutTopLeftRelativeToTarget.dx;
+          tR().left + startingCalloutTopLeftRelativeToTarget.dx;
       if (!skipOnScreenCheck && startingCalloutLeft < 0) {
         startingCalloutLeft = 0.0;
       }
-      startingCalloutTop = tR!.top + startingCalloutTopLeftRelativeToTarget.dy;
+      startingCalloutTop = tR().top + startingCalloutTopLeftRelativeToTarget.dy;
       if (!skipOnScreenCheck && startingCalloutTop < 0) {
         startingCalloutTop = 0.0;
       }
@@ -1263,6 +1249,9 @@ class CalloutConfig implements TickerProvider {
           top!,
           _calloutW!,
           dragHandleHeight ?? _calloutH!,
+        ).translate(
+          followScroll ? scrollOffsetX() : 0.0,
+          followScroll ? scrollOffsetY() : 0.0,
         ),
         _calloutW!,
         0,
@@ -1516,20 +1505,33 @@ class CalloutConfig implements TickerProvider {
   Widget _createPointingLine() {
     if (initialCalloutAlignment == null && initialTargetAlignment == null) {
       Rect screenRect = Rect.fromLTWH(0, 0, fca.scrW, fca.scrH);
-      initialTargetAlignment =
-          -fca.calcTargetAlignmentWithinWrapper(screenRect, tR!);
+      initialTargetAlignment = -fca.calcTargetAlignmentWithinWrapper(
+          wrapperRect: screenRect, targetRect: tR());
       initialCalloutAlignment = -initialTargetAlignment!;
     }
 
     calcEndpoints();
 
     if (tE != null && cE != null) {
-      Rect r = Rect.fromPoints(tE!.asOffset, cE!.asOffset);
+      Rect r = Rect.fromPoints(
+          tE!.asOffset,
+          cE!.asOffset.translate(
+            followScroll ? -scrollOffsetX() : 0.0,
+            followScroll ? -scrollOffsetY() : 0.0,
+          ));
       Offset to = tE!.asOffset.translate(
         -r.left,
         -r.top,
       );
-      Offset from = cE!.asOffset.translate(-r.left, -r.top);
+      Offset from = cE!.asOffset
+          .translate(
+            -r.left,
+            -r.top,
+          )
+          .translate(
+            followScroll ? -scrollOffsetX() : 0.0,
+            followScroll ? -scrollOffsetY() : 0.0,
+          );
       Line line = Line(Coord.fromOffset(from), Coord.fromOffset(to));
       double lineLen = line.length();
 //Rect inflatedTargetRect = targetRect.inflate(separation / 2);
@@ -1537,7 +1539,7 @@ class CalloutConfig implements TickerProvider {
 //bool overlaps = calloutrect.overlaps(inflatedTargetRect);
 // don't show line if gap between endpoints < specifid separation
       bool veryClose = lineLen <= 30;
-      if (veryClose || tR == null || calloutrect.overlaps(tR!)) {
+      if (veryClose || tR == null || calloutrect.overlaps(tR())) {
         // fca.logger.i("not drawing pointing line");
         return const Offstage();
       }
@@ -1580,16 +1582,16 @@ class CalloutConfig implements TickerProvider {
       );
 
   Widget _createTargetBorder() => Positioned(
-        top: tR!.top,
-        left: tR!.left,
+        top: tR().top,
+        left: tR().left,
         child: Material(
           color: Colors.yellow.withOpacity(.3),
           child: GestureDetector(
             onTap: onBarrierTap,
             child: Container(
               color: Colors.transparent,
-              width: tR!.width * scaleTarget,
-              height: tR!.height * scaleTarget,
+              width: tR().width * scaleTarget,
+              height: tR().height * scaleTarget,
             ),
           ),
         ),
@@ -1612,9 +1614,9 @@ class CalloutConfig implements TickerProvider {
   Widget _createBarrier() {
     if (barrier!.excludeTargetFromBarrier &&
         tR != null &&
-        tR!.size != Size.zero) {
+        tR().size != Size.zero) {
       return ModalBarrierWithCutout(
-        cutoutRect: tR!,
+        cutoutRect: tR(),
         round: barrier!.roundExclusion,
         cutoutPadding: barrier!.cutoutPadding,
         color: barrier!.color,
@@ -1685,11 +1687,11 @@ class CalloutConfig implements TickerProvider {
 //                         child: Stack(
 //                           children: [
 //                             Positioned(
-//                               top: tR!.top - barrier!.holePadding - (vScrollController?.offset ?? 0.0),
-//                               left: tR!.left - barrier!.holePadding - (hScrollController?.offset ?? 0.0),
+//                               top: tR().top - barrier!.holePadding - (vScrollController?.offset ?? 0.0),
+//                               left: tR().left - barrier!.holePadding - (hScrollController?.offset ?? 0.0),
 //                               child: Container(
-//                                 height: tR!.height + barrier!.holePadding * 2,
-//                                 width: tR!.width + barrier!.holePadding * 2,
+//                                 height: tR().height + barrier!.holePadding * 2,
+//                                 width: tR().width + barrier!.holePadding * 2,
 //                                 decoration: BoxDecoration(
 //                                   boxShadow: const [
 //                                     BoxShadow(
@@ -1701,7 +1703,7 @@ class CalloutConfig implements TickerProvider {
 //                                   color: Colors.black,
 // // Color does not matter but should not be transparent
 //                                   borderRadius:
-//                                       barrier!.hasCircularHole ? BorderRadius.circular(tR!.height / 2 + barrier!.holePadding) : BorderRadius.zero,
+//                                       barrier!.hasCircularHole ? BorderRadius.circular(tR().height / 2 + barrier!.holePadding) : BorderRadius.zero,
 //                                 ),
 //                               ),
 //                             ),
@@ -1752,25 +1754,28 @@ class CalloutConfig implements TickerProvider {
 // Offset _calloutCentre() => _calloutRect().center;
 
 // return target rectangle if target found, otherwise null
-  Line? calcEndpoints() {
-    if (tR == null) return null;
-
-// account for possible offset X or Y as well
-//     var tr = tR;
-    Offset tCentre = tR!.center;
-    Offset cCentre = cR().center;
+  void calcEndpoints() {
+    Offset tCentre = tR().center;
+    Rectangle scrollAwareCR = Rectangle.fromRect(cR().translate(
+      followScroll ? scrollOffsetX() : 0.0,
+      followScroll ? scrollOffsetY() : 0.0,
+    ));
+    Offset cCentre = scrollAwareCR.center;
     Line line = Line.fromOffsets(cCentre, tCentre);
     tE = Rectangle.getTargetIntersectionPoint2(
-        Coord.fromOffset(cCentre), line, tR!);
+        Coord.fromOffset(cCentre), line, tR());
+    if (tE == null) {
+      print('FUCK tE null!');
+    }
     cE = Rectangle.getTargetIntersectionPoint2(
-        Coord.fromOffset(tCentre), line, cR());
+        Coord.fromOffset(tCentre), line, scrollAwareCR);
+    if (tE == null) print('FUCK cE null!');
     if (toDelta != null && toDelta != 0.0) {
       tE = Coord.changeDistanceBetweenPoints(cE, tE, toDelta);
     }
     if (fromDelta != null && fromDelta != 0.0) {
       cE = Coord.changeDistanceBetweenPoints(tE, cE, fromDelta);
     }
-    return line;
   }
 
   void rebuild(VoidCallback? f) {
@@ -1786,7 +1791,7 @@ class CalloutConfig implements TickerProvider {
 // void redraw() {
 //   if (_cachedCalloutContent == null || _rebuildOverlayEntryF == null) return;
 //   oeContentWidget(
-//     targetRect: tR!,
+//     targetRect: tR(),
 //     calloutContent: _cachedCalloutContent!,
 //     rebuildF: _rebuildOverlayEntryF!,
 //   );
@@ -1801,7 +1806,8 @@ class CalloutBarrierConfig {
   final Color color;
   final bool excludeTargetFromBarrier;
   final double cutoutPadding;
-  final bool roundExclusion; // create a circular hole in the barrier? false means rectangular
+  final bool
+      roundExclusion; // create a circular hole in the barrier? false means rectangular
 
   CalloutBarrierConfig({
     this.closeOnTapped = true,
@@ -1836,8 +1842,8 @@ class PositionedBoxContent extends StatelessWidget {
         cc.initialCalloutAlignment == null &&
         cc.initialTargetAlignment == null) {
       Rect screenRect = Rect.fromLTWH(0, 0, fca.scrW, fca.scrH);
-      cc.initialTargetAlignment =
-          -fca.calcTargetAlignmentWithinWrapper(screenRect, cc.tR!);
+      cc.initialTargetAlignment = -fca.calcTargetAlignmentWithinWrapper(
+          wrapperRect: screenRect, targetRect: cc.tR());
       cc.initialCalloutAlignment = -cc.initialTargetAlignment!;
     }
 
@@ -1855,9 +1861,10 @@ class PositionedBoxContent extends StatelessWidget {
     // }
 
     return Positioned(
-        top:
-            -cc.scrollOffsetY() + (cc.top ?? 0) + (cc.contentTranslateY ?? 0.0),
-        left: -cc.scrollOffsetX() +
+        top: (cc.followScroll ? -cc.scrollOffsetY() : 0.0) +
+            (cc.top ?? 0) +
+            (cc.contentTranslateY ?? 0.0),
+        left: (cc.followScroll ? -cc.scrollOffsetX() : 0.0) +
             (cc.left ?? 0) +
             (cc.contentTranslateX ?? 0.0),
         child: GestureDetector(

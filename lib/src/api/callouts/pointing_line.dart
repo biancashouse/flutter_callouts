@@ -6,7 +6,7 @@ import 'package:flutter_callouts/flutter_callouts.dart';
 class PointingLine extends StatefulWidget {
   final Offset from;
   final Offset to;
-  final ArrowType arrowThickness;
+  final ArrowTypeEnum arrowThickness;
   final Color arrowColor;
   final double lengthDeltaPc; // between 0 and 1.0
   final bool animate;
@@ -60,7 +60,7 @@ class PointingLinePainter extends CustomPainter {
   final Offset from;
   final Offset to;
   final double lengthDeltaPc;
-  final ArrowType arrowThickness;
+  final ArrowTypeEnum arrowThickness;
   final Color arrowColor;
   final Animation<double>? animation;
 
@@ -134,49 +134,49 @@ class PointingLinePainter extends CustomPainter {
     canvas.drawPath(path, fca.bgPaint(arrowColor));
   }
 
-  double arrowTypeToHeadRadius(ArrowType size) {
+  double arrowTypeToHeadRadius(ArrowTypeEnum size) {
     switch (size) {
-      case ArrowType.VERY_THIN:
-      case ArrowType.VERY_THIN_REVERSED:
+      case ArrowTypeEnum.VERY_THIN:
+      case ArrowTypeEnum.VERY_THIN_REVERSED:
         return 6;
-      case ArrowType.THIN:
-      case ArrowType.THIN_REVERSED:
+      case ArrowTypeEnum.THIN:
+      case ArrowTypeEnum.THIN_REVERSED:
         return 10;
-      case ArrowType.MEDIUM:
-      case ArrowType.MEDIUM_REVERSED:
+      case ArrowTypeEnum.MEDIUM:
+      case ArrowTypeEnum.MEDIUM_REVERSED:
         return 20;
-      case ArrowType.LARGE:
-      case ArrowType.LARGE_REVERSED:
+      case ArrowTypeEnum.LARGE:
+      case ArrowTypeEnum.LARGE_REVERSED:
         return 30;
       // case ArrowType.HUGE:
       // case ArrowType.HUGE_REVERSED:
       //   return 40;
-      case ArrowType.NONE:
+      case ArrowTypeEnum.NONE:
         return 0;
-      case ArrowType.POINTY:
+      case ArrowTypeEnum.POINTY:
         return 0;
     }
   }
 
-  double arrowTypeToLineThickness(ArrowType size) {
+  double arrowTypeToLineThickness(ArrowTypeEnum size) {
     switch (size) {
-      case ArrowType.VERY_THIN:
-      case ArrowType.VERY_THIN_REVERSED:
+      case ArrowTypeEnum.VERY_THIN:
+      case ArrowTypeEnum.VERY_THIN_REVERSED:
         return 1;
-      case ArrowType.THIN:
-      case ArrowType.THIN_REVERSED:
+      case ArrowTypeEnum.THIN:
+      case ArrowTypeEnum.THIN_REVERSED:
         return 3;
-      case ArrowType.MEDIUM:
-      case ArrowType.MEDIUM_REVERSED:
+      case ArrowTypeEnum.MEDIUM:
+      case ArrowTypeEnum.MEDIUM_REVERSED:
         return 10;
-      case ArrowType.LARGE:
-      case ArrowType.LARGE_REVERSED:
+      case ArrowTypeEnum.LARGE:
+      case ArrowTypeEnum.LARGE_REVERSED:
         return 15;
       // case ArrowType.HUGE:
       // case ArrowType.HUGE_REVERSED:
       //   return 20;
-      case ArrowType.NONE:
-      case ArrowType.POINTY:
+      case ArrowTypeEnum.NONE:
+      case ArrowTypeEnum.POINTY:
       return 1;
     }
   }
