@@ -8,7 +8,7 @@ Timer? _debounce;
 class DraggableEdge_OP extends StatelessWidget {
   final Side side;
   final double thickness;
-  final CalloutConfig parent;
+  final CalloutConfigModel parent;
   final Color color;
 
   const DraggableEdge_OP(
@@ -45,8 +45,8 @@ class DraggableEdge_OP extends StatelessWidget {
     double top = _topLeft(soX, soY).dy;
     double left = _topLeft(soX, soY).dx;
     return Positioned(
-      top: top,
-      left: left,
+      top: top + parent.scrollOffsetY(),
+      left: left + parent.scrollOffsetX(),
       child: Listener(
         onPointerMove: (PointerMoveEvent event) {
           double newTop = event.position.dy;

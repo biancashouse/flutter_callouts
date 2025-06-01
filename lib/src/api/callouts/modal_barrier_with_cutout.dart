@@ -308,7 +308,7 @@ class ModalBarrierWithCutout extends StatelessWidget {
     double padding = 0,
   }) {
     return ColorFiltered(
-      colorFilter: ColorFilter.mode(Colors.black54, BlendMode.srcOut),
+      colorFilter: ColorFilter.mode(barrierColor, BlendMode.srcOut),
       child: Stack(
         children: [
           Positioned(

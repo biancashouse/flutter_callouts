@@ -1,13 +1,14 @@
 // setting more than 1 value means use a gradient
-typedef ColorValue = int;
+
+import 'package:flutter_callouts/flutter_callouts.dart';
 
 class ColorValues {
-  ColorValue? color1Value;
-  ColorValue? color2Value;
-  ColorValue? color3Value;
-  ColorValue? color4Value;
-  ColorValue? color5Value;
-  ColorValue? color6Value;
+  ColorModel? color1Value;
+  ColorModel? color2Value;
+  ColorModel? color3Value;
+  ColorModel? color4Value;
+  ColorModel? color5Value;
+  ColorModel? color6Value;
 
   ColorValues({
     this.color1Value,

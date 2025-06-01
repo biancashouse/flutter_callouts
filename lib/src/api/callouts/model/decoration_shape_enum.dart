@@ -1,6 +1,7 @@
 
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_callouts/flutter_callouts.dart';
 import 'package:flutter_callouts/src/api/callouts/color_values.dart';
 import 'package:flutter_callouts/src/api/callouts/dotted_decoration.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
@@ -34,22 +35,22 @@ enum DecorationShapeEnum {
     Color? fillColor;
     List<Color> fillColors = [];
     if (fillColorValues?.color1Value != null) {
-      fillColors.add(Color(fillColorValues!.color1Value!));
+      fillColors.add(fillColorValues!.color1Value!.flutterValue);
     }
     if (fillColorValues?.color2Value != null) {
-      fillColors.add(Color(fillColorValues!.color2Value!));
+      fillColors.add(fillColorValues!.color2Value!.flutterValue);
     }
     if (fillColorValues?.color3Value != null) {
-      fillColors.add(Color(fillColorValues!.color3Value!));
+      fillColors.add(fillColorValues!.color3Value!.flutterValue);
     }
     if (fillColorValues?.color4Value != null) {
-      fillColors.add(Color(fillColorValues!.color4Value!));
+      fillColors.add(fillColorValues!.color4Value!.flutterValue);
     }
     if (fillColorValues?.color5Value != null) {
-      fillColors.add(Color(fillColorValues!.color5Value!));
+      fillColors.add(fillColorValues!.color5Value!.flutterValue);
     }
     if (fillColorValues?.color6Value != null) {
-      fillColors.add(Color(fillColorValues!.color6Value!));
+      fillColors.add(fillColorValues!.color6Value!.flutterValue);
     }
     Gradient? fillGradient =
         fillColors.length > 1 ? LinearGradient(colors: fillColors) : null;
@@ -57,22 +58,22 @@ enum DecorationShapeEnum {
     if (fillColors.isEmpty) fillColor = Colors.white;
     List<Color> borderColors = [];
     if (borderColorValues?.color1Value != null) {
-      borderColors.add(Color(borderColorValues!.color1Value!));
+      borderColors.add(borderColorValues!.color1Value!.flutterValue);
     }
     if (borderColorValues?.color2Value != null) {
-      borderColors.add(Color(borderColorValues!.color2Value!));
+      borderColors.add(borderColorValues!.color2Value!.flutterValue);
     }
     if (borderColorValues?.color3Value != null) {
-      borderColors.add(Color(borderColorValues!.color3Value!));
+      borderColors.add(borderColorValues!.color3Value!.flutterValue);
     }
     if (borderColorValues?.color4Value != null) {
-      borderColors.add(Color(borderColorValues!.color4Value!));
+      borderColors.add(borderColorValues!.color4Value!.flutterValue);
     }
     if (borderColorValues?.color5Value != null) {
-      borderColors.add(Color(borderColorValues!.color5Value!));
+      borderColors.add(borderColorValues!.color5Value!.flutterValue);
     }
     if (borderColorValues?.color6Value != null) {
-      borderColors.add(Color(borderColorValues!.color6Value!));
+      borderColors.add(borderColorValues!.color6Value!.flutterValue);
     }
     BoxBorder? border;
     if (borderColors.length == 1) {

@@ -8,15 +8,14 @@ Timer? _debounce;
 class DraggableCorner_OP extends StatelessWidget {
   final Alignment alignment;
   final double thickness;
-  final CalloutConfig parent;
+  final CalloutConfigModel parent;
   final Color color;
 
-  const DraggableCorner_OP(
-      {required this.alignment,
-      required this.thickness,
-      required this.parent,
-      required this.color,
-      super.key});
+  const DraggableCorner_OP({required this.alignment,
+    required this.thickness,
+    required this.parent,
+    required this.color,
+    super.key});
 
   Offset get pos => _pos();
 
@@ -49,8 +48,8 @@ class DraggableCorner_OP extends StatelessWidget {
     // double top = _pos().dy;
     // double left = _pos().dx;
     return Positioned(
-      top: _pos().dy,
-      left: _pos().dx,
+      top: _pos().dy + parent.scrollOffsetY(),
+      left: _pos().dx + parent.scrollOffsetX(),
       child: Listener(
         onPointerMove: (PointerMoveEvent event) {
           double newTop = event.position.dy;
@@ -188,7 +187,7 @@ class DraggableCorner_OP extends StatelessWidget {
     final soX = -parent.scrollOffsetX();
     Rect calloutRect = Rect.fromLTWH(
         parent.left!, parent.top!, parent.calloutW!, parent.calloutH!)
-    .translate(soX,soY);
+        .translate(soX, soY);
     if (alignment == Alignment.topLeft) {
       return calloutRect.topLeft.translate(-thickness, -thickness);
     } else if (alignment == Alignment.topRight) {

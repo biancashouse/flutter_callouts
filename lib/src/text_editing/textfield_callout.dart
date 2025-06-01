@@ -15,8 +15,8 @@ mixin TextEditorMixin {
     required final BuildContext context,
     required final TargetKeyFunc targetGK,
     final Widget? dragHandle,
-    final Alignment? initialCalloutAlignment = Alignment.topCenter,
-    final Alignment? initialTargetAlignment = Alignment.bottomCenter,
+    final AlignmentEnum? initialCalloutAlignment = AlignmentEnum.topCenter,
+    final AlignmentEnum? initialTargetAlignment = AlignmentEnum.bottomCenter,
     final Offset? initialCalloutOffset,
     final Widget? prefixIcon,
     required final VoidCallback? onDiscardedF,
@@ -62,7 +62,7 @@ mixin TextEditorMixin {
           textStyleF: textStyleF,
           textAlignF: textAlignF,
         ),
-        calloutConfig: CalloutConfig(
+        calloutConfig: CalloutConfigModel(
           cId: feature,
           scrollControllerName: scName,
           containsTextField: true,
@@ -78,16 +78,16 @@ mixin TextEditorMixin {
                   },
           ),
           // arrowThickness: ArrowThickness.THIN,
-          fillColor: Colors.white,
-          arrowColor: Colors.red,
+          fillColor: ColorModel.white(),
+          arrowColor: ColorModel.red(),
           finalSeparation: separation ?? 0.0,
           //developer.log('barrier tapped'),
           // dragHandle: dragHandle,
           initialCalloutAlignment:
-              initialCalloutOffset != null ? null : initialCalloutAlignment,
+              initialCalloutOffset != null ? null : initialCalloutAlignment!,
           initialTargetAlignment:
-              initialCalloutOffset != null ? null : initialTargetAlignment,
-          initialCalloutPos: initialCalloutOffset,
+              initialCalloutOffset != null ? null : initialTargetAlignment!,
+          initialCalloutPos: initialCalloutOffset != null ? OffsetModel.fromOffset(initialCalloutOffset) : null,
           // barrierHasCircularHole: true,
           modal: false,
           initialCalloutW: width!,
@@ -125,9 +125,9 @@ mixin TextEditorMixin {
       }
       fca.showToast(
         removeAfterMs: 8 * 1000,
-        calloutConfig: CalloutConfig(
+        calloutConfig: CalloutConfigModel(
           cId: "tap-outside-editor-name-toaccept",
-          gravity: Alignment.topCenter,
+          gravity: AlignmentEnum.topCenter,
           initialCalloutW: 450,
           initialCalloutH: 140,
           onlyOnce: true,

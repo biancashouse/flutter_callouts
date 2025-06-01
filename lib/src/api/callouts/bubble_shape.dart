@@ -4,7 +4,7 @@ import 'package:flutter_callouts/src/api/callouts/path_util.dart';
 
 // ignore: camel_case_types
 class BubbleShape_OP extends CustomPainter {
-  final CalloutConfig calloutConfig;
+  final CalloutConfigModel calloutConfig;
   final Color? lineColor;
   final Color? fillColor;
   final double thickness;
@@ -21,7 +21,7 @@ class BubbleShape_OP extends CustomPainter {
         pointyThickness: calloutConfig.calloutH! <= 40 ? 5 : null);
     if (path != null) {
       canvas.drawPath(
-          path, fca.bgPaint(calloutConfig.fillColor ?? Colors.white));
+          path, fca.bgPaint(calloutConfig.fillColor?.flutterValue ?? Colors.white));
       canvas.drawPath(
           path, fca.linePaint(Colors.black, theThickness: thickness));
     }
@@ -32,13 +32,13 @@ class BubbleShape_OP extends CustomPainter {
     return true;
   }
 
-  Path? _drawBubble(CalloutConfig callout, {int? pointyThickness}) {
+  Path? _drawBubble(CalloutConfigModel callout, {int? pointyThickness}) {
     print('drawBubble');
     Path path = Path();
     callout.calcEndpoints();
     Rectangle calloutR = Rectangle.fromRect(callout.cR());
     if (callout.tE == null || callout.cE == null) return null;
-    Offset tE = callout.tE!.asOffset ?? Offset.zero;
+    Offset tE = callout.tE!.asOffset;
     // tE = tE.translate(callout.scrollOffsetX(), callout.scrollOffsetY());
     // print('drawBubble tE is ${tE} scrollOffset is (${callout.scrollOffsetX()},${callout.scrollOffsetY()})');
 

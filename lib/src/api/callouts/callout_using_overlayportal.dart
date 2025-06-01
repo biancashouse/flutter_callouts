@@ -13,7 +13,7 @@ export "side.dart";
 int SECS(int s) => s * 1000;
 
 class WrappedCallout extends StatefulWidget {
-  final CalloutConfig calloutConfig;
+  final CalloutConfigModel calloutConfig;
   final WidgetBuilder calloutBoxContentBuilderF;
   final WidgetBuilder targetBuilderF;
   final ValueNotifier<int>? targetChangedNotifier;
@@ -63,7 +63,7 @@ class WrappedCallout extends StatefulWidget {
 class WrappedCalloutState extends State<WrappedCallout>  implements TickerProvider {
 // OverlayPortal use
   late OverlayPortalController opController;
-  late CalloutConfig _config;
+  late CalloutConfigModel _config;
   // ignore: constant_identifier_names
   static const _AllowImagesToRenderMs = 2000;
   late GlobalKey _targetMeasuringGK;

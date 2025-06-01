@@ -33,7 +33,7 @@ class CounterDemoPageState extends State<CounterDemoPage>
     with TickerProviderStateMixin {
   late GlobalKey fabGK;
   late GlobalKey countGK;
-  late CalloutConfig fabCC;
+  late CalloutConfigModel fabCC;
 
   NamedScrollController namedSC = NamedScrollController('main', Axis.vertical);
 
@@ -46,18 +46,6 @@ class CounterDemoPageState extends State<CounterDemoPage>
     /// target's key
     fabGK = GlobalKey();
     countGK = GlobalKey();
-
-    alignments = [
-      Alignment.topCenter,
-      Alignment.topRight,
-      Alignment.centerRight,
-      Alignment.bottomRight,
-      Alignment.bottomCenter,
-      Alignment.bottomLeft,
-      Alignment.centerLeft,
-      Alignment.topLeft,
-      Alignment.center,
-    ];
 
     fabCC = basicCalloutConfig(namedSC)..arrowType = ArrowTypeEnum.POINTY;
 
@@ -75,10 +63,10 @@ class CounterDemoPageState extends State<CounterDemoPage>
         ),
         targetGkF: () => fabGK,
       );
-      // fca.afterMsDelayDo(
-      //   800,
-      //   () => _showToast(Alignment.topCenter),
-      // );
+      fca.afterMsDelayDo(
+        800,
+        () => _showToast(AlignmentEnum.topCenter),
+      );
     });
   }
 
@@ -108,24 +96,24 @@ class CounterDemoPageState extends State<CounterDemoPage>
     super.didChangeDependencies();
   }
 
-  void _showToast(Alignment gravity,
+  void _showToast(AlignmentEnum gravity,
           {int showForMs = 0, VoidCallback? onDismissedF}) =>
       fca.showToast(
         removeAfterMs: showForMs,
-        calloutConfig: CalloutConfig(
+        calloutConfig: CalloutConfigModel(
           cId: 'main-toast',
           gravity: gravity,
           initialCalloutW: 500,
           initialCalloutH: 90,
-          fillColor: Colors.black26,
+          fillColor: ColorModel.black26(),
           showCloseButton: true,
           borderThickness: 5,
           borderRadius: 16,
-          borderColor: Colors.yellow,
+          borderColor: ColorModel.yellow(),
           elevation: 10,
           scrollControllerName: namedSC.name,
           onDismissedF: () => onDismissedF?.call(),
-          // allowCalloutToScroll: false,
+          contentTranslateY: 50,
         ),
         calloutContent: Center(
           child: Text(
@@ -140,7 +128,7 @@ class CounterDemoPageState extends State<CounterDemoPage>
   Widget build(BuildContext context) {
     return BlocProvider<CounterBloc>(
       create: (_) => CounterBloc(),
-      child: CounterView(this, namedSC, fabGK, countGK, alignments),
+      child: CounterView(this, namedSC, fabGK, countGK),
     );
   }
 }
@@ -150,10 +138,9 @@ class CounterView extends StatelessWidget {
   final NamedScrollController namedSC;
   final GlobalKey fabGK;
   final GlobalKey countGK;
-  final List<Alignment> alignments;
 
   const CounterView(
-      this.parentState, this.namedSC, this.fabGK, this.countGK, this.alignments,
+      this.parentState, this.namedSC, this.fabGK, this.countGK,
       {super.key});
 
   @override
@@ -225,7 +212,7 @@ class CounterView extends StatelessWidget {
           builder: (context, state) {
             return NotificationListener<SizeChangedLayoutNotification>(
               onNotification: (SizeChangedLayoutNotification notification) {
-                fca.afterMsDelayDo(300, () {
+                fca.afterMsDelayDo(800, () {
                   fca.refreshAll();
                 });
                 return true;
@@ -268,15 +255,16 @@ class CounterView extends StatelessWidget {
                                         .add(CounterIncrementPressed());
                                     // point out the number using a callout
                                     fca.dismissAll(exceptToasts: true);
-                                    int index = state % alignments.length;
-                                    Alignment ca = alignments[index];
-                                    Alignment ta = -ca;
+                                    int index = state % AlignmentEnum.values.length;
+                                    AlignmentEnum ca = AlignmentEnum.of(index)!;
+                                    AlignmentEnum ta = ca.oppositeEnum;
                                     fca.showOverlay(
                                       calloutConfig: basicCalloutConfig(namedSC)
-                                        ..initialCalloutAlignment = ca
-                                        ..initialTargetAlignment = ta
+                                        ..calloutAlignment = ca.flutterValue
+                                        ..targetAlignment = ta.flutterValue
                                         ..calloutW = 200
-                                        ..calloutH = 80,
+                                        ..calloutH = 80
+                                        ..fillColor = ColorModel.orangeAccent(),
                                       calloutContent: Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: const Text(
@@ -340,11 +328,13 @@ class CounterBloc extends HydratedBloc<CounterEvent, int> {
 
 /// the CalloutConfig object is where you configure the callout and its pointer
 /// All params are shown, and many are commented out for this example callout
-CalloutConfig basicCalloutConfig(NamedScrollController nsc) => CalloutConfig(
+CalloutConfigModel basicCalloutConfig(NamedScrollController nsc) {
+  final fillColor = ColorModel.fromColor(Colors.yellow[700]!);
+  return CalloutConfigModel(
       cId: 'basic',
       // -- initial pos and animation ---------------------------------
-      initialTargetAlignment: Alignment.topLeft,
-      initialCalloutAlignment: Alignment.bottomRight,
+      initialTargetAlignment: AlignmentEnum.topLeft,
+      initialCalloutAlignment: AlignmentEnum.bottomRight,
       // initialCalloutPos:
       finalSeparation: 100,
       // fromDelta: 0.0,
@@ -362,9 +352,9 @@ CalloutConfig basicCalloutConfig(NamedScrollController nsc) => CalloutConfig(
       // suppliedCalloutH: 200, // if not supplied, callout content widget gets measured
       // borderRadius: 12,
       borderThickness: 3,
-      fillColor: Colors.yellow[700],
+      fillColor: fillColor,
       // elevation: 10,
-      // frameTarget: true,
+      frameTarget: true,
       // -- optional close button and got it button -------------------
       // showGotitButton: true,
       // showCloseButton: true,
@@ -402,5 +392,6 @@ CalloutConfig basicCalloutConfig(NamedScrollController nsc) => CalloutConfig(
       //   opacity: .5,
       // ),
     );
+}
 
 enum CalloutPointerTypeEnum { ARROW, BUBBLE }

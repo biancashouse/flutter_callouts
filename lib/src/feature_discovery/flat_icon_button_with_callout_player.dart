@@ -28,8 +28,8 @@ class FlatIconButtonWithHelpCalloutButton extends StatefulWidget {
   final double contentsWidth;
   final double contentsHeight;
   final bool shouldAutoSetGotit;
-  final Alignment calloutAlignment;
-  final Alignment targetAlignment;
+  final AlignmentEnum calloutAlignment;
+  final AlignmentEnum targetAlignment;
   final Axis axis;
   final double? separation;
   final Function? onGotitF;
@@ -61,8 +61,8 @@ class FlatIconButtonWithHelpCalloutButton extends StatefulWidget {
       this.calloutContentsWidget,
       this.contentsWidth = 300,
       this.contentsHeight = 300,
-      this.calloutAlignment = Alignment.topRight,
-      this.targetAlignment = Alignment.bottomRight,
+      this.calloutAlignment = AlignmentEnum.topRight,
+      this.targetAlignment = AlignmentEnum.bottomRight,
       this.axis = Axis.vertical,
       this.separation,
       this.shouldAutoSetGotit = false,

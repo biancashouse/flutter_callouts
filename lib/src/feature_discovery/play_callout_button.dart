@@ -7,8 +7,8 @@ class PlayCalloutButton extends StatefulWidget {
   final double? contentsWidth;
   final double? contentsHeight;
   final bool shouldAutoSetGotit;
-  final Alignment calloutAlignment;
-  final Alignment targetAlignment;
+  final AlignmentEnum calloutAlignment;
+  final AlignmentEnum targetAlignment;
   final Color? arrowColor;
   final Axis axis;
   final double? separation;
@@ -22,8 +22,8 @@ class PlayCalloutButton extends StatefulWidget {
     this.contentsWidth,
     this.contentsHeight,
     this.shouldAutoSetGotit = false,
-    this.calloutAlignment = Alignment.topRight,
-    this.targetAlignment = Alignment.bottomRight,
+    this.calloutAlignment = AlignmentEnum.topRight,
+    this.targetAlignment = AlignmentEnum.bottomRight,
     this.axis = Axis.vertical,
     this.separation = 40.0,
     this.gotitAxis,
@@ -51,8 +51,7 @@ class PlayCalloutButtonState extends State<PlayCalloutButton> {
             width: 50,
             child: IconButton(
               key: _gk,
-              icon: fca.blink(
-                  const Icon(
+              icon: fca.blink(const Icon(
                 Icons.info,
                 size: 26,
                 color: Colors.black,
@@ -66,7 +65,7 @@ class PlayCalloutButtonState extends State<PlayCalloutButton> {
                 }
 
                 fca.showOverlay(
-                  calloutConfig: CalloutConfig(
+                  calloutConfig: CalloutConfigModel(
                     cId: widget.feature,
                     initialCalloutW: widget.contentsWidth,
                     initialCalloutH: widget.contentsHeight,
@@ -75,13 +74,14 @@ class PlayCalloutButtonState extends State<PlayCalloutButton> {
                     initialCalloutAlignment: widget.calloutAlignment,
                     initialTargetAlignment: widget.targetAlignment,
                     finalSeparation: widget.separation ?? 30,
-                    arrowColor: widget.arrowColor != null
+                    arrowColor: ColorModel.fromColor(widget.arrowColor != null
                         ? widget.arrowColor!
-                        : Colors.white,
+                        : Colors.white),
                     arrowType: ArrowTypeEnum.MEDIUM_REVERSED,
-                    fillColor: Colors.black,
+                    fillColor: ColorModel.black(),
                     borderRadius: 10,
-                    barrier: CalloutBarrierConfig(excludeTargetFromBarrier: true),
+                    barrier:
+                        CalloutBarrierConfig(excludeTargetFromBarrier: true),
                     scrollControllerName: widget.scName,
                   ),
                   targetGkF: targetGK,
@@ -92,7 +92,7 @@ class PlayCalloutButtonState extends State<PlayCalloutButton> {
   }
 }
 
-// mixin CanShowGotitBUtton {
+// mixin CanShowGotitButton {
 //   Widget gotitButton(BuildContext context, Function onGotitPressedFunc) => Blink(IconButton(
 //     icon: Icon(
 //       Icons.thumb_up,

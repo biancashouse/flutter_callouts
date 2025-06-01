@@ -20,14 +20,14 @@ class ColorModelMapper extends ClassMapperBase<ColorModel> {
   @override
   final String id = 'ColorModel';
 
-  static int _$a(ColorModel v) => v.a;
-  static const Field<ColorModel, int> _f$a = Field('a', _$a);
-  static int _$r(ColorModel v) => v.r;
-  static const Field<ColorModel, int> _f$r = Field('r', _$r);
-  static int _$g(ColorModel v) => v.g;
-  static const Field<ColorModel, int> _f$g = Field('g', _$g);
-  static int _$b(ColorModel v) => v.b;
-  static const Field<ColorModel, int> _f$b = Field('b', _$b);
+  static double _$a(ColorModel v) => v.a;
+  static const Field<ColorModel, double> _f$a = Field('a', _$a);
+  static double _$r(ColorModel v) => v.r;
+  static const Field<ColorModel, double> _f$r = Field('r', _$r);
+  static double _$g(ColorModel v) => v.g;
+  static const Field<ColorModel, double> _f$g = Field('g', _$g);
+  static double _$b(ColorModel v) => v.b;
+  static const Field<ColorModel, double> _f$b = Field('b', _$b);
 
   @override
   final MappableFields<ColorModel> fields = const {
@@ -94,7 +94,7 @@ extension ColorModelValueCopy<$R, $Out>
 
 abstract class ColorModelCopyWith<$R, $In extends ColorModel, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
-  $R call({int? a, int? r, int? g, int? b});
+  $R call({double? a, double? r, double? g, double? b});
   ColorModelCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -107,7 +107,8 @@ class _ColorModelCopyWithImpl<$R, $Out>
   late final ClassMapperBase<ColorModel> $mapper =
       ColorModelMapper.ensureInitialized();
   @override
-  $R call({int? a, int? r, int? g, int? b}) => $apply(FieldCopyWithData({
+  $R call({double? a, double? r, double? g, double? b}) =>
+      $apply(FieldCopyWithData({
         if (a != null) #a: a,
         if (r != null) #r: r,
         if (g != null) #g: g,

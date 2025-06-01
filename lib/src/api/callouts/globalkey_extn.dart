@@ -68,12 +68,12 @@ extension GlobalKeyExtension on GlobalKey {
             ),
           ],
         ),
-        calloutConfig: CalloutConfig(
+        calloutConfig: CalloutConfigModel(
           cId: 'globalPaintBounds error',
           draggable: false,
           initialCalloutW: fca.scrW * .7,
           initialCalloutH: 400,
-          fillColor: Colors.white,
+          fillColor: ColorModel.white(),
           scrollControllerName: null,
         ),
       );

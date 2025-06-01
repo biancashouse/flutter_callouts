@@ -10,7 +10,7 @@ export "side.dart";
 class OE {
   OverlayEntry? entry;
   OverlayPortalController? opC;
-  CalloutConfig calloutConfig;
+  CalloutConfigModel calloutConfig;
   bool isHidden;
   double? savedHeight;
   int? id;
