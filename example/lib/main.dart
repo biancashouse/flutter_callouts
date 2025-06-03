@@ -389,8 +389,8 @@ CalloutConfigModel basicCalloutConfig(NamedScrollController nsc) {
     // targetTranslateY:
     // scaleTarget:
     // -- resizing -------------------------------------------------
-    // resizeableH: true,
-    // resizeableV: true,
+    resizeableH: true,
+    resizeableV: true,
     // -- dragging -------------------------------------------------
     // draggable: false,
     // draggableColor: Colors.green,

@@ -1700,7 +1700,7 @@ class CalloutConfigModel
 //   }
 
   Widget _createBarrier() {
-    final Rect tr = tR().translate(scrollOffsetX(), scrollOffsetY());
+    final Rect tr = tR();
     if (barrier!.excludeTargetFromBarrier && tr.size != Size.zero) {
       return ModalBarrierWithCutout(
         cutoutRect: tr,

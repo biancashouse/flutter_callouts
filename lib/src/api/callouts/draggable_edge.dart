@@ -40,13 +40,13 @@ class DraggableEdge_OP extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final soY = -parent.scrollOffsetY();
-    final soX = -parent.scrollOffsetX();
-    double top = _topLeft(soX, soY).dy;
-    double left = _topLeft(soX, soY).dx;
+    final soY = parent.followScroll ? parent.scrollOffsetY() : 0.0;
+    final soX = parent.followScroll ? parent.scrollOffsetX() : 0.0;
+    double top = _topLeft(-soX, -soY).dy;
+    double left = _topLeft(-soX, -soY).dx;
     return Positioned(
-      top: top + parent.scrollOffsetY(),
-      left: left + parent.scrollOffsetX(),
+      top: top,
+      left: left,
       child: Listener(
         onPointerMove: (PointerMoveEvent event) {
           double newTop = event.position.dy;
@@ -57,14 +57,14 @@ class DraggableEdge_OP extends StatelessWidget {
           if (side == Side.LEFT) {
             if (deltaX < 0 ||
                 parent.calloutW! + deltaX >= (parent.minWidth ?? 30)) {
-              parent.setLeft(newLeft);
+              parent.setLeft(newLeft+soX);
               parent.calloutW = parent.calloutW! - deltaX;
             }
           } else if (side == Side.TOP) {
             if (deltaY < 0 ||
                 parent.calloutH! + deltaY >= (parent.minHeight ?? 30)) {
-              parent.setTop(newTop);
-              parent.setLeft(newLeft);
+              parent.setTop(newTop+soY);
+              //parent.setLeft(newLeft+soX);
               parent.calloutH = parent.calloutH! - deltaY;
             }
           } else if (side == Side.RIGHT) {
