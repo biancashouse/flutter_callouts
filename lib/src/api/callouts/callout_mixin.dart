@@ -849,7 +849,7 @@ mixin CalloutMixin {
         oe.calloutConfig.calcEndpoints();
        // oe.calloutConfig.refreshAlignment();
         fca.logger
-            .i('after calcEndpoints: tR is ${oe.calloutConfig.tR.toString()}');
+            .i('after calcEndpoints: tR is ${oe.calloutConfig.tR().toString()}');
         oe.entry?.markNeedsBuild();
       }
       // if (!oe.isHidden && oe.opC != null) {

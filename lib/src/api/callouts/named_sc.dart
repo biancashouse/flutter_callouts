@@ -19,9 +19,9 @@ class NamedScrollController extends ScrollController {
         debugLabel,
         ValueNotifier<int>? targetNotifier,
       }) {
-    if (namedScrollControllers.containsKey(name))
-      return namedScrollControllers[name]!;
-    else {
+    // if (namedScrollControllers.containsKey(name))
+    //   return namedScrollControllers[name]!;
+    // else {
       final NamedScrollController nsc =
       NamedScrollController._internal(name, axis, targetNotifier);
       namedScrollControllers[name] = nsc;
@@ -34,7 +34,7 @@ class NamedScrollController extends ScrollController {
       fca.logger.i("new NamedScrollController($name)\n"
           "listening for refreshing callouts and targets");
       return nsc;
-    }
+    // }
   }
 
   @override

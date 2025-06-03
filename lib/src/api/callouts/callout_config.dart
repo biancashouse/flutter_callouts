@@ -275,10 +275,9 @@ class CalloutConfigModel
   @JsonKey(includeFromJson: false, includeToJson: false)
   bool preventDrag = false;
 
-  Rectangle cR() =>
-      Rectangle.fromRect(_calloutRect().translate(
-          followScroll ? -scrollOffsetX() : 0.0 + (contentTranslateX ?? 0.0),
-          followScroll ? -scrollOffsetY() : 0.0 + (contentTranslateY ?? 0.0)));
+  Rectangle cR() => Rectangle.fromRect(_calloutRect().translate(
+      followScroll ? -scrollOffsetX() : 0.0 + (contentTranslateX ?? 0.0),
+      followScroll ? -scrollOffsetY() : 0.0 + (contentTranslateY ?? 0.0)));
 
   // TargetModel? _configurableTarget;
 
@@ -485,53 +484,52 @@ class CalloutConfigModel
     required bool allowScrolling,
   }) {
     return CalloutConfigModel(
-      cId: cId,
-      scrollControllerName: scrollControllerName,
-      gravity: gravity ?? this.gravity,
-      initialTargetAlignment:
-      initialTargetAlignment ?? this.initialTargetAlignment,
-      initialCalloutAlignment:
-      initialCalloutAlignment ?? this.initialCalloutAlignment,
-      initialCalloutPos: initialCalloutPos ?? this.initialCalloutPos,
-      finalSeparation: finalSeparation ?? this.finalSeparation,
-      barrier: barrier ?? this.barrier,
-      initialCalloutW: suppliedCalloutW ?? initialCalloutW,
-      initialCalloutH: suppliedCalloutH ?? initialCalloutH,
-      borderRadius: borderRadius ?? this.borderRadius,
-      borderColor: borderColor ?? this.borderColor,
-      borderThickness: borderThickness ?? this.borderThickness,
-      fillColor: fillColor ?? this.fillColor,
-      elevation: elevation ?? this.elevation,
-      frameTarget: frameTarget ?? this.frameTarget,
-      showCloseButton: showCloseButton ?? this.showCloseButton,
-      showGotitButton: showGotitButton ?? this.showGotitButton,
-      closeButtonColor: closeButtonColor ?? this.closeButtonColor,
-      closeButtonPos: closeButtonPos ?? this.closeButtonPos,
-      gotitAxis: gotitAxis ?? this.gotitAxis,
-      arrowColor: arrowColor ?? this.arrowColor,
-      arrowType: arrowType ?? this.arrowType,
-      animate: animate ?? this.animate,
-      lineLabel: lineLabel ?? this.lineLabel,
-      fromDelta: fromDelta ?? this.fromDelta,
-      toDelta: toDelta ?? this.toDelta,
-      lengthDeltaPc: lengthDeltaPc ?? this.lengthDeltaPc,
-      contentTranslateX: contentTranslateX ?? this.contentTranslateX,
-      contentTranslateY: contentTranslateY ?? this.contentTranslateY,
-      targetTranslateX: targetTranslateX ?? this.targetTranslateX,
-      targetTranslateY: targetTranslateY ?? this.targetTranslateY,
-      scaleTarget: scaleTarget ?? this.scaleTarget,
-      resizeableH: resizeableH ?? this.resizeableH,
-      resizeableV: resizeableH ?? this.resizeableH,
-      draggable: draggable ?? this.draggable,
-      draggableColor: draggableColor ?? this.draggableColor,
-      dragHandleHeight: dragHandleHeight ?? this.dragHandleHeight,
-      skipOnScreenCheck: skipOnScreenCheck ?? this.skipOnScreenCheck,
-      onDismissedF: onDismissedF ?? this.onDismissedF,
-      onTickedF: onTickedF ?? this.onTickedF,
-      followScroll: allowScrolling,
-      decorationShape: decorationShape,
-      starPoints: starPoints
-    );
+        cId: cId,
+        scrollControllerName: scrollControllerName,
+        gravity: gravity ?? this.gravity,
+        initialTargetAlignment:
+            initialTargetAlignment ?? this.initialTargetAlignment,
+        initialCalloutAlignment:
+            initialCalloutAlignment ?? this.initialCalloutAlignment,
+        initialCalloutPos: initialCalloutPos ?? this.initialCalloutPos,
+        finalSeparation: finalSeparation ?? this.finalSeparation,
+        barrier: barrier ?? this.barrier,
+        initialCalloutW: suppliedCalloutW ?? initialCalloutW,
+        initialCalloutH: suppliedCalloutH ?? initialCalloutH,
+        borderRadius: borderRadius ?? this.borderRadius,
+        borderColor: borderColor ?? this.borderColor,
+        borderThickness: borderThickness ?? this.borderThickness,
+        fillColor: fillColor ?? this.fillColor,
+        elevation: elevation ?? this.elevation,
+        frameTarget: frameTarget ?? this.frameTarget,
+        showCloseButton: showCloseButton ?? this.showCloseButton,
+        showGotitButton: showGotitButton ?? this.showGotitButton,
+        closeButtonColor: closeButtonColor ?? this.closeButtonColor,
+        closeButtonPos: closeButtonPos ?? this.closeButtonPos,
+        gotitAxis: gotitAxis ?? this.gotitAxis,
+        arrowColor: arrowColor ?? this.arrowColor,
+        arrowType: arrowType ?? this.arrowType,
+        animate: animate ?? this.animate,
+        lineLabel: lineLabel ?? this.lineLabel,
+        fromDelta: fromDelta ?? this.fromDelta,
+        toDelta: toDelta ?? this.toDelta,
+        lengthDeltaPc: lengthDeltaPc ?? this.lengthDeltaPc,
+        contentTranslateX: contentTranslateX ?? this.contentTranslateX,
+        contentTranslateY: contentTranslateY ?? this.contentTranslateY,
+        targetTranslateX: targetTranslateX ?? this.targetTranslateX,
+        targetTranslateY: targetTranslateY ?? this.targetTranslateY,
+        scaleTarget: scaleTarget ?? this.scaleTarget,
+        resizeableH: resizeableH ?? this.resizeableH,
+        resizeableV: resizeableH ?? this.resizeableH,
+        draggable: draggable ?? this.draggable,
+        draggableColor: draggableColor ?? this.draggableColor,
+        dragHandleHeight: dragHandleHeight ?? this.dragHandleHeight,
+        skipOnScreenCheck: skipOnScreenCheck ?? this.skipOnScreenCheck,
+        onDismissedF: onDismissedF ?? this.onDismissedF,
+        onTickedF: onTickedF ?? this.onTickedF,
+        followScroll: allowScrolling,
+        decorationShape: decorationShape,
+        starPoints: starPoints);
   }
 
   // // global, reusable offstage measuring overlay entry
@@ -811,17 +809,19 @@ class CalloutConfigModel
     // _zoomer = zoomer;
     // _configurableTarget = configurableTarget;
     // opDescendantContext = context; // used to find nearest parent OverlayPortal for barrier tap to close
-    Rect r = Rect.fromLTWH(targetRect.left, targetRect.top,
-        targetRect.width * scaleTarget, targetRect.height * scaleTarget);
 
-    return (fca.isHidden(cId))
-        ? const Offstage()
-        : _renderCallout(r, calloutContent, rebuildF);
+    // Rect r = Rect.fromLTWH(targetRect.left, targetRect.top,
+    //     targetRect.width * scaleTarget, targetRect.height * scaleTarget);
+
+    return Offstage(
+      offstage: fca.isHidden(cId),
+      child: _renderCallout(targetRect, calloutContent, rebuildF),
+    );
   }
 
   Widget opContentWidget({
     required BuildContext
-    context, // if supplied, will be a descendant of an OverlayPortal
+        context, // if supplied, will be a descendant of an OverlayPortal
     required Rect targetRect,
     required WidgetBuilder calloutContent,
     required VoidCallback rebuildF,
@@ -854,13 +854,17 @@ class CalloutConfigModel
   //   return _renderCallout(context, targetRect, calloutContent, rebuildF);
   // }
 
-  Widget _renderCallout(Rect targetRect,
-      WidgetBuilder calloutContent,
-      VoidCallback rebuildF,
-      // TargetModel? configurableTarget,
-      ) {
+  Widget _renderCallout(
+    Rect targetRect,
+    WidgetBuilder calloutContent,
+    VoidCallback rebuildF,
+    // TargetModel? configurableTarget,
+  ) {
     // _cachedCalloutContent = calloutContent;
-    _targetRect = targetRect;
+    // targetRect unchenged as scrolling occurs, so apply scrollOffsets here
+    final x = scrollOffsetX();
+    final y = scrollOffsetY();
+    _targetRect = targetRect.translate(-x, -y);
     setRebuildCallback(rebuildF);
 
     // // if (width > Useful.screenW()) _calloutW = Useful.screenW() - 30;
@@ -892,8 +896,8 @@ class CalloutConfigModel
       // }
 
       Rect screenRect = Rect.fromLTWH(0, 0, fca.scrW, fca.scrH);
-      if (screenRect.width == targetRect.width &&
-          screenRect.height == targetRect.height) {
+      if (screenRect.width == _targetRect.width &&
+          screenRect.height == _targetRect.height) {
         targetAlignment = calloutAlignment = Alignment.center;
       } else {
         targetAlignment = -fca.calcTargetAlignmentWithinWrapper(
@@ -909,10 +913,10 @@ class CalloutConfigModel
 
     // fca.logger.i('$feature: tR (${tR?.width}x${tR?.height})');
 
-    if (tR == null && initialCalloutPos == null) {
-      // fca.logger.i('skipping callout(${feature}) - perhaps target not present for some reason.');
-      return const Icon(Icons.error, color: Colors.orangeAccent, size: 60);
-    }
+    // if (tR == null && initialCalloutPos == null) {
+    //   // fca.logger.i('skipping callout(${feature}) - perhaps target not present for some reason.');
+    //   return const Icon(Icons.error, color: Colors.orangeAccent, size: 60);
+    // }
 
     if (!skipOnScreenCheck && (top ?? 999) < fca.viewPadding.top) {
       top = fca.viewPadding.top;
@@ -926,9 +930,7 @@ class CalloutConfigModel
 
     // fca.logger.i('before adjusting for separation($_separation): pos is $left, $top');
 
-    if (!_finishedAnimatingSeparation &&
-        (_separation) > 0.0 &&
-        cE != null) {
+    if (!_finishedAnimatingSeparation && (_separation) > 0.0 && cE != null) {
       // fca.logger.i('ADJUSTING.');
       var adjustedTopLeft = _adjustTopLeftForSeparation(
           _separation, _initialTop!, _initialLeft!, cE!, tR());
@@ -1081,7 +1083,7 @@ class CalloutConfigModel
   // function determines whether topLeft and bottomRioht are onScreen
   bool calloutWouldNotBeOffscreen(Coord cE, double deltaX, double deltaY) {
     Rect finalCR =
-    Rect.fromLTWH(left! + deltaX, top! + deltaY, _calloutW!, _calloutH!);
+        Rect.fromLTWH(left! + deltaX, top! + deltaY, _calloutW!, _calloutH!);
     Rect scrRect = Rect.fromLTWH(0, 0, fca.scrW, fca.scrH);
     bool result = scrRect.contains(finalCR.topLeft) &&
         scrRect.contains(finalCR.bottomRight);
@@ -1091,7 +1093,8 @@ class CalloutConfigModel
     return result;
   }
 
-  (double, double) _adjustTopLeftForSeparation(double theSeparation,
+  (double, double) _adjustTopLeftForSeparation(
+      double theSeparation,
       double initialTop,
       double inititalLeft,
       Coord initialCE,
@@ -1154,9 +1157,8 @@ class CalloutConfigModel
 //   return Alignment(newX, newY);
 // }
 
-  Rectangle tR() =>
-      Rectangle.fromRect(
-        _targetRect.translate(-scrollOffsetX(), -scrollOffsetY()),
+  Rectangle tR() => Rectangle.fromRect(
+      _targetRect //.translate(-scrollOffsetX(), -scrollOffsetY()),
       );
 
 // if target is CalloutTarget, it automatically measures itself after a build,
@@ -1285,8 +1287,8 @@ class CalloutConfigModel
       top: 0,
       left: 0,
       child: CustomPaint(
-        painter:
-        BubbleShape_OP(calloutConfig: this, fillColor: fillColor?.flutterValue),
+        painter: BubbleShape_OP(
+            calloutConfig: this, fillColor: fillColor?.flutterValue),
         willChange: true,
       ),
     );
@@ -1318,10 +1320,10 @@ class CalloutConfigModel
           _calloutW!,
           dragHandleHeight ?? _calloutH!,
         )
-            .translate(
-          followScroll ? scrollOffsetX() : 0.0,
-          followScroll ? scrollOffsetY() : 0.0,
-        )
+            // .translate(
+            // followScroll ? scrollOffsetX() : 0.0,
+            // followScroll ? scrollOffsetY() : 0.0,
+            // )
             .translate(
           contentTranslateX != null ? -contentTranslateX! : 0.0,
           contentTranslateY != null ? -contentTranslateY! : 0.0,
@@ -1394,12 +1396,13 @@ class CalloutConfigModel
     });
   }
 
-  Future<void> animateResizeByCornerMove(Alignment alignment,
-      double hDelta,
-      double vDelta, {
-        required Duration duration,
-        VoidCallback? afterAnimationF,
-      }) async {
+  Future<void> animateResizeByCornerMove(
+    Alignment alignment,
+    double hDelta,
+    double vDelta, {
+    required Duration duration,
+    VoidCallback? afterAnimationF,
+  }) async {
     if (left == null || top == null) return;
     AnimationController animationController = AnimationController(
       duration: duration,
@@ -1412,14 +1415,12 @@ class CalloutConfigModel
     Animation<Offset>? animation = tween.animate(animationController);
     Offset prevValue = Offset.zero;
     int i = 0;
-    animation.addListener(() =>
-        rebuild(() {
+    animation.addListener(() => rebuild(() {
           Offset delta = Offset(animation.value.dx - prevValue.dx,
               animation.value.dy - prevValue.dy);
           prevValue = animation.value;
           fca.logger.i(
-              '${i++} av ${animation.value} delta ${delta
-                  .toString()}, prevDelta ${prevValue.toString()}');
+              '${i++} av ${animation.value} delta ${delta.toString()}, prevDelta ${prevValue.toString()}');
           if (alignment == Alignment.topLeft) {
             if (delta.dx < 0 || _calloutW! + delta.dx >= (minWidth ?? 30)) {
               left = left! + delta.dx;
@@ -1516,8 +1517,7 @@ class CalloutConfigModel
     }
   }
 
-  Widget _closeButton() =>
-      Positioned(
+  Widget _closeButton() => Positioned(
         top: closeButtonPos.dy,
         right: closeButtonPos.dx,
         child: IconButton(
@@ -1534,8 +1534,7 @@ class CalloutConfigModel
         ),
       );
 
-  Widget _gotitButton() =>
-      Blink(
+  Widget _gotitButton() => Blink(
         animateColor: false,
         child: IconButton(
           tooltip: "got it - don't show again.",
@@ -1553,8 +1552,7 @@ class CalloutConfigModel
         ),
       );
 
-  Widget _cpi() =>
-      Padding(
+  Widget _cpi() => Padding(
         padding: const EdgeInsets.all(8.0),
         child: CircularProgressIndicator(
           backgroundColor: fillColor?.flutterValue,
@@ -1564,18 +1562,18 @@ class CalloutConfigModel
   Widget _possiblyScrollableContents(Widget contents) =>
       (needsToScrollV || needsToScrollH)
           ? SizedBox(
-        width: calloutW,
-        height: calloutH,
-        child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Hero(tag: 'callout-content', child: contents),
-        ),
-      )
+              width: calloutW,
+              height: calloutH,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Hero(tag: 'callout-content', child: contents),
+              ),
+            )
           : SizedBox(
-        width: _calloutW!,
-        height: _calloutH!,
-        child: contents,
-      );
+              width: _calloutW!,
+              height: _calloutH!,
+              child: contents,
+            );
 
   Widget _createPointingLine() {
     if (calloutAlignment == null && targetAlignment == null) {
@@ -1589,24 +1587,29 @@ class CalloutConfigModel
 
     if (tE != null && cE != null) {
       Rect r = Rect.fromPoints(
-          tE!.asOffset,
-          cE!.asOffset.translate(
-            followScroll ? -scrollOffsetX() : 0.0,
-            followScroll ? -scrollOffsetY() : 0.0,
-          ));
+        tE!.asOffset.translate(
+          followScroll ? -scrollOffsetX() : 0.0,
+          followScroll ? -scrollOffsetY() : 0.0,
+        ),
+        cE!.asOffset
+            .translate(
+          followScroll ? -scrollOffsetX() : 0.0,
+          followScroll ? -scrollOffsetY() : 0.0,
+        ),
+      );
       Offset to = tE!.asOffset.translate(
         -r.left,
         -r.top,
       );
       Offset from = cE!.asOffset
           .translate(
-        -r.left,
-        -r.top,
-      )
-          .translate(
-        followScroll ? -scrollOffsetX() : 0.0,
-        followScroll ? -scrollOffsetY() : 0.0,
-      );
+            -r.left,
+            -r.top,
+          // )
+          // .translate(
+          //   followScroll ? -scrollOffsetX() : 0.0,
+          //   followScroll ? -scrollOffsetY() : 0.0,
+          );
       Line line = Line(Coord.fromOffset(from), Coord.fromOffset(to));
       double lineLen = line.length();
 //Rect inflatedTargetRect = targetRect.inflate(separation / 2);
@@ -1648,8 +1651,7 @@ class CalloutConfigModel
     }
   }
 
-  Widget _createLineLabel() =>
-      Positioned(
+  Widget _createLineLabel() => Positioned(
         top: (tE!.y + cE!.y) / 2,
         left: (tE!.x + cE!.x) / 2,
         child: Material(
@@ -1658,14 +1660,14 @@ class CalloutConfigModel
       );
 
   Widget _createTargetBorder() {
-    final tr = tR();
+    final tr = tR().translate(-scrollOffsetX(), -scrollOffsetY());
     final x = tr.left;
     final y = tr.top;
     return Positioned(
-      left: x,
-      top: y,
+      left: x+scrollOffsetX(),
+      top: y+scrollOffsetY(),
       child: Material(
-        color: Colors.yellow.withOpacity(.3),
+        color: Colors.yellow.withValues(alpha: .3),
         child: GestureDetector(
           onTap: onBarrierTap,
           child: Container(
@@ -1693,21 +1695,21 @@ class CalloutConfigModel
 //   }
 
   Widget _createBarrier() {
-    if (barrier!.excludeTargetFromBarrier &&
-        tR().size != Size.zero) {
+    final Rect tr = tR().translate(scrollOffsetX(), scrollOffsetY());
+    if (barrier!.excludeTargetFromBarrier && tr.size != Size.zero) {
       return ModalBarrierWithCutout(
-        cutoutRect: tR(),
+        cutoutRect: tr,
         round: barrier!.roundExclusion,
         cutoutPadding: barrier!.cutoutPadding,
         color: barrier!.color.withValues(alpha: barrier!.opacity),
         opacity: barrier!.opacity,
-        dismissible: barrier?.dismissible??true,
+        dismissible: barrier?.dismissible ?? true,
         onDismiss: onBarrierTap,
       );
     }
     return ModalBarrier(
       color: barrier!.color.withValues(alpha: barrier!.opacity),
-      dismissible: barrier?.dismissible??true,
+      dismissible: barrier?.dismissible ?? true,
       onDismiss: onBarrierTap,
     );
   }
@@ -1828,19 +1830,15 @@ class CalloutConfigModel
 //         ),
 //       ));
 
-  Rect _calloutRect() =>
-      Rect.fromLTWH(left ?? 0.0, top ?? 0.0,
-          _calloutW ?? double.infinity, _calloutH ?? double.infinity);
+  Rect _calloutRect() => Rect.fromLTWH(left ?? 0.0, top ?? 0.0,
+      _calloutW ?? double.infinity, _calloutH ?? double.infinity);
 
 // Offset _calloutCentre() => _calloutRect().center;
 
 // return target rectangle if target found, otherwise null
   void calcEndpoints() {
     Offset tCentre = tR().center;
-    Rectangle scrollAwareCR = Rectangle.fromRect(cR().translate(
-      followScroll ? scrollOffsetX() : 0.0,
-      followScroll ? scrollOffsetY() : 0.0,
-    ));
+    Rectangle scrollAwareCR = Rectangle.fromRect(cR());
     Offset cCentre = scrollAwareCR.center;
     Line line = Line.fromOffsets(cCentre, tCentre);
     tE = Rectangle.getTargetIntersectionPoint2(
@@ -1887,6 +1885,7 @@ class CalloutBarrierConfig {
   final Color color;
   final bool excludeTargetFromBarrier;
   final double cutoutPadding;
+
   // create a circular hole in the barrier? false means rectangular
   final bool roundExclusion;
   final bool dismissible;
@@ -1908,10 +1907,11 @@ class PositionedBoxContent extends StatelessWidget {
   final CalloutConfigModel calloutConfig;
   final Widget child;
 
-  const PositionedBoxContent(this.calloutConfig,
-      this.child, {
-        super.key,
-      });
+  const PositionedBoxContent(
+    this.calloutConfig,
+    this.child, {
+    super.key,
+  });
 
   static PositionedBoxContent? of(BuildContext context) =>
       context.findAncestorWidgetOfExactType<PositionedBoxContent>();
@@ -1996,19 +1996,19 @@ class PositionedBoxContent extends StatelessWidget {
                       alignment: Alignment.topLeft,
                       child: cc.showGotitButton
                           ? Flex(
-                        direction: cc.gotitAxis ?? Axis.horizontal,
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: calloutContent(cc),
-                          ),
-                          if (cc.gotitAxis != null && !cc.showcpi)
-                            cc._gotitButton(),
-                          if (cc.showcpi) cc._cpi(),
-                        ],
-                      )
+                              direction: cc.gotitAxis ?? Axis.horizontal,
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: calloutContent(cc),
+                                ),
+                                if (cc.gotitAxis != null && !cc.showcpi)
+                                  cc._gotitButton(),
+                                if (cc.showcpi) cc._cpi(),
+                              ],
+                            )
                           : calloutContent(cc),
                     ),
                     if (cc.showCloseButton) cc._closeButton(),
@@ -2059,11 +2059,10 @@ class PositionedBoxContent extends StatelessWidget {
         ));
   }
 
-  Widget calloutContent(CalloutConfigModel cc) =>
-      cc.draggable
-          ? MouseRegion(
-        cursor: SystemMouseCursors.grab,
-        child: cc._possiblyScrollableContents(child),
-      )
-          : cc._possiblyScrollableContents(child);
+  Widget calloutContent(CalloutConfigModel cc) => cc.draggable
+      ? MouseRegion(
+          cursor: SystemMouseCursors.grab,
+          child: cc._possiblyScrollableContents(child),
+        )
+      : cc._possiblyScrollableContents(child);
 }

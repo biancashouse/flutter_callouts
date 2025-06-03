@@ -33,7 +33,7 @@ class BubbleShape_OP extends CustomPainter {
   }
 
   Path? _drawBubble(CalloutConfigModel callout, {int? pointyThickness}) {
-    print('drawBubble');
+    // print('drawBubble');
     Path path = Path();
     callout.calcEndpoints();
     Rectangle calloutR = Rectangle.fromRect(callout.cR());

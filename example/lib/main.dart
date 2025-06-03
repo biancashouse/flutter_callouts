@@ -4,6 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
+// lazy ;-)
+bool followScroll = false;
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -52,12 +55,27 @@ class CounterDemoPageState extends State<CounterDemoPage>
     fca.afterNextBuildDo(() {
       fca.showOverlay(
         calloutConfig: fabCC,
-        calloutContent: const Padding(
-          padding: EdgeInsets.all(8.0),
+        calloutContent: Padding(
+          padding: const EdgeInsets.all(8.0),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Tap this floating action button to increment the counter.'),
+              const Text(
+                  'Tap this floating action button to increment the counter.'),
+              SizedBox(
+                width: 200,
+                child: Row(
+                  children: [
+                    const Text('followScroll?'),
+                    StatefulBuilder(
+                        builder: (context, setState) => Checkbox(
+                            value: fabCC.followScroll,
+                            onChanged: (_) {
+                              setState(() => toggleFollowScroll());
+                            })),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
@@ -79,14 +97,14 @@ class CounterDemoPageState extends State<CounterDemoPage>
   void toggleFollowScroll() {
     setState(() {
       fabCC.followScroll = !fabCC.followScroll;
-      fabCC.rebuild((){});
+      fabCC.rebuild(() {});
     });
   }
 
   void updateArrowType(ArrowTypeEnum newType) {
     setState(() {
       fabCC.arrowType = newType;
-      fabCC.rebuild((){});
+      fabCC.rebuild(() {});
     });
   }
 
@@ -139,8 +157,7 @@ class CounterView extends StatelessWidget {
   final GlobalKey fabGK;
   final GlobalKey countGK;
 
-  const CounterView(
-      this.parentState, this.namedSC, this.fabGK, this.countGK,
+  const CounterView(this.parentState, this.namedSC, this.fabGK, this.countGK,
       {super.key});
 
   @override
@@ -149,19 +166,6 @@ class CounterView extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Counter'),
         actions: [
-          SizedBox(
-            width: 200,
-            child: Row(
-              children: [
-                Text('followScroll?'),
-                Checkbox(
-                    value: parentState.fabCC.followScroll,
-                    onChanged: (_) {
-                      parentState.toggleFollowScroll();
-                    }),
-              ],
-            ),
-          ),
           SizedBox(
             width: 300,
             child: Row(
@@ -195,9 +199,10 @@ class CounterView extends StatelessWidget {
                     // selected at one time, so its value is always the first
                     // item in the selected set.
                     CalloutPointerTypeEnum value = newSelection.first!;
-                    ArrowTypeEnum newType = value == CalloutPointerTypeEnum.ARROW
-                        ? ArrowTypeEnum.THIN
-                        : ArrowTypeEnum.POINTY;
+                    ArrowTypeEnum newType =
+                        value == CalloutPointerTypeEnum.ARROW
+                            ? ArrowTypeEnum.THIN
+                            : ArrowTypeEnum.POINTY;
                     parentState.updateArrowType(newType);
                   },
                 ),
@@ -255,7 +260,8 @@ class CounterView extends StatelessWidget {
                                         .add(CounterIncrementPressed());
                                     // point out the number using a callout
                                     fca.dismissAll(exceptToasts: true);
-                                    int index = state % AlignmentEnum.values.length;
+                                    int index =
+                                        state % AlignmentEnum.values.length;
                                     AlignmentEnum ca = AlignmentEnum.of(index)!;
                                     AlignmentEnum ta = ca.oppositeEnum;
                                     fca.showOverlay(
@@ -331,67 +337,67 @@ class CounterBloc extends HydratedBloc<CounterEvent, int> {
 CalloutConfigModel basicCalloutConfig(NamedScrollController nsc) {
   final fillColor = ColorModel.fromColor(Colors.yellow[700]!);
   return CalloutConfigModel(
-      cId: 'basic',
-      // -- initial pos and animation ---------------------------------
-      initialTargetAlignment: AlignmentEnum.topLeft,
-      initialCalloutAlignment: AlignmentEnum.bottomRight,
-      // initialCalloutPos:
-      finalSeparation: 100,
-      // fromDelta: 0.0,
-      // toDelta : 0.0,
-      // initialAnimatedPositionDurationMs:
-      // -- optional barrier (when opacity > 0) ----------------------
-      // barrier: CalloutBarrier(
-      //   opacity: .5,
-      //   onTappedF: () {
-      //     Callout.dismiss("basic");
-      //   },
-      // ),
-      // -- callout appearance ----------------------------------------
-      // suppliedCalloutW: 280, // if not supplied, callout content widget gets measured
-      // suppliedCalloutH: 200, // if not supplied, callout content widget gets measured
-      // borderRadius: 12,
-      borderThickness: 3,
-      fillColor: fillColor,
-      // elevation: 10,
-      frameTarget: true,
-      // -- optional close button and got it button -------------------
-      // showGotitButton: true,
-      // showCloseButton: true,
-      // closeButtonColor:
-      // closeButtonPos:
-      // gotitAxis:
-      // -- pointer -------------------------------------------------
-      // arrowColor: Colors.green,
-      arrowType: ArrowTypeEnum.THIN,
-      animate: true,
-      // lineLabel: Text('line label'),
-      // fromDelta: -20,
-      // toDelta: -20,
-      // lengthDeltaPc: ,
-      // contentTranslateX: ,
-      // contentTranslateY:
-      // targetTranslateX:
-      // targetTranslateY:
-      // scaleTarget:
-      // -- resizing -------------------------------------------------
-      // resizeableH: true,
-      // resizeableV: true,
-      // -- dragging -------------------------------------------------
-      // draggable: false,
-      // draggableColor: Colors.green,
-      // dragHandleHeight: ,
-      scrollControllerName: nsc.name,
-      followScroll: true,
-      // barrier: CalloutBarrierConfig(
-      //   cutoutPadding: 30,
-      //   excludeTargetFromBarrier: true,
-      //   roundExclusion: true,
-      //   closeOnTapped: true,
-      //   color: Colors.grey,
-      //   opacity: .5,
-      // ),
-    );
+    cId: 'basic',
+    // -- initial pos and animation ---------------------------------
+    initialTargetAlignment: AlignmentEnum.topLeft,
+    initialCalloutAlignment: AlignmentEnum.bottomRight,
+    // initialCalloutPos:
+    finalSeparation: 100,
+    // fromDelta: 0.0,
+    // toDelta : 0.0,
+    // initialAnimatedPositionDurationMs:
+    // -- optional barrier (when opacity > 0) ----------------------
+    // barrier: CalloutBarrier(
+    //   opacity: .5,
+    //   onTappedF: () {
+    //     Callout.dismiss("basic");
+    //   },
+    // ),
+    // -- callout appearance ----------------------------------------
+    // suppliedCalloutW: 280, // if not supplied, callout content widget gets measured
+    // suppliedCalloutH: 200, // if not supplied, callout content widget gets measured
+    // borderRadius: 12,
+    borderThickness: 3,
+    fillColor: fillColor,
+    // elevation: 10,
+    frameTarget: true,
+    // -- optional close button and got it button -------------------
+    // showGotitButton: true,
+    // showCloseButton: true,
+    // closeButtonColor:
+    // closeButtonPos:
+    // gotitAxis:
+    // -- pointer -------------------------------------------------
+    arrowColor: ColorModel.green(),
+    arrowType: ArrowTypeEnum.THIN,
+    animate: true,
+    // lineLabel: Text('line label'),
+    // fromDelta: -20,
+    // toDelta: -20,
+    // lengthDeltaPc: ,
+    // contentTranslateX: ,
+    // contentTranslateY:
+    // targetTranslateX:
+    // targetTranslateY:
+    // scaleTarget:
+    // -- resizing -------------------------------------------------
+    // resizeableH: true,
+    // resizeableV: true,
+    // -- dragging -------------------------------------------------
+    // draggable: false,
+    // draggableColor: Colors.green,
+    // dragHandleHeight: ,
+    scrollControllerName: nsc.name,
+    followScroll: true,
+    // barrier: CalloutBarrierConfig(
+    //   cutoutPadding: 30,
+    //   excludeTargetFromBarrier: true,
+    //   roundExclusion: true,
+    //   closeOnTapped: true,
+    //   color: Colors.grey,
+    //   opacity: .5,
+    // ),
+  );
 }
 
 enum CalloutPointerTypeEnum { ARROW, BUBBLE }
