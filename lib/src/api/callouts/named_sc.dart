@@ -9,31 +9,24 @@ class NamedScrollController extends ScrollController {
   final ValueNotifier<int>? targetNotifier;
 
   static final Map<ScrollControllerName, NamedScrollController>
-  namedScrollControllers = {};
+      namedScrollControllers = {};
 
-  NamedScrollController._internal(this.name, this.axis, this.targetNotifier);
-
-  factory NamedScrollController(String name,
-      Axis axis, {
-        initialScrollOffset,
-        debugLabel,
-        ValueNotifier<int>? targetNotifier,
-      }) {
-    // if (namedScrollControllers.containsKey(name))
-    //   return namedScrollControllers[name]!;
-    // else {
-      final NamedScrollController nsc =
-      NamedScrollController._internal(name, axis, targetNotifier);
-      namedScrollControllers[name] = nsc;
-      // onAttach() {
-      //   fca.logger.i('********************************** onAttach() - ${positions.length} positions' );
-      // }
-      nsc.addListener(() {
-        nsc._listener.call();
-      });
-      fca.logger.i("new NamedScrollController($name)\n"
-          "listening for refreshing callouts and targets");
-      return nsc;
+  NamedScrollController(
+    this.name,
+    this.axis, {
+    super.initialScrollOffset,
+    debugLabel,
+    this.targetNotifier,
+  }) {
+      namedScrollControllers[name] = this;
+    // onAttach() {
+    //   fca.logger.i('********************************** onAttach() - ${positions.length} positions' );
+    // }
+    addListener(() {
+      _listener.call();
+    });
+    fca.logger.i("new NamedScrollController($name)\n"
+        "listening for refreshing callouts and targets");
     // }
   }
 
@@ -81,9 +74,9 @@ class NamedScrollController extends ScrollController {
 
   static double scrollOffset(ScrollControllerName? scName) =>
       // scName != null ? (_scrollOffsetMap[scName] ?? 0.0) : 0.0;
-  scName != null && (instance(scName)?.hasClients ?? false)
-      ? (instance(scName)?.offset ?? 0.0)
-      : 0.0;
+      scName != null && (instance(scName)?.hasClients ?? false)
+          ? (instance(scName)?.offset ?? 0.0)
+          : 0.0;
 
   static double hScrollOffset(ScrollControllerName? scName) {
     if (scName == null) return 0.0;

@@ -38,7 +38,10 @@ class CounterDemoPageState extends State<CounterDemoPage>
   late GlobalKey countGK;
   late CalloutConfigModel fabCC;
 
-  NamedScrollController namedSC = NamedScrollController('main', Axis.vertical);
+  NamedScrollController namedSC = NamedScrollController(
+    'main',
+    Axis.vertical,
+  );
 
   late List<Alignment> alignments;
 
@@ -53,6 +56,9 @@ class CounterDemoPageState extends State<CounterDemoPage>
     fabCC = basicCalloutConfig(namedSC)..arrowType = ArrowTypeEnum.POINTY;
 
     fca.afterNextBuildDo(() {
+
+      namedSC.jumpTo(50.0);
+
       fca.showOverlay(
         calloutConfig: fabCC,
         calloutContent: Padding(
@@ -115,8 +121,9 @@ class CounterDemoPageState extends State<CounterDemoPage>
   }
 
   void _showToast(AlignmentEnum gravity,
-          {int showForMs = 0, VoidCallback? onDismissedF}) =>
-      fca.showToast(
+          {int showForMs = 0, VoidCallback? onDismissedF}) {
+
+    fca.showToast(
         removeAfterMs: showForMs,
         calloutConfig: CalloutConfigModel(
           cId: 'main-toast',
@@ -141,6 +148,7 @@ class CounterDemoPageState extends State<CounterDemoPage>
           ),
         ),
       );
+  }
 
   @override
   Widget build(BuildContext context) {

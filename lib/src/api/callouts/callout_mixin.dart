@@ -173,11 +173,6 @@ mixin CalloutMixin {
       calloutConfig.setSeparation(0.0);
     }
 
-    var targetGK = targetGkF?.call();
-    var r = targetGK?.globalPaintBounds(
-    skipWidthConstraintWarning: calloutConfig.calloutW != null,
-    skipHeightConstraintWarning: calloutConfig.calloutH != null);
-
     late OverlayEntry entry;
     entry = OverlayEntry(
       builder: (BuildContext ctx) {
@@ -189,7 +184,7 @@ mixin CalloutMixin {
 //   fca.logger.i('root');
 // }
 
-      // var scrSize = fca.scrSize;
+        // var scrSize = fca.scrSize;
 
         // if no target and no initialPos, use scren dimension
         if (calloutConfig.initialCalloutW == null &&
@@ -199,9 +194,12 @@ mixin CalloutMixin {
           calloutConfig.initialCalloutH = fca.scrH;
         }
 
-        // Rect? r = targetGK?.globalPaintBounds(
-        //     skipWidthConstraintWarning: calloutConfig.calloutW != null,
-        //     skipHeightConstraintWarning: calloutConfig.calloutH != null);
+        var targetGK = targetGkF?.call();
+        var r = targetGK?.globalPaintBounds(
+          skipWidthConstraintWarning: calloutConfig.calloutW != null,
+          skipHeightConstraintWarning: calloutConfig.calloutH != null,
+        );
+
         if (r == null) {
 // for toast targetgk will be null, and we have to use the gravity to get a rect
           calloutConfig.initialCalloutPos ??= OffsetModel(
@@ -535,7 +533,7 @@ mixin CalloutMixin {
   /// given a Rect, returns most appropriate alignment between target and callout within the wrapper
   /// NOTICE does not depend on callout size
   Alignment calcTargetAlignmentWithinWrapper(
-  {Rect? wrapperRect, required Rect targetRect}) {
+      {Rect? wrapperRect, required Rect targetRect}) {
     // Rect? wrapperRect = findGlobalRect(widget.key as GlobalKey);
 
     Rect screenRect = Rect.fromLTWH(0, 0, fca.scrW, fca.scrH);
@@ -847,9 +845,9 @@ mixin CalloutMixin {
     for (OE oe in OE.list) {
       if (!oe.isHidden && oe.entry != null) {
         oe.calloutConfig.calcEndpoints();
-       // oe.calloutConfig.refreshAlignment();
-        fca.logger
-            .i('after calcEndpoints: tR is ${oe.calloutConfig.tR().toString()}');
+        // oe.calloutConfig.refreshAlignment();
+        fca.logger.i(
+            'after calcEndpoints: tR is ${oe.calloutConfig.tR().toString()}');
         oe.entry?.markNeedsBuild();
       }
       // if (!oe.isHidden && oe.opC != null) {

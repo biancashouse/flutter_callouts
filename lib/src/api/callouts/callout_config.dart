@@ -862,9 +862,10 @@ class CalloutConfigModel
   ) {
     // _cachedCalloutContent = calloutContent;
     // targetRect unchenged as scrolling occurs, so apply scrollOffsets here
-    final x = scrollOffsetX();
-    final y = scrollOffsetY();
-    _targetRect = targetRect.translate(-x, -y);
+    // final x = scrollOffsetX();
+    // final y = scrollOffsetY();
+    _targetRect = targetRect;//.translate(-x, -y);
+    print('_target: ${_targetRect.toString()}');
     setRebuildCallback(rebuildF);
 
     // // if (width > Useful.screenW()) _calloutW = Useful.screenW() - 30;
@@ -1660,12 +1661,16 @@ class CalloutConfigModel
       );
 
   Widget _createTargetBorder() {
-    final tr = tR().translate(-scrollOffsetX(), -scrollOffsetY());
-    final x = tr.left;
-    final y = tr.top;
+    final sh = scrollOffsetX();
+    final sv = scrollOffsetY();
+    final tr = tR();
+    //.translate(-scrollOffsetX(), -scrollOffsetY());
+    final top = tr.top;//+sv;
+    final left = tr.left;//+sh;
+    print('scrollOffset: $sv, tr.top: ${tr.top} pos top: $top');
     return Positioned(
-      left: x+scrollOffsetX(),
-      top: y+scrollOffsetY(),
+      left: left,
+      top: top,
       child: Material(
         color: Colors.yellow.withValues(alpha: .3),
         child: GestureDetector(
