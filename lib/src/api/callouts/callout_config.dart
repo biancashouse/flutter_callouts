@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -8,6 +6,7 @@ import 'package:flutter_callouts/src/api/callouts/bubble_shape.dart';
 import 'package:flutter_callouts/src/api/callouts/draggable_corner.dart';
 import 'package:flutter_callouts/src/api/callouts/draggable_edge.dart';
 import 'package:flutter_callouts/src/api/callouts/modal_barrier_with_cutout.dart';
+import 'package:flutter_callouts/src/api/callouts/model/upto6colors.dart';
 import 'package:flutter_callouts/src/api/callouts/pointing_line.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
@@ -860,12 +859,9 @@ class CalloutConfigModel
     VoidCallback rebuildF,
     // TargetModel? configurableTarget,
   ) {
-    // _cachedCalloutContent = calloutContent;
-    // targetRect unchenged as scrolling occurs, so apply scrollOffsets here
-    // final x = scrollOffsetX();
-    // final y = scrollOffsetY();
-    _targetRect = targetRect;//.translate(-x, -y);
-    print('_target: ${_targetRect.toString()}');
+    _targetRect = targetRect;
+
+    // print('_target: ${_targetRect.toString()}');
     setRebuildCallback(rebuildF);
 
     // // if (width > Useful.screenW()) _calloutW = Useful.screenW() - 30;
@@ -1312,8 +1308,12 @@ class CalloutConfigModel
       return;
     }
     rebuild(() {
-      top = event.globalPosition.dy - dragCalloutOffset.dy;
-      left = event.globalPosition.dx - dragCalloutOffset.dx;
+      top = event.globalPosition.dy -
+          dragCalloutOffset.dy +
+          (followScroll ? scrollOffsetY() : 0.0);
+      left = event.globalPosition.dx -
+          dragCalloutOffset.dx +
+          (followScroll ? scrollOffsetX() : 0.0);
       var definitelyOnScreen = fca.ensureOnScreen(
         Rect.fromLTWH(
           left!,
@@ -1592,8 +1592,7 @@ class CalloutConfigModel
           followScroll ? -scrollOffsetX() : 0.0,
           followScroll ? -scrollOffsetY() : 0.0,
         ),
-        cE!.asOffset
-            .translate(
+        cE!.asOffset.translate(
           followScroll ? -scrollOffsetX() : 0.0,
           followScroll ? -scrollOffsetY() : 0.0,
         ),
@@ -1602,15 +1601,14 @@ class CalloutConfigModel
         -r.left,
         -r.top,
       );
-      Offset from = cE!.asOffset
-          .translate(
-            -r.left,
-            -r.top,
-          // )
-          // .translate(
-          //   followScroll ? -scrollOffsetX() : 0.0,
-          //   followScroll ? -scrollOffsetY() : 0.0,
-          );
+      Offset from = cE!.asOffset.translate(
+        -r.left,
+        -r.top,
+        // )
+        // .translate(
+        //   followScroll ? -scrollOffsetX() : 0.0,
+        //   followScroll ? -scrollOffsetY() : 0.0,
+      );
       Line line = Line(Coord.fromOffset(from), Coord.fromOffset(to));
       double lineLen = line.length();
 //Rect inflatedTargetRect = targetRect.inflate(separation / 2);
@@ -1665,8 +1663,8 @@ class CalloutConfigModel
     final sv = scrollOffsetY();
     final tr = tR();
     //.translate(-scrollOffsetX(), -scrollOffsetY());
-    final top = tr.top;//+sv;
-    final left = tr.left;//+sh;
+    final top = tr.top; //+sv;
+    final left = tr.left; //+sh;
     print('scrollOffset: $sv, tr.top: ${tr.top} pos top: $top');
     return Positioned(
       left: left,
@@ -1700,12 +1698,17 @@ class CalloutConfigModel
 //   }
 
   Widget _createBarrier() {
-    final Rect tr = tR();
+    final tr = tR();
     if (barrier!.excludeTargetFromBarrier && tr.size != Size.zero) {
+      final Rect cutoutRect = Rect.fromLTWH(
+        tr.left - barrier!.cutoutPadding,
+        tr.top - barrier!.cutoutPadding,
+        scaleTarget * (tr.width + barrier!.cutoutPadding*2),
+        scaleTarget * (tr.height + barrier!.cutoutPadding*2),
+      );
       return ModalBarrierWithCutout(
-        cutoutRect: tr,
+        cutoutRect: cutoutRect,
         round: barrier!.roundExclusion,
-        cutoutPadding: barrier!.cutoutPadding,
         color: barrier!.color.withValues(alpha: barrier!.opacity),
         opacity: barrier!.opacity,
         dismissible: barrier?.dismissible ?? true,
@@ -1842,12 +1845,22 @@ class CalloutConfigModel
 
 // return target rectangle if target found, otherwise null
   void calcEndpoints() {
-    Offset tCentre = tR().center;
+    // allow for possible transform and cutout padding
+    final tr = tR();
+    final cutoutPadding = barrier?.cutoutPadding ?? 0.0;
+    Rect scaledTr = Rect.fromLTWH(
+      tr.left - cutoutPadding,
+      tr.top - cutoutPadding,
+      scaleTarget * (tr.width + cutoutPadding*2),
+      scaleTarget * (tr.height + cutoutPadding*2),
+    );
+
+    Offset tCentre = scaledTr.center;
     Rectangle scrollAwareCR = Rectangle.fromRect(cR());
     Offset cCentre = scrollAwareCR.center;
     Line line = Line.fromOffsets(cCentre, tCentre);
     tE = Rectangle.getTargetIntersectionPoint2(
-        Coord.fromOffset(cCentre), line, tR());
+        Coord.fromOffset(cCentre), line, Rectangle.fromRect(scaledTr));
     // if (tE == null) {
     //   print('FUCK tE null!');
     // }
@@ -1968,8 +1981,8 @@ class PositionedBoxContent extends StatelessWidget {
           // child: TransparentPointer(
           child: Container(
             decoration: cc.decorationShape.toDecoration(
-              fillColorValues: ColorValues(color1Value: cc.fillColor),
-              borderColorValues: ColorValues(color1Value: cc.borderColor),
+              upTo6FillColors: UpTo6Colors(color1: cc.fillColor),
+              upTo6BorderColors: UpTo6Colors(color1: cc.borderColor),
               borderRadius: cc.borderRadius,
               thickness: cc.borderThickness,
               starPoints: cc.starPoints,

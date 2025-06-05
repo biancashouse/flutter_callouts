@@ -2,8 +2,8 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
-import 'package:flutter_callouts/src/api/callouts/color_values.dart';
 import 'package:flutter_callouts/src/api/callouts/dotted_decoration.dart';
+import 'package:flutter_callouts/src/api/callouts/model/upto6colors.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 
 part 'decoration_shape_enum.mapper.dart';
@@ -20,8 +20,8 @@ enum DecorationShapeEnum {
   star;
 
   Decoration? toDecoration({
-    ColorValues? fillColorValues,
-    ColorValues? borderColorValues,
+    UpTo6Colors? upTo6FillColors,
+    UpTo6Colors? upTo6BorderColors,
     double? thickness,
     double? borderRadius,
     int? starPoints,
@@ -34,46 +34,48 @@ enum DecorationShapeEnum {
     // if >1 colors supplied use the colors in a gradient
     Color? fillColor;
     List<Color> fillColors = [];
-    if (fillColorValues?.color1Value != null) {
-      fillColors.add(fillColorValues!.color1Value!.flutterValue);
+    if (upTo6FillColors?.color1 != null)
+      fillColors.add(upTo6FillColors!.color1!.flutterValue);
+    if (upTo6FillColors?.color1 != null) {
+      fillColors.add(upTo6FillColors!.color1!.flutterValue);
     }
-    if (fillColorValues?.color2Value != null) {
-      fillColors.add(fillColorValues!.color2Value!.flutterValue);
+    if (upTo6FillColors?.color2!= null) {
+      fillColors.add(upTo6FillColors!.color2!.flutterValue);
     }
-    if (fillColorValues?.color3Value != null) {
-      fillColors.add(fillColorValues!.color3Value!.flutterValue);
+    if (upTo6FillColors?.color3!= null) {
+      fillColors.add(upTo6FillColors!.color3!.flutterValue);
     }
-    if (fillColorValues?.color4Value != null) {
-      fillColors.add(fillColorValues!.color4Value!.flutterValue);
+    if (upTo6FillColors?.color4!= null) {
+      fillColors.add(upTo6FillColors!.color4!.flutterValue);
     }
-    if (fillColorValues?.color5Value != null) {
-      fillColors.add(fillColorValues!.color5Value!.flutterValue);
+    if (upTo6FillColors?.color5!= null) {
+      fillColors.add(upTo6FillColors!.color5!.flutterValue);
     }
-    if (fillColorValues?.color6Value != null) {
-      fillColors.add(fillColorValues!.color6Value!.flutterValue);
+    if (upTo6FillColors?.color6!= null) {
+      fillColors.add(upTo6FillColors!.color6!.flutterValue);
     }
     Gradient? fillGradient =
         fillColors.length > 1 ? LinearGradient(colors: fillColors) : null;
     if (fillColors.length == 1) fillColor = fillColors.first;
     if (fillColors.isEmpty) fillColor = Colors.white;
     List<Color> borderColors = [];
-    if (borderColorValues?.color1Value != null) {
-      borderColors.add(borderColorValues!.color1Value!.flutterValue);
+    if (upTo6BorderColors?.color1!= null) {
+      borderColors.add(upTo6BorderColors!.color1!.flutterValue);
     }
-    if (borderColorValues?.color2Value != null) {
-      borderColors.add(borderColorValues!.color2Value!.flutterValue);
+    if (upTo6BorderColors?.color2!= null) {
+      borderColors.add(upTo6BorderColors!.color2!.flutterValue);
     }
-    if (borderColorValues?.color3Value != null) {
-      borderColors.add(borderColorValues!.color3Value!.flutterValue);
+    if (upTo6BorderColors?.color3!= null) {
+      borderColors.add(upTo6BorderColors!.color3!.flutterValue);
     }
-    if (borderColorValues?.color4Value != null) {
-      borderColors.add(borderColorValues!.color4Value!.flutterValue);
+    if (upTo6BorderColors?.color4!= null) {
+      borderColors.add(upTo6BorderColors!.color4!.flutterValue);
     }
-    if (borderColorValues?.color5Value != null) {
-      borderColors.add(borderColorValues!.color5Value!.flutterValue);
+    if (upTo6BorderColors?.color5!= null) {
+      borderColors.add(upTo6BorderColors!.color5!.flutterValue);
     }
-    if (borderColorValues?.color6Value != null) {
-      borderColors.add(borderColorValues!.color6Value!.flutterValue);
+    if (upTo6BorderColors?.color6!= null) {
+      borderColors.add(upTo6BorderColors!.color6!.flutterValue);
     }
     BoxBorder? border;
     if (borderColors.length == 1) {

@@ -53,11 +53,19 @@ class CounterDemoPageState extends State<CounterDemoPage>
     fabGK = GlobalKey();
     countGK = GlobalKey();
 
-    fabCC = basicCalloutConfig(namedSC)..arrowType = ArrowTypeEnum.POINTY;
+    fabCC = basicCalloutConfig(namedSC)..arrowType = ArrowTypeEnum.POINTY
+      ..barrier = CalloutBarrierConfig(
+      cutoutPadding: 20,
+      excludeTargetFromBarrier: true,
+      roundExclusion: true,
+      closeOnTapped: false,
+      color: Colors.grey,
+      opacity: .5,
+    );
 
     fca.afterNextBuildDo(() {
 
-      namedSC.jumpTo(50.0);
+      namedSC.jumpTo(150.0);
 
       fca.showOverlay(
         calloutConfig: fabCC,
@@ -368,7 +376,7 @@ CalloutConfigModel basicCalloutConfig(NamedScrollController nsc) {
     borderThickness: 3,
     fillColor: fillColor,
     // elevation: 10,
-    frameTarget: true,
+    // frameTarget: true,
     // -- optional close button and got it button -------------------
     // showGotitButton: true,
     // showCloseButton: true,
@@ -387,7 +395,7 @@ CalloutConfigModel basicCalloutConfig(NamedScrollController nsc) {
     // contentTranslateY:
     // targetTranslateX:
     // targetTranslateY:
-    // scaleTarget:
+    scaleTarget:1.0,
     // -- resizing -------------------------------------------------
     resizeableH: true,
     resizeableV: true,
@@ -396,15 +404,7 @@ CalloutConfigModel basicCalloutConfig(NamedScrollController nsc) {
     // draggableColor: Colors.green,
     // dragHandleHeight: ,
     scrollControllerName: nsc.name,
-    followScroll: true,
-    // barrier: CalloutBarrierConfig(
-    //   cutoutPadding: 30,
-    //   excludeTargetFromBarrier: true,
-    //   roundExclusion: true,
-    //   closeOnTapped: true,
-    //   color: Colors.grey,
-    //   opacity: .5,
-    // ),
+    followScroll: false,
   );
 }
 

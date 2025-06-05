@@ -42,8 +42,8 @@ class _SemanticsClipper extends SingleChildRenderObjectWidget {
   }
 
   @override
-  void updateRenderObject(
-      BuildContext context, _RenderSemanticsClipper renderObject) {
+  void updateRenderObject(BuildContext context,
+      _RenderSemanticsClipper renderObject) {
     renderObject.clipDetailsNotifier = clipDetailsNotifier;
   }
 }
@@ -56,7 +56,8 @@ class _RenderSemanticsClipper extends RenderProxyBox {
   _RenderSemanticsClipper({
     required ValueNotifier<EdgeInsets> clipDetailsNotifier,
     RenderBox? child,
-  })  : _clipDetailsNotifier = clipDetailsNotifier,
+  })
+      : _clipDetailsNotifier = clipDetailsNotifier,
         super(child);
 
   ValueNotifier<EdgeInsets> _clipDetailsNotifier;
@@ -129,8 +130,7 @@ class ModalBarrierWithCutout extends StatelessWidget {
     super.key,
     required this.color,
     required this.opacity,
-    this.cutoutRect,
-    this.cutoutPadding = 0.0,
+    required this.cutoutRect,
     this.round = false,
     this.dismissible = true,
     this.onDismiss,
@@ -148,8 +148,7 @@ class ModalBarrierWithCutout extends StatelessWidget {
   ///    [ModalBarrierWithCutout] built by [ModalRoute] pages.
   final Color color;
   final double opacity;
-  final Rect? cutoutRect;
-  final double cutoutPadding;
+  final Rect cutoutRect;
   final bool round;
 
   /// Specifies if the barrier will be dismissed when the user taps on it.
@@ -212,6 +211,7 @@ class ModalBarrierWithCutout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // print('ModalBarrierWithCutout._targetRect: ${calloutConfig.barrier?.cutoutRect.width}');
     assert(!dismissible ||
         semanticsLabel == null ||
         debugCheckHasDirectionality(context));
@@ -246,9 +246,9 @@ class ModalBarrierWithCutout extends StatelessWidget {
     Widget barrier = Semantics(
       onTapHint: semanticsOnTapHint,
       onTap:
-          semanticsDismissible && semanticsLabel != null ? handleDismiss : null,
+      semanticsDismissible && semanticsLabel != null ? handleDismiss : null,
       onDismiss:
-          semanticsDismissible && semanticsLabel != null ? handleDismiss : null,
+      semanticsDismissible && semanticsLabel != null ? handleDismiss : null,
       label: semanticsDismissible ? semanticsLabel : null,
       textDirection: semanticsDismissible && semanticsLabel != null
           ? Directionality.of(context)
@@ -261,16 +261,15 @@ class ModalBarrierWithCutout extends StatelessWidget {
             opacity: opacity,
             child: !round
                 ? CustomPaint(
-                    painter: BarrierWithRectangularCutoutPainter(
-                      barrierColor: color,
-                      target: cutoutRect!.inflate(cutoutPadding),
-                    ),
-                  )
+              painter: BarrierWithRectangularCutoutPainter(
+                barrierColor: color,
+                target: cutoutRect,
+              ),
+            )
                 : _barrierWithCircularHole(
-                    barrierColor: color,
-              target: cutoutRect!.inflate(cutoutPadding),
-                    padding: cutoutPadding,
-                  ),
+              barrierColor: color,
+              target: cutoutRect,
+            ),
           ),
         ),
       ),
@@ -319,7 +318,8 @@ class ModalBarrierWithCutout extends StatelessWidget {
               child: Stack(
                 children: [
                   Positioned(
-                    top: target.top, left: target.left,
+                    top: target.top,
+                    left: target.left,
                     child: Container(
                       padding: EdgeInsets.all(padding),
                       height: target.height,
@@ -328,8 +328,7 @@ class ModalBarrierWithCutout extends StatelessWidget {
                         color: Colors.black,
                         // Color does not matter but should not be transparent
                         borderRadius: BorderRadius.circular(
-                          max(target.width,target.height)
-                        ),
+                            max(target.width, target.height)),
                       ),
                     ),
                   ),
@@ -437,9 +436,9 @@ class _ModalBarrierGestureDetector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Map<Type, GestureRecognizerFactory> gestures =
-        <Type, GestureRecognizerFactory>{
+    <Type, GestureRecognizerFactory>{
       _AnyTapGestureRecognizer:
-          _AnyTapGestureRecognizerFactory(onAnyTapUp: onDismiss),
+      _AnyTapGestureRecognizerFactory(onAnyTapUp: onDismiss),
     };
 
     return RawGestureDetector(
