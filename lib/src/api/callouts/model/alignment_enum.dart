@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
@@ -32,7 +34,22 @@ enum AlignmentEnum   {
     AlignmentEnum.bottomRight => AlignmentEnum.topLeft,
   };
 
+  // used by example app
+  static final List<GravityEntry> entries = UnmodifiableListView<GravityEntry>(
+    values.map<GravityEntry>(
+          (AlignmentEnum gravity) => GravityEntry(
+        value: gravity,
+        label: gravity.name,
+        // enabled: color.label != 'Grey',
+        // style: MenuItemButton.styleFrom(foregroundColor: color.color),
+      ),
+    ),
+  );
+
   String toSource() => 'Alignment.$name';
 
   static AlignmentEnum? of(int? index) => index != null ? AlignmentEnum.values.elementAtOrNull(index) : null;
 }
+
+typedef GravityEntry = DropdownMenuEntry<AlignmentEnum>;
+

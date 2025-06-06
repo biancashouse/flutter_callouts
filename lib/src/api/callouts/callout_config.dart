@@ -1,3 +1,5 @@
+import 'dart:async' show Timer;
+
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -278,6 +280,9 @@ class CalloutConfigModel
       followScroll ? -scrollOffsetX() : 0.0 + (contentTranslateX ?? 0.0),
       followScroll ? -scrollOffsetY() : 0.0 + (contentTranslateY ?? 0.0)));
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  Timer? removalTimer;
+
   // TargetModel? _configurableTarget;
 
   // bool get isConfigurable => _configurableTarget != null;
@@ -358,6 +363,7 @@ class CalloutConfigModel
     // this.initialAnimatedPositionDurationMs = 150,
     this.notUsingHydratedStorage = false,
   }) {
+
     // fca.logger.i(
     //     'Feature: ${feature} CalloutConfig.decoration: ${decorationShape.toString()}');
     if (decorationShape == DecorationShapeEnum.rectangle && borderRadius > 0) {
