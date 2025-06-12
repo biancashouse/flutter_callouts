@@ -4,7 +4,7 @@ version: 5.1.2
 maintainer: Ian White
 homepage: https://github.com/biancashouse/flutter_callouts
 repository: https://github.com/biancashouse/flutter-callouts
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+#publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 environment:
   sdk: ^3.5.4
