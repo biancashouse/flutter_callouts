@@ -2,7 +2,6 @@ import 'dart:collection';
 
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_callouts/flutter_callouts.dart';
 
 part 'alignment_enum.mapper.dart';
 

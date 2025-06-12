@@ -1207,12 +1207,6 @@ class CalloutConfigModel
     double startingCalloutLeft;
     double startingCalloutTop;
     if (initialCalloutPos == null) {
-      if (tR() == null) {
-        // fca.logger.i('targetRectangle() returned NULL !');
-        return;
-      }
-
-      // these positions are relative to the target and callout local origins (just taking account of sizes)
       final targetAlignmentIntersectionPos = targetAlignment!
           .withinRect(Rect.fromLTWH(0, 0, tR().width, tR().height));
       final calloutAlignmentIntersectionPos = calloutAlignment!
@@ -1627,7 +1621,7 @@ class CalloutConfigModel
 //bool overlaps = calloutrect.overlaps(inflatedTargetRect);
 // don't show line if gap between endpoints < specifid separation
       bool veryClose = lineLen <= 30;
-      if (veryClose || tR() == null || calloutrect.overlaps(tR())) {
+      if (veryClose || calloutrect.overlaps(tR())) {
         // fca.logger.i("not drawing pointing line");
         return const Offstage();
       }

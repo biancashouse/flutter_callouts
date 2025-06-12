@@ -42,7 +42,7 @@ class OE {
     if (oe?.entry != null && !skipOnDismiss) {
       oe?.calloutConfig.onDismissedF?.call();
     }
-    oe?.calloutConfig?.removalTimer?.cancel();
+    oe?.calloutConfig.removalTimer?.cancel();
     if (oe?.entry != null || force) {
       OE.list.remove(oe);
     }

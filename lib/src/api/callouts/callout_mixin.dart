@@ -220,7 +220,7 @@ mixin CalloutMixin {
           visible: oeObj == null || !oeObj.isHidden,
           child: calloutConfig.oeContentWidget(
 // zoomer: zoomer,
-            targetRect: r!,
+            targetRect: r,
             calloutContent: (_) => boxContent,
             rebuildF: () {
               entry.markNeedsBuild();
