@@ -276,9 +276,10 @@ class CalloutConfigModel
   @JsonKey(includeFromJson: false, includeToJson: false)
   bool preventDrag = false;
 
-  Rectangle cR() => Rectangle.fromRect(_calloutRect().translate(
-      followScroll ? -scrollOffsetX() : 0.0 + (contentTranslateX ?? 0.0),
-      followScroll ? -scrollOffsetY() : 0.0 + (contentTranslateY ?? 0.0)));
+  Rectangle cR() =>
+      Rectangle.fromRect(_calloutRect().translate(
+          followScroll ? -scrollOffsetX() : 0.0 + (contentTranslateX ?? 0.0),
+          followScroll ? -scrollOffsetY() : 0.0 + (contentTranslateY ?? 0.0)));
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   Timer? removalTimer;
@@ -363,7 +364,6 @@ class CalloutConfigModel
     // this.initialAnimatedPositionDurationMs = 150,
     this.notUsingHydratedStorage = false,
   }) {
-
     // fca.logger.i(
     //     'Feature: ${feature} CalloutConfig.decoration: ${decorationShape.toString()}');
     if (decorationShape == DecorationShapeEnum.rectangle && borderRadius > 0) {
@@ -493,9 +493,9 @@ class CalloutConfigModel
         scrollControllerName: scrollControllerName,
         gravity: gravity ?? this.gravity,
         initialTargetAlignment:
-            initialTargetAlignment ?? this.initialTargetAlignment,
+        initialTargetAlignment ?? this.initialTargetAlignment,
         initialCalloutAlignment:
-            initialCalloutAlignment ?? this.initialCalloutAlignment,
+        initialCalloutAlignment ?? this.initialCalloutAlignment,
         initialCalloutPos: initialCalloutPos ?? this.initialCalloutPos,
         finalSeparation: finalSeparation ?? this.finalSeparation,
         barrier: barrier ?? this.barrier,
@@ -598,7 +598,7 @@ class CalloutConfigModel
   //     // double sh = Useful.scrH;
   //
   //     // Offset targetC;
-  //     // if (tR == null) {
+  //     // if (tR() == null) {
   //     //   // not specified target gk, so use screen centre
   //     //   targetC = Offset(
   //     //     (sw - width!) / 2,
@@ -618,9 +618,9 @@ class CalloutConfigModel
   //
   //   if (top == null) _calcContentTopLeft();
   //
-  //   fca.logger.i('$feature: tR (${tR?.width}x${tR?.height})');
+  //   fca.logger.i('$feature: tR() (${tR?.width}x${tR?.height})');
   //
-  //   if (tR == null && initialCalloutPos == null) {
+  //   if (tR() == null && initialCalloutPos == null) {
   //     // fca.logger.i('skipping callout(${feature}) - perhaps target not present for some reason.');
   //     return const Icon(Icons.error, color: Colors.orangeAccent, size: 60);
   //   }
@@ -633,7 +633,7 @@ class CalloutConfigModel
   //   _initialTop ??= top;
   //   _initialLeft ??= left;
   //
-  //   if (!_finishedAnimatingSeparation && separation > 0.0 && tR != null && cE != null) {
+  //   if (!_finishedAnimatingSeparation && separation > 0.0 && tR() != null && cE != null) {
   //     var adjustedTopLeft = _adjustTopLeftForSeparation(separation, _initialTop!, _initialLeft!, cE!, tR());
   //     top = adjustedTopLeft.$1;
   //     left = adjustedTopLeft.$2;
@@ -664,9 +664,9 @@ class CalloutConfigModel
   //           DraggableEdge_OP(side: Side.BOTTOM, thickness: draggableEdgeThickness, color: draggableColor!, parent: this),
   //         if (notToast && arrowType == ArrowType.POINTY) _positionedBubbleBg(),
   //         PositionedBoxContent(this, boxContent),
-  //         if (notToast && arrowType != ArrowType.NO_CONNECTOR && arrowType != ArrowType.POINTY && tR != null) _createPointingLine(),
-  //         if (notToast && arrowType != ArrowType.NO_CONNECTOR && arrowType != ArrowType.POINTY && tR != null && lineLabel != null) _createLineLabel(),
-  //         if (notToast && frameTarget && tR != null) _createTarget(),
+  //         if (notToast && arrowType != ArrowType.NO_CONNECTOR && arrowType != ArrowType.POINTY && tR() != null) _createPointingLine(),
+  //         if (notToast && arrowType != ArrowType.NO_CONNECTOR && arrowType != ArrowType.POINTY && tR() != null && lineLabel != null) _createLineLabel(),
+  //         if (notToast && frameTarget && tR() != null) _createTarget(),
   //         if (isConfigurable) _createConfigToolbar(Side.TOP),
   //       ],
   //     );
@@ -716,7 +716,7 @@ class CalloutConfigModel
   //     // double sh = Useful.scrH;
   //
   //     // Offset targetC;
-  //     // if (tR == null) {
+  //     // if (tR() == null) {
   //     //   // not specified target gk, so use screen centre
   //     //   targetC = Offset(
   //     //     (sw - width!) / 2,
@@ -736,9 +736,9 @@ class CalloutConfigModel
   //
   //   if (top == null) _calcContentTopLeft();
   //
-  //   fca.logger.i('$feature: tR (${tR?.width}x${tR?.height})');
+  //   fca.logger.i('$feature: tR() (${tR?.width}x${tR?.height})');
   //
-  //   if (tR == null && initialCalloutPos == null) {
+  //   if (tR() == null && initialCalloutPos == null) {
   //     // fca.logger.i('skipping callout(${feature}) - perhaps target not present for some reason.');
   //     return const Icon(Icons.error, color: Colors.orangeAccent, size: 60);
   //   }
@@ -751,7 +751,7 @@ class CalloutConfigModel
   //   _initialTop ??= top;
   //   _initialLeft ??= left;
   //
-  //   if (!_finishedAnimatingSeparation && (separation ?? 0.0) > 0.0 && tR != null && cE != null) {
+  //   if (!_finishedAnimatingSeparation && (separation ?? 0.0) > 0.0 && tR() != null && cE != null) {
   //     var adjustedTopLeft = _adjustTopLeftForSeparation(separation!, _initialTop!, _initialLeft!, cE!, tR());
   //     top = adjustedTopLeft.$1;
   //     left = adjustedTopLeft.$2;
@@ -782,9 +782,9 @@ class CalloutConfigModel
   //           DraggableEdge_OP(side: Side.BOTTOM, thickness: draggableEdgeThickness, color: draggableColor!, parent: this),
   //         if (notToast && arrowType == ArrowType.POINTY) _positionedBubbleBg(),
   //         PositionedBoxContent(this, boxContent),
-  //         if (notToast && arrowType != ArrowType.NO_CONNECTOR && arrowType != ArrowType.POINTY && tR != null) _createPointingLine(),
-  //         if (notToast && arrowType != ArrowType.NO_CONNECTOR && arrowType != ArrowType.POINTY && tR != null && lineLabel != null) _createLineLabel(),
-  //         if (notToast && frameTarget && tR != null) _createTarget(),
+  //         if (notToast && arrowType != ArrowType.NO_CONNECTOR && arrowType != ArrowType.POINTY && tR() != null) _createPointingLine(),
+  //         if (notToast && arrowType != ArrowType.NO_CONNECTOR && arrowType != ArrowType.POINTY && tR() != null && lineLabel != null) _createLineLabel(),
+  //         if (notToast && frameTarget && tR() != null) _createTarget(),
   //         if (isConfigurable) _createConfigToolbar(Side.TOP),
   //       ],
   //     );
@@ -826,7 +826,7 @@ class CalloutConfigModel
 
   Widget opContentWidget({
     required BuildContext
-        context, // if supplied, will be a descendant of an OverlayPortal
+    context, // if supplied, will be a descendant of an OverlayPortal
     required Rect targetRect,
     required WidgetBuilder calloutContent,
     required VoidCallback rebuildF,
@@ -859,12 +859,11 @@ class CalloutConfigModel
   //   return _renderCallout(context, targetRect, calloutContent, rebuildF);
   // }
 
-  Widget _renderCallout(
-    Rect targetRect,
-    WidgetBuilder calloutContent,
-    VoidCallback rebuildF,
-    // TargetModel? configurableTarget,
-  ) {
+  Widget _renderCallout(Rect targetRect,
+      WidgetBuilder calloutContent,
+      VoidCallback rebuildF,
+      // TargetModel? configurableTarget,
+      ) {
     _targetRect = targetRect;
 
     // print('_target: ${_targetRect.toString()}');
@@ -888,7 +887,7 @@ class CalloutConfigModel
       // double sh = Useful.scrH;
 
       // Offset targetC;
-      // if (tR == null) {
+      // if (tR() == null) {
       //   // not specified target gk, so use screen centre
       //   targetC = Offset(
       //     (sw - width!) / 2,
@@ -914,9 +913,9 @@ class CalloutConfigModel
 
     if (top == null) calcContentTopLeft();
 
-    // fca.logger.i('$feature: tR (${tR?.width}x${tR?.height})');
+    // fca.logger.i('$feature: tR() (${tR?.width}x${tR?.height})');
 
-    // if (tR == null && initialCalloutPos == null) {
+    // if (tR() == null && initialCalloutPos == null) {
     //   // fca.logger.i('skipping callout(${feature}) - perhaps target not present for some reason.');
     //   return const Icon(Icons.error, color: Colors.orangeAccent, size: 60);
     // }
@@ -1086,7 +1085,7 @@ class CalloutConfigModel
   // function determines whether topLeft and bottomRioht are onScreen
   bool calloutWouldNotBeOffscreen(Coord cE, double deltaX, double deltaY) {
     Rect finalCR =
-        Rect.fromLTWH(left! + deltaX, top! + deltaY, _calloutW!, _calloutH!);
+    Rect.fromLTWH(left! + deltaX, top! + deltaY, _calloutW!, _calloutH!);
     Rect scrRect = Rect.fromLTWH(0, 0, fca.scrW, fca.scrH);
     bool result = scrRect.contains(finalCR.topLeft) &&
         scrRect.contains(finalCR.bottomRight);
@@ -1096,8 +1095,7 @@ class CalloutConfigModel
     return result;
   }
 
-  (double, double) _adjustTopLeftForSeparation(
-      double theSeparation,
+  (double, double) _adjustTopLeftForSeparation(double theSeparation,
       double initialTop,
       double inititalLeft,
       Coord initialCE,
@@ -1160,8 +1158,9 @@ class CalloutConfigModel
 //   return Alignment(newX, newY);
 // }
 
-  Rectangle tR() => Rectangle.fromRect(
-      _targetRect //.translate(-scrollOffsetX(), -scrollOffsetY()),
+  Rectangle tR() =>
+      Rectangle.fromRect(
+          _targetRect //.translate(-scrollOffsetX(), -scrollOffsetY()),
       );
 
 // if target is CalloutTarget, it automatically measures itself after a build,
@@ -1208,7 +1207,7 @@ class CalloutConfigModel
     double startingCalloutLeft;
     double startingCalloutTop;
     if (initialCalloutPos == null) {
-      if (tR == null) {
+      if (tR() == null) {
         // fca.logger.i('targetRectangle() returned NULL !');
         return;
       }
@@ -1232,8 +1231,10 @@ class CalloutConfigModel
         startingCalloutTop = 0.0;
       }
     } else {
-      startingCalloutTop = initialCalloutPos!.dy;
-      startingCalloutLeft = initialCalloutPos!.dx;
+      startingCalloutTop = initialCalloutPos!.dy +
+          (followScroll ? scrollOffsetY() : 0.0);
+      startingCalloutLeft = initialCalloutPos!.dx +
+          (followScroll ? scrollOffsetX() : 0.0);
     }
 
     actualTop = startingCalloutTop;
@@ -1327,10 +1328,10 @@ class CalloutConfigModel
           _calloutW!,
           dragHandleHeight ?? _calloutH!,
         )
-            // .translate(
-            // followScroll ? scrollOffsetX() : 0.0,
-            // followScroll ? scrollOffsetY() : 0.0,
-            // )
+        // .translate(
+        // followScroll ? scrollOffsetX() : 0.0,
+        // followScroll ? scrollOffsetY() : 0.0,
+        // )
             .translate(
           contentTranslateX != null ? -contentTranslateX! : 0.0,
           contentTranslateY != null ? -contentTranslateY! : 0.0,
@@ -1403,13 +1404,12 @@ class CalloutConfigModel
     });
   }
 
-  Future<void> animateResizeByCornerMove(
-    Alignment alignment,
-    double hDelta,
-    double vDelta, {
-    required Duration duration,
-    VoidCallback? afterAnimationF,
-  }) async {
+  Future<void> animateResizeByCornerMove(Alignment alignment,
+      double hDelta,
+      double vDelta, {
+        required Duration duration,
+        VoidCallback? afterAnimationF,
+      }) async {
     if (left == null || top == null) return;
     AnimationController animationController = AnimationController(
       duration: duration,
@@ -1422,12 +1422,14 @@ class CalloutConfigModel
     Animation<Offset>? animation = tween.animate(animationController);
     Offset prevValue = Offset.zero;
     int i = 0;
-    animation.addListener(() => rebuild(() {
+    animation.addListener(() =>
+        rebuild(() {
           Offset delta = Offset(animation.value.dx - prevValue.dx,
               animation.value.dy - prevValue.dy);
           prevValue = animation.value;
           fca.logger.i(
-              '${i++} av ${animation.value} delta ${delta.toString()}, prevDelta ${prevValue.toString()}');
+              '${i++} av ${animation.value} delta ${delta
+                  .toString()}, prevDelta ${prevValue.toString()}');
           if (alignment == Alignment.topLeft) {
             if (delta.dx < 0 || _calloutW! + delta.dx >= (minWidth ?? 30)) {
               left = left! + delta.dx;
@@ -1524,7 +1526,8 @@ class CalloutConfigModel
     }
   }
 
-  Widget _closeButton() => Positioned(
+  Widget _closeButton() =>
+      Positioned(
         top: closeButtonPos.dy,
         right: closeButtonPos.dx,
         child: IconButton(
@@ -1541,7 +1544,8 @@ class CalloutConfigModel
         ),
       );
 
-  Widget _gotitButton() => Blink(
+  Widget _gotitButton() =>
+      Blink(
         animateColor: false,
         child: IconButton(
           tooltip: "got it - don't show again.",
@@ -1559,7 +1563,8 @@ class CalloutConfigModel
         ),
       );
 
-  Widget _cpi() => Padding(
+  Widget _cpi() =>
+      Padding(
         padding: const EdgeInsets.all(8.0),
         child: CircularProgressIndicator(
           backgroundColor: fillColor?.flutterValue,
@@ -1569,18 +1574,18 @@ class CalloutConfigModel
   Widget _possiblyScrollableContents(Widget contents) =>
       (needsToScrollV || needsToScrollH)
           ? SizedBox(
-              width: calloutW,
-              height: calloutH,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                child: Hero(tag: 'callout-content', child: contents),
-              ),
-            )
+        width: calloutW,
+        height: calloutH,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Hero(tag: 'callout-content', child: contents),
+        ),
+      )
           : SizedBox(
-              width: _calloutW!,
-              height: _calloutH!,
-              child: contents,
-            );
+        width: _calloutW!,
+        height: _calloutH!,
+        child: contents,
+      );
 
   Widget _createPointingLine() {
     if (calloutAlignment == null && targetAlignment == null) {
@@ -1622,7 +1627,7 @@ class CalloutConfigModel
 //bool overlaps = calloutrect.overlaps(inflatedTargetRect);
 // don't show line if gap between endpoints < specifid separation
       bool veryClose = lineLen <= 30;
-      if (veryClose || tR == null || calloutrect.overlaps(tR())) {
+      if (veryClose || tR() == null || calloutrect.overlaps(tR())) {
         // fca.logger.i("not drawing pointing line");
         return const Offstage();
       }
@@ -1656,7 +1661,8 @@ class CalloutConfigModel
     }
   }
 
-  Widget _createLineLabel() => Positioned(
+  Widget _createLineLabel() =>
+      Positioned(
         top: (tE!.y + cE!.y) / 2,
         left: (tE!.x + cE!.x) / 2,
         child: Material(
@@ -1709,8 +1715,8 @@ class CalloutConfigModel
       final Rect cutoutRect = Rect.fromLTWH(
         tr.left - barrier!.cutoutPadding,
         tr.top - barrier!.cutoutPadding,
-        scaleTarget * (tr.width + barrier!.cutoutPadding*2),
-        scaleTarget * (tr.height + barrier!.cutoutPadding*2),
+        scaleTarget * (tr.width + barrier!.cutoutPadding * 2),
+        scaleTarget * (tr.height + barrier!.cutoutPadding * 2),
       );
       return ModalBarrierWithCutout(
         cutoutRect: cutoutRect,
@@ -1773,7 +1779,7 @@ class CalloutConfigModel
 // //   completed(false);
 // //   onBarrierTappedF?.call();
 // // },
-//               child: !kIsWeb && tR != null
+//               child: !kIsWeb && tR() != null
 //                   ? ColorFiltered(
 //                       colorFilter: ColorFilter.mode(Colors.black.withOpacity(barrier!.opacity), BlendMode.srcOut),
 //                       child: Container(
@@ -1844,8 +1850,9 @@ class CalloutConfigModel
 //         ),
 //       ));
 
-  Rect _calloutRect() => Rect.fromLTWH(left ?? 0.0, top ?? 0.0,
-      _calloutW ?? double.infinity, _calloutH ?? double.infinity);
+  Rect _calloutRect() =>
+      Rect.fromLTWH(left ?? 0.0, top ?? 0.0,
+          _calloutW ?? double.infinity, _calloutH ?? double.infinity);
 
 // Offset _calloutCentre() => _calloutRect().center;
 
@@ -1854,11 +1861,13 @@ class CalloutConfigModel
     // allow for possible transform and cutout padding
     final tr = tR();
     final cutoutPadding = barrier?.cutoutPadding ?? 0.0;
+    double scaledAndPaddedW = scaleTarget * (tr.width + cutoutPadding * 2);
+    double scaledAndPaddedH = scaleTarget * (tr.height + cutoutPadding * 2);
     Rect scaledTr = Rect.fromLTWH(
-      tr.left - cutoutPadding,
-      tr.top - cutoutPadding,
-      scaleTarget * (tr.width + cutoutPadding*2),
-      scaleTarget * (tr.height + cutoutPadding*2),
+      tr.left - (scaledAndPaddedW - tr.width) / 2,
+      tr.top - (scaledAndPaddedH - tr.height) / 2,
+      scaledAndPaddedW,
+      scaledAndPaddedH,
     );
 
     Offset tCentre = scaledTr.center;
@@ -1931,11 +1940,10 @@ class PositionedBoxContent extends StatelessWidget {
   final CalloutConfigModel calloutConfig;
   final Widget child;
 
-  const PositionedBoxContent(
-    this.calloutConfig,
-    this.child, {
-    super.key,
-  });
+  const PositionedBoxContent(this.calloutConfig,
+      this.child, {
+        super.key,
+      });
 
   static PositionedBoxContent? of(BuildContext context) =>
       context.findAncestorWidgetOfExactType<PositionedBoxContent>();
@@ -2020,19 +2028,19 @@ class PositionedBoxContent extends StatelessWidget {
                       alignment: Alignment.topLeft,
                       child: cc.showGotitButton
                           ? Flex(
-                              direction: cc.gotitAxis ?? Axis.horizontal,
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: calloutContent(cc),
-                                ),
-                                if (cc.gotitAxis != null && !cc.showcpi)
-                                  cc._gotitButton(),
-                                if (cc.showcpi) cc._cpi(),
-                              ],
-                            )
+                        direction: cc.gotitAxis ?? Axis.horizontal,
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: calloutContent(cc),
+                          ),
+                          if (cc.gotitAxis != null && !cc.showcpi)
+                            cc._gotitButton(),
+                          if (cc.showcpi) cc._cpi(),
+                        ],
+                      )
                           : calloutContent(cc),
                     ),
                     if (cc.showCloseButton) cc._closeButton(),
@@ -2083,10 +2091,11 @@ class PositionedBoxContent extends StatelessWidget {
         ));
   }
 
-  Widget calloutContent(CalloutConfigModel cc) => cc.draggable
-      ? MouseRegion(
-          cursor: SystemMouseCursors.grab,
-          child: cc._possiblyScrollableContents(child),
-        )
-      : cc._possiblyScrollableContents(child);
+  Widget calloutContent(CalloutConfigModel cc) =>
+      cc.draggable
+          ? MouseRegion(
+        cursor: SystemMouseCursors.grab,
+        child: cc._possiblyScrollableContents(child),
+      )
+          : cc._possiblyScrollableContents(child);
 }

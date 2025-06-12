@@ -529,10 +529,22 @@ mixin CalloutMixin {
     // Rect? wrapperRect = findGlobalRect(widget.key as GlobalKey);
 
     Rect screenRect = Rect.fromLTWH(0, 0, fca.scrW, fca.scrH);
-    if (wrapperRect == null) {
-      wrapperRect = screenRect;
-    }
+    // if (wrapperRect == null) {
+    //   wrapperRect = screenRect;
+    // }
     wrapperRect = screenRect;
+
+    // final cutoutPadding = 30.0;
+    // final scaleTarget = 1.71;
+    // double scaledAndPaddedW = scaleTarget * (targetRect.width + cutoutPadding*2);
+    // double scaledAndPaddedH = scaleTarget * (targetRect.height + cutoutPadding*2);
+    // Rect scaledTr = Rect.fromLTWH(
+    //   targetRect.left - (scaledAndPaddedW - targetRect.width)/2,
+    //   targetRect.top - (scaledAndPaddedH - targetRect.height)/2,
+    //   scaledAndPaddedW,
+    //   scaledAndPaddedH,
+    // );
+
     Offset wrapperC = wrapperRect.center;
     Offset targetRectC = targetRect.center;
     double x = (targetRectC.dx - wrapperC.dx) / (wrapperRect.width / 2);

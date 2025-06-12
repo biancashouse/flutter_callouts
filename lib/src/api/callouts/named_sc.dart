@@ -18,7 +18,8 @@ class NamedScrollController extends ScrollController {
     debugLabel,
     this.targetNotifier,
   }) {
-      namedScrollControllers[name] = this;
+    namedScrollControllers.putIfAbsent(name, ()=>this);
+      // namedScrollControllers[name] = this;
     // onAttach() {
     //   fca.logger.i('********************************** onAttach() - ${positions.length} positions' );
     // }

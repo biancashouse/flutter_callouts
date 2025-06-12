@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
-import 'package:hydrated_bloc/hydrated_bloc.dart';
+// import 'package:hydrated_bloc/hydrated_bloc.dart';
 
 // lazy ;-)
 bool followScroll = false;
@@ -357,111 +357,113 @@ class CounterView extends StatelessWidget {
           builder: (context, state) {
             return NotificationListener<SizeChangedLayoutNotification>(
               onNotification: (SizeChangedLayoutNotification notification) {
-                fca.afterMsDelayDo(800, () {
-                  fca.refreshAll();
-                });
+                fca.afterMsDelayDo(
+                  800,
+                  () {
+                    fca.refreshAll();
+                  },
+                );
+
                 return true;
               },
               child: SizeChangedLayoutNotifier(
-                child: Scaffold(
-                  body: Center(
-                    child: SingleChildScrollView(
-                      controller: namedSC,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height - 200,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  key: countGK,
-                                  '$state',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headlineMedium,
-                                ),
-                              ],
-                            ),
+                child: Center(
+                  child: SingleChildScrollView(
+                    controller: namedSC,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height - 200,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                key: countGK,
+                                '$state',
+                                style:
+                                    Theme.of(context).textTheme.headlineMedium,
+                              ),
+                            ],
                           ),
-                          SizedBox(
-                            width: double.infinity,
-                            height: 100,
-                            child: Align(
-                              alignment: Alignment.centerRight,
-                              child: Padding(
-                                padding: const EdgeInsets.all(18.0),
-                                child: FloatingActionButton(
-                                  key: fabGK,
-                                  onPressed: () async {
-                                    if (!didScroll) {
-                                      await showDialog<void>(
-                                        context: context,
-                                        barrierDismissible: false,
-                                        builder: (ctx) => AlertDialog(
-                                          alignment: Alignment.bottomCenter,
-                                          title: const Text(
-                                              'Try the scrolling first'),
-                                          actions: <Widget>[
-                                            TextButton(
-                                              child: const Text('ok, I will.'),
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    }
-                                    if (!didScroll) return;
+                        ),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 100,
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: Padding(
+                              padding: const EdgeInsets.all(18.0),
+                              child: FloatingActionButton(
+                                key: fabGK,
+                                onPressed: () async {
+                                  if (!didScroll) {
+                                    await showDialog<void>(
+                                      context: context,
+                                      barrierDismissible: false,
+                                      builder: (ctx) => AlertDialog(
 
-                                    context
-                                        .read<CounterBloc>()
-                                        .add(CounterIncrementPressed());
-                                    // point out the number using a callout
-                                    fca.dismissAll(exceptToasts: true);
-                                    int index =
-                                        state % AlignmentEnum.values.length;
-                                    AlignmentEnum ca = AlignmentEnum.of(index)!;
-                                    AlignmentEnum ta = ca.oppositeEnum;
-                                    fca.showOverlay(
-                                      calloutConfig: basicCalloutConfig(namedSC)
-                                        ..calloutAlignment = ca.flutterValue
-                                        ..targetAlignment = ta.flutterValue
-                                        ..calloutW = 200
-                                        ..calloutH = 80
-                                        ..fillColor = ColorModel.orangeAccent(),
-                                      calloutContent: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: const Text(
-                                          'You have pushed the +\nbutton this many times:',
-                                        ),
+                                        alignment: Alignment.bottomCenter,
+                                        title: const Text(
+                                            'Try the scrolling first'),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            child: const Text('ok, I will.'),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                        ],
                                       ),
-                                      targetGkF: () => countGK,
-                                      removeAfterMs: 3000,
                                     );
-                                  },
-                                  tooltip: 'Increment',
-                                  child: const Icon(Icons.add),
-                                ),
+                                  }
+                                  if (!didScroll) return;
+
+                                  context
+                                      .read<CounterBloc>()
+                                      .add(CounterIncrementPressed());
+                                  // point out the number using a callout
+                                  fca.dismissAll(exceptToasts: true);
+                                  int index =
+                                      state % AlignmentEnum.values.length;
+                                  AlignmentEnum ca = AlignmentEnum.of(index)!;
+                                  AlignmentEnum ta = ca.oppositeEnum;
+                                  fca.showOverlay(
+                                    calloutConfig: basicCalloutConfig(namedSC)
+                                      ..calloutAlignment = ca.flutterValue
+                                      ..targetAlignment = ta.flutterValue
+                                      ..calloutW = 200
+                                      ..calloutH = 80
+                                      ..fillColor = ColorModel.orangeAccent(),
+                                    calloutContent: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: const Text(
+                                        'You have pushed the +\nbutton this many times:',
+                                      ),
+                                    ),
+                                    targetGkF: () => countGK,
+                                    removeAfterMs: 3000,
+                                  );
+                                },
+                                tooltip: 'Increment',
+                                child: const Icon(Icons.add),
                               ),
                             ),
                           ),
-                          Container(
-                            height: 1000,
-                            width: double.infinity,
-                            color: Colors.blue[50],
-                            child: const Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Text(
-                                  'Scroll to see that the yellow callout is Scroll-aware  --  '
-                                  'Resize the window to see the pointer refreshing --  '
-                                  'The yellow callout is draggable'),
-                            ),
+                        ),
+                        Container(
+                          height: 1000,
+                          width: double.infinity,
+                          color: Colors.blue[50],
+                          child: const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text(
+                                'Scroll to see that the yellow callout is Scroll-aware  --  '
+                                'Resize the window to see the pointer refreshing --  '
+                                'The yellow callout is draggable'),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -480,16 +482,14 @@ final class CounterIncrementPressed extends CounterEvent {}
 
 final class CounterDecrementPressed extends CounterEvent {}
 
-class CounterBloc extends HydratedBloc<CounterEvent, int> {
+class CounterBloc extends Bloc<CounterEvent, int> {
   CounterBloc() : super(0) {
     on<CounterIncrementPressed>((event, emit) => emit(state + 1));
     on<CounterDecrementPressed>((event, emit) => emit(state - 1));
   }
 
-  @override
   int fromJson(Map<String, dynamic> json) => json['value'] as int;
 
-  @override
   Map<String, int> toJson(int state) => {'value': state};
 }
 
