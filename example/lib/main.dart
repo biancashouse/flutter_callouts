@@ -66,7 +66,7 @@ class CounterDemoPageState extends State<CounterDemoPage>
       ..arrowType = ArrowTypeEnum.POINTY
       ..barrier = showCutout
           ? CalloutBarrierConfig(
-              cutoutPadding: 20,
+              cutoutPadding: fca.isWeb ? 20 : 10,
               excludeTargetFromBarrier: true,
               roundExclusion: true,
               closeOnTapped: false,

@@ -7,6 +7,9 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_callouts/flutter_callouts.dart';
+
+import 'circular_cutout.dart';
 
 /// A widget that modifies the size of the [SemanticsNode.rect] created by its
 /// child widget.
@@ -306,6 +309,15 @@ class ModalBarrierWithCutout extends StatelessWidget {
     required Rect target,
     double padding = 0,
   }) {
+    if (fca.isMac || fca.isWindows) {
+      return CircularCutoutBarrier(
+        barrierColor: barrierColor,
+        circleCenter: target.center,
+        circleRadius: max(target.width, target.height),
+        child: const Offstage(),
+      );
+    }
+    // assume web
     return ColorFiltered(
       colorFilter: ColorFilter.mode(barrierColor, BlendMode.srcOut),
       child: Stack(
