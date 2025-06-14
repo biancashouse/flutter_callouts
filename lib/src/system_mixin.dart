@@ -15,7 +15,7 @@ import 'logger_filter.dart';
 mixin SystemMixin {
   String? _deviceInfo;
   PlatformEnum? _platform;
-  final Logger logger = Logger(
+  Logger logger = Logger(
     filter: MyFilter(),
     printer: PrettyPrinter(
       colors: true,
