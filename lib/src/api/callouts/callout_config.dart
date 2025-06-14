@@ -181,7 +181,7 @@ class CalloutConfigModel
   @JsonKey(includeFromJson: false, includeToJson: false)
   BuildContext? opDescendantContext; // passed in by fca.wrapTarget
   // ZoomerState? _zoomer;
-  GlobalKey? _opGK;
+  // GlobalKey? _opGK;
   @JsonKey(includeFromJson: false, includeToJson: false)
   OverlayEntry? offstageEntry;
 
@@ -1665,7 +1665,7 @@ class CalloutConfigModel
       );
 
   Widget _createTargetBorder() {
-    final sh = scrollOffsetX();
+    // final sh = scrollOffsetX();
     final sv = scrollOffsetY();
     final tr = tR();
     //.translate(-scrollOffsetX(), -scrollOffsetY());

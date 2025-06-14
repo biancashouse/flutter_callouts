@@ -102,7 +102,7 @@ mixin WidgetHelperMixin {
             boxShadow: [
               if (bgColor != null)
                 BoxShadow(
-                  color: Colors.white.withOpacity(.5),
+                  color: Colors.white.withValues(alpha: .5),
                   spreadRadius: 5,
                   blurRadius: 10,
                 )

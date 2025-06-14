@@ -49,8 +49,8 @@ class Rectangle extends Rect {
       case Side.TOP:
         if (Coord.sameValue(thePoint.x, right)) result = Side.RIGHT;
         break;
-      default:
-        break;
+      // default:
+      //   break;
     }
 
     return result;
