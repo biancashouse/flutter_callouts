@@ -76,7 +76,7 @@ class FlutterCalloutMixins
   FlutterCalloutMixins._internal() // Private constructor
   {
     // BaseMixins.instance;
-    logger.i('FlutterCallouts._internal()');
+    // logger.i('FlutterCallouts._internal()');
   }
 
 

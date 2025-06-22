@@ -26,8 +26,8 @@ class NamedScrollController extends ScrollController {
     addListener(() {
       _listener.call();
     });
-    fca.logger.i("new NamedScrollController($name)\n"
-        "listening for refreshing callouts and targets");
+    // fca.logger.i("new NamedScrollController($name)\n"
+    //     "listening for refreshing callouts and targets");
     // }
   }
 
@@ -35,7 +35,7 @@ class NamedScrollController extends ScrollController {
   void dispose() {
     removeListener(_listener);
     namedScrollControllers.remove(name);
-    fca.logger.i("- - - - - dispose NamedScrollController($name) - - - - - ");
+    // fca.logger.i("- - - - - dispose NamedScrollController($name) - - - - - ");
     super.dispose();
   }
 
@@ -44,7 +44,7 @@ class NamedScrollController extends ScrollController {
       // _scrollOffsetMap[name] = offset;
       // fca.logger.i('NamedScrollController.listenToOffset: $name, $offset)');
       fca.refreshAll();
-      fca.logger.i('NamedScrollController.listenToOffset: calling refreshAll');
+      // fca.logger.i('NamedScrollController.listenToOffset: calling refreshAll');
     }
   }
 

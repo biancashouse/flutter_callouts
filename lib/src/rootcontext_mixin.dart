@@ -25,7 +25,7 @@ mixin RootContextMixin {
 
   // must be called from a widget build
   void initWithContext(BuildContext context) {
-    fca.logger.i('initWithContext');
+    // fca.logger.i('initWithContext');
     rootContext = context;
     fca.initDeviceInfoAndPlatform();
     // fca.createOffstageOverlay(context);
