@@ -157,7 +157,7 @@ mixin CalloutMixin {
     });
   }
 
-  OverlayEntry _createOverlay(// ZoomerState? zoomer,
+  OverlayEntry _createOverlay( // ZoomerState? zoomer,
       CalloutConfigModel calloutConfig,
       Widget boxContent,
       TargetKeyFunc? targetGkF,
@@ -274,7 +274,7 @@ mixin CalloutMixin {
 
   Future<void> _possiblyAnimateSeparation(CalloutConfigModel calloutConfig,
       VoidCallback? onReadyF,) async {
-    // print('_possiblyAnimateSeparation finalSep: ${calloutConfig.finalSeparation}');
+    print('_possiblyAnimateSeparation finalSep: ${calloutConfig.finalSeparation}');
     if ((calloutConfig.finalSeparation ?? 0.0) > 0.0) {
       // animate separation, top or left
       AnimationController animationController = AnimationController(
@@ -305,7 +305,7 @@ mixin CalloutMixin {
 
   bool _sameType<T1, T2>() => T1 == T2;
 
-  void showToast({
+  void showToastOverlay({
     required CalloutConfigModel calloutConfig,
     required Widget calloutContent,
     int removeAfterMs = 0,
@@ -342,28 +342,38 @@ mixin CalloutMixin {
     );
   }
 
-  void showToastBlueOnYellow({
+  void showToast({
     required CalloutId cId,
     required String msg,
+    required Color bgColor,
+    required Color textColor,
+    AlignmentEnum gravity = AlignmentEnum.topCenter,
     bool showCPI = false,
     int removeAfterMs = 0,
   }) {
     var cc = CalloutConfigModel(
       cId: cId,
-      gravity: AlignmentEnum.topCenter,
-      fillColor: ColorModel.yellow(),
+      gravity: gravity,
+      fillColor: ColorModel.fromColor(bgColor),
       initialCalloutW: fca.scrW * .8,
       initialCalloutH: 40,
       scrollControllerName: null,
       showcpi: showCPI,
     );
 
-    showToast(
+    showToastOverlay(
       calloutConfig: cc,
-      calloutContent: Center(child: fca.coloredText(msg, color: Colors.blue)),
+      calloutContent: Center(child: fca.coloredText(msg, color: textColor)),
       removeAfterMs: removeAfterMs,
     );
   }
+
+  void showToastBlueOnYellow({
+    required CalloutId cId,
+    required String msg,
+    bool showCPI = false,
+    int removeAfterMs = 0,
+  }) => showToast(cId: cId, msg: msg, bgColor: Colors.yellow, textColor: Colors.black, showCPI: showCPI, removeAfterMs: removeAfterMs,);
 
   void showToastPurpleOnLightWhite({
     required CalloutId cId,
@@ -381,7 +391,7 @@ mixin CalloutMixin {
       scrollControllerName: null,
     );
 
-    showToast(
+    showToastOverlay(
       calloutConfig: cc,
       calloutContent: Center(
           child: fca.coloredText(msg,
@@ -524,8 +534,7 @@ mixin CalloutMixin {
 
   /// given a Rect, returns most appropriate alignment between target and callout within the wrapper
   /// NOTICE does not depend on callout size
-  Alignment calcTargetAlignmentWithinWrapper(
-      {Rect? wrapperRect, required Rect targetRect}) {
+  Alignment calcTargetAlignmentWithinWrapper({Rect? wrapperRect, required Rect targetRect}) {
     // Rect? wrapperRect = findGlobalRect(widget.key as GlobalKey);
 
     Rect screenRect = Rect.fromLTWH(0, 0, fca.scrW, fca.scrH);

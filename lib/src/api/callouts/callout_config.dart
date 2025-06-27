@@ -389,9 +389,9 @@ class CalloutConfigModel
     targetAlignment = initialTargetAlignment?.flutterValue;
     calloutAlignment = initialCalloutAlignment?.flutterValue;
 
-    if (initialCalloutPos != null) {
-      calloutAlignment = targetAlignment = null;
-    }
+    // if (initialCalloutPos != null) {
+    //   calloutAlignment = targetAlignment = null;
+    // }
 
     // if (barrier != null) {
     //   barrier!.gradientColors = [];
@@ -1158,10 +1158,17 @@ class CalloutConfigModel
 //   return Alignment(newX, newY);
 // }
 
-  Rectangle tR() =>
-      Rectangle.fromRect(
-          _targetRect //.translate(-scrollOffsetX(), -scrollOffsetY()),
-      );
+  Rectangle tR() {
+    // allow for scaling and cutout padding
+    final cutoutPadding = barrier?.cutoutPadding ?? 0.0;
+    final scaledRect = Rect.fromLTWH(
+      _targetRect.left - (scaleTarget * cutoutPadding),
+      _targetRect.top - (scaleTarget * cutoutPadding),
+      scaleTarget * (_targetRect.width + cutoutPadding * 2),
+      scaleTarget * (_targetRect.height + cutoutPadding * 2),
+    );
+    return Rectangle.fromRect(scaledRect);
+  }
 
 // if target is CalloutTarget, it automatically measures itself after a build,
 // otherwise, just measure the widget having this key
@@ -1206,17 +1213,17 @@ class CalloutConfigModel
   void calcContentTopLeft() {
     double startingCalloutLeft;
     double startingCalloutTop;
+
     if (initialCalloutPos == null) {
       final targetAlignmentIntersectionPos = targetAlignment!
-          .withinRect(Rect.fromLTWH(0, 0, tR().width, tR().height));
+          .withinRect(Rect.fromLTWH(0, 0, _calloutW!, _calloutH!));
       final calloutAlignmentIntersectionPos = calloutAlignment!
           .withinRect(Rect.fromLTWH(0, 0, _calloutW!, _calloutH!));
 
       final startingCalloutTopLeftRelativeToTarget =
           targetAlignmentIntersectionPos - calloutAlignmentIntersectionPos;
 
-      startingCalloutLeft =
-          tR().left + startingCalloutTopLeftRelativeToTarget.dx;
+      startingCalloutLeft = tR().left + startingCalloutTopLeftRelativeToTarget.dx;
       if (!skipOnScreenCheck && startingCalloutLeft < 0) {
         startingCalloutLeft = 0.0;
       }
@@ -1225,10 +1232,18 @@ class CalloutConfigModel
         startingCalloutTop = 0.0;
       }
     } else {
+      final targetAlignmentIntersectionPos = targetAlignment!
+          .withinRect(Rect.fromLTWH(0, 0, _calloutW!, _calloutH!));
+      final calloutAlignmentIntersectionPos = calloutAlignment!
+          .withinRect(Rect.fromLTWH(0, 0, _calloutW!, _calloutH!));
+
+      final startingCalloutTopLeftRelativeToTarget = finalSeparation != null
+          ? targetAlignmentIntersectionPos - calloutAlignmentIntersectionPos : Offset.zero;
+
       startingCalloutTop = initialCalloutPos!.dy +
-          (followScroll ? scrollOffsetY() : 0.0);
+          (followScroll ? scrollOffsetY() : 0.0) + startingCalloutTopLeftRelativeToTarget.dy;
       startingCalloutLeft = initialCalloutPos!.dx +
-          (followScroll ? scrollOffsetX() : 0.0);
+          (followScroll ? scrollOffsetX() : 0.0) + startingCalloutTopLeftRelativeToTarget.dx;
     }
 
     actualTop = startingCalloutTop;
@@ -1681,8 +1696,8 @@ class CalloutConfigModel
           onTap: onBarrierTap,
           child: Container(
             color: Colors.transparent,
-            width: tr.width * scaleTarget,
-            height: tr.height * scaleTarget,
+            width: tr.width,
+            height: tr.height,
           ),
         ),
       ),
@@ -1706,14 +1721,8 @@ class CalloutConfigModel
   Widget _createBarrier() {
     final tr = tR();
     if (barrier!.excludeTargetFromBarrier && tr.size != Size.zero) {
-      final Rect cutoutRect = Rect.fromLTWH(
-        tr.left - barrier!.cutoutPadding,
-        tr.top - barrier!.cutoutPadding,
-        scaleTarget * (tr.width + barrier!.cutoutPadding * 2),
-        scaleTarget * (tr.height + barrier!.cutoutPadding * 2),
-      );
       return ModalBarrierWithCutout(
-        cutoutRect: cutoutRect,
+        cutoutRect: tr,
         round: barrier!.roundExclusion,
         color: barrier!.color.withValues(alpha: barrier!.opacity),
         opacity: barrier!.opacity,
@@ -1854,22 +1863,13 @@ class CalloutConfigModel
   void calcEndpoints() {
     // allow for possible transform and cutout padding
     final tr = tR();
-    final cutoutPadding = barrier?.cutoutPadding ?? 0.0;
-    double scaledAndPaddedW = scaleTarget * (tr.width + cutoutPadding * 2);
-    double scaledAndPaddedH = scaleTarget * (tr.height + cutoutPadding * 2);
-    Rect scaledTr = Rect.fromLTWH(
-      tr.left - (scaledAndPaddedW - tr.width) / 2,
-      tr.top - (scaledAndPaddedH - tr.height) / 2,
-      scaledAndPaddedW,
-      scaledAndPaddedH,
-    );
 
-    Offset tCentre = scaledTr.center;
+    Offset tCentre = tr.center;
     Rectangle scrollAwareCR = Rectangle.fromRect(cR());
     Offset cCentre = scrollAwareCR.center;
     Line line = Line.fromOffsets(cCentre, tCentre);
     tE = Rectangle.getTargetIntersectionPoint2(
-        Coord.fromOffset(cCentre), line, Rectangle.fromRect(scaledTr));
+        Coord.fromOffset(cCentre), line, Rectangle.fromRect(tr));
     // if (tE == null) {
     //   print('FUCK tE null!');
     // }

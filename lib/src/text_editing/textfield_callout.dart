@@ -123,7 +123,7 @@ mixin TextEditorMixin {
       if (!dontAutoFocus) {
         fca.afterMsDelayDo(500, focusNode.requestFocus);
       }
-      fca.showToast(
+      fca.showToastOverlay(
         removeAfterMs: 8 * 1000,
         calloutConfig: CalloutConfigModel(
           cId: "tap-outside-editor-name-toaccept",

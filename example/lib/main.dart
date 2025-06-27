@@ -34,8 +34,7 @@ class CounterDemoPage extends StatefulWidget {
 }
 
 /// it's important to add the mixin, because callouts are animated
-class CounterDemoPageState extends State<CounterDemoPage>
-    with TickerProviderStateMixin {
+class CounterDemoPageState extends State<CounterDemoPage> with TickerProviderStateMixin {
   late GlobalKey fabGK;
   late GlobalKey countGK;
   late CalloutConfigModel fabCC;
@@ -114,8 +113,7 @@ class CounterDemoPageState extends State<CounterDemoPage>
                           'Also, any callout can be draggable and resizeable. Try it...'
                       : 'When scrolling, you can have the callout stay in place\n'
                           'of follow the scroll. Try it...',
-                  style: TextStyle(
-                      color: Colors.green[900], fontStyle: FontStyle.italic)),
+                  style: TextStyle(color: Colors.green[900], fontStyle: FontStyle.italic)),
             ),
             if (!showCutout)
               SizedBox(
@@ -141,16 +139,54 @@ class CounterDemoPageState extends State<CounterDemoPage>
                     showCutout = false;
                     // fca.dismiss('basic');
                     fca.dismissAll();
-                    fabCC = basicCalloutConfig(namedSC)
-                      ..arrowType = ArrowTypeEnum.VERY_THIN;
+                    fabCC = basicCalloutConfig(namedSC)..arrowType = ArrowTypeEnum.VERY_THIN;
                     showMainCallout();
                   },
-                  child:
-                      const Text('tap this button to remove the barrier and\n'
-                          'and proceed to the scroll part of this demo'),
+                  child: const Text('tap this button to remove the barrier and\n'
+                      'and proceed to the scroll part of this demo'),
                 ),
               ),
-            SizedBox(height: 20)
+            SizedBox(height: 20),
+            SizedBox(
+              width: 300,
+              child: Row(
+                children: [
+                  SegmentedButton<CalloutPointerTypeEnum?>(
+                    style: const ButtonStyle(
+                      backgroundColor: WidgetStatePropertyAll(Colors.white),
+                      foregroundColor: WidgetStatePropertyAll(Colors.purple),
+                      side: WidgetStatePropertyAll(BorderSide(color: Colors.purple)),
+                      visualDensity: VisualDensity(horizontal: -4, vertical: -4),
+                    ),
+                    segments: const <ButtonSegment<CalloutPointerTypeEnum?>>[
+                      ButtonSegment<CalloutPointerTypeEnum?>(
+                        value: CalloutPointerTypeEnum.ARROW,
+                        label: Text('arrow'),
+                      ),
+                      ButtonSegment<CalloutPointerTypeEnum?>(
+                        value: CalloutPointerTypeEnum.BUBBLE,
+                        label: Text('bubble'),
+                      ),
+                    ],
+                    selected: <CalloutPointerTypeEnum?>{
+                      fabCC.arrowType == ArrowTypeEnum.POINTY ? CalloutPointerTypeEnum.BUBBLE : CalloutPointerTypeEnum.ARROW
+                    },
+                    onSelectionChanged: (Set<CalloutPointerTypeEnum?> newSelection) {
+                      // By default there is only a single segment that can be
+                      // selected at one time, so its value is always the first
+                      // item in the selected set.
+                      fca.dismissAll();
+                      CalloutPointerTypeEnum value = newSelection.first!;
+                      ArrowTypeEnum newType = value == CalloutPointerTypeEnum.ARROW ? ArrowTypeEnum.THIN : ArrowTypeEnum.POINTY;
+                      //updateArrowType(newType);
+                      showMainCallout();
+                    },
+                  ),
+                  Spacer(),
+                  SizedBox(height: 20),
+                ],
+              ),
+            )
           ],
         ),
       ),
@@ -175,7 +211,8 @@ class CounterDemoPageState extends State<CounterDemoPage>
   void updateArrowType(ArrowTypeEnum newType) {
     setState(() {
       fabCC.arrowType = newType;
-      fabCC.rebuild(() {});
+      //fabCC.rebuild(() {});
+      fca.refreshAll();
     });
   }
 
@@ -185,8 +222,7 @@ class CounterDemoPageState extends State<CounterDemoPage>
     super.didChangeDependencies();
   }
 
-  void _showToast(AlignmentEnum gravity,
-      {int showForMs = 0, VoidCallback? onDismissedF}) {
+  void _showToast(AlignmentEnum gravity, {int showForMs = 0, VoidCallback? onDismissedF}) {
     if (!showCutout) return;
 
     // keep away from the edge of screen by 50
@@ -225,7 +261,7 @@ class CounterDemoPageState extends State<CounterDemoPage>
         break;
     }
 
-    fca.showToast(
+    fca.showToastOverlay(
       removeAfterMs: showForMs,
       calloutConfig: CalloutConfigModel(
         cId: 'main-toast',
@@ -248,9 +284,7 @@ class CounterDemoPageState extends State<CounterDemoPage>
           children: [
             Padding(
               padding: const EdgeInsets.all(18.0),
-              child: Text(
-                  'this is a Toast callout, positioned according to the gravity:',
-                  style: TextStyle(color: Colors.white)),
+              child: Text('this is a Toast callout, positioned according to the gravity:', style: TextStyle(color: Colors.white)),
             ),
             Padding(
               padding: const EdgeInsets.all(28.0),
@@ -268,8 +302,7 @@ class CounterDemoPageState extends State<CounterDemoPage>
                 ),
                 onSelected: (AlignmentEnum? newGravity) {
                   fca.dismiss('main-toast');
-                  _showToast(
-                      selectedGravity = newGravity ?? AlignmentEnum.topCenter);
+                  _showToast(selectedGravity = newGravity ?? AlignmentEnum.topCenter);
                 },
                 dropdownMenuEntries: AlignmentEnum.entries,
               ),
@@ -295,62 +328,13 @@ class CounterView extends StatelessWidget {
   final GlobalKey fabGK;
   final GlobalKey countGK;
 
-  const CounterView(this.parentState, this.namedSC, this.fabGK, this.countGK,
-      {super.key});
+  const CounterView(this.parentState, this.namedSC, this.fabGK, this.countGK, {super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Flutter_Callouts demo'),
-        actions: [
-          SizedBox(
-            width: 300,
-            child: Row(
-              children: [
-                if (!showCutout)
-                  SegmentedButton<CalloutPointerTypeEnum?>(
-                    style: const ButtonStyle(
-                      backgroundColor: WidgetStatePropertyAll(Colors.white),
-                      foregroundColor: WidgetStatePropertyAll(Colors.purple),
-                      side: WidgetStatePropertyAll(
-                          BorderSide(color: Colors.purple)),
-                      visualDensity:
-                          VisualDensity(horizontal: -4, vertical: -4),
-                    ),
-                    segments: const <ButtonSegment<CalloutPointerTypeEnum?>>[
-                      ButtonSegment<CalloutPointerTypeEnum?>(
-                        value: CalloutPointerTypeEnum.ARROW,
-                        label: Text('arrow'),
-                      ),
-                      ButtonSegment<CalloutPointerTypeEnum?>(
-                        value: CalloutPointerTypeEnum.BUBBLE,
-                        label: Text('bubble'),
-                      ),
-                    ],
-                    selected: <CalloutPointerTypeEnum?>{
-                      parentState.fabCC.arrowType == ArrowTypeEnum.POINTY
-                          ? CalloutPointerTypeEnum.BUBBLE
-                          : CalloutPointerTypeEnum.ARROW
-                    },
-                    onSelectionChanged:
-                        (Set<CalloutPointerTypeEnum?> newSelection) {
-                      // By default there is only a single segment that can be
-                      // selected at one time, so its value is always the first
-                      // item in the selected set.
-                      CalloutPointerTypeEnum value = newSelection.first!;
-                      ArrowTypeEnum newType =
-                          value == CalloutPointerTypeEnum.ARROW
-                              ? ArrowTypeEnum.THIN
-                              : ArrowTypeEnum.POINTY;
-                      parentState.updateArrowType(newType);
-                    },
-                  ),
-                Spacer(),
-              ],
-            ),
-          )
-        ],
       ),
       body: Center(
         child: BlocBuilder<CounterBloc, int>(
@@ -381,8 +365,7 @@ class CounterView extends StatelessWidget {
                               Text(
                                 key: countGK,
                                 '$state',
-                                style:
-                                    Theme.of(context).textTheme.headlineMedium,
+                                style: Theme.of(context).textTheme.headlineMedium,
                               ),
                             ],
                           ),
@@ -402,10 +385,8 @@ class CounterView extends StatelessWidget {
                                       context: context,
                                       barrierDismissible: false,
                                       builder: (ctx) => AlertDialog(
-
                                         alignment: Alignment.bottomCenter,
-                                        title: const Text(
-                                            'Try the scrolling first'),
+                                        title: const Text('Try the scrolling first'),
                                         actions: <Widget>[
                                           TextButton(
                                             child: const Text('ok, I will.'),
@@ -419,13 +400,10 @@ class CounterView extends StatelessWidget {
                                   }
                                   if (!didScroll) return;
 
-                                  context
-                                      .read<CounterBloc>()
-                                      .add(CounterIncrementPressed());
+                                  context.read<CounterBloc>().add(CounterIncrementPressed());
                                   // point out the number using a callout
                                   fca.dismissAll(exceptToasts: true);
-                                  int index =
-                                      state % AlignmentEnum.values.length;
+                                  int index = state % AlignmentEnum.values.length;
                                   AlignmentEnum ca = AlignmentEnum.of(index)!;
                                   AlignmentEnum ta = ca.oppositeEnum;
                                   fca.showOverlay(
@@ -457,8 +435,7 @@ class CounterView extends StatelessWidget {
                           color: Colors.blue[50],
                           child: const Padding(
                             padding: EdgeInsets.all(8.0),
-                            child: Text(
-                                'Scroll to see that the yellow callout is Scroll-aware  --  '
+                            child: Text('Scroll to see that the yellow callout is Scroll-aware  --  '
                                 'Resize the window to see the pointer refreshing --  '
                                 'The yellow callout is draggable'),
                           ),
@@ -496,9 +473,7 @@ class CounterBloc extends Bloc<CounterEvent, int> {
 /// the CalloutConfig object is where you configure the callout and its pointer
 /// All params are shown, and many are commented out for this example callout
 CalloutConfigModel basicCalloutConfig(NamedScrollController nsc) {
-  final fillColor = showCutout
-      ? ColorModel.fromColor(Colors.cyan)
-      : ColorModel.fromColor(Colors.yellow[700]!);
+  final fillColor = showCutout ? ColorModel.fromColor(Colors.cyan) : ColorModel.fromColor(Colors.yellow[700]!);
   return CalloutConfigModel(
     cId: 'basic',
     // -- initial pos and animation ---------------------------------
