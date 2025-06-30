@@ -1,4 +1,7 @@
+import 'dart:collection';
+
 import 'package:dart_mappable/dart_mappable.dart';
+import 'package:flutter/material.dart';
 
 part 'arrow_type_enum.mapper.dart';
 
@@ -20,9 +23,23 @@ enum ArrowTypeEnum {
 
   bool get reverse =>
       this == ArrowTypeEnum.VERY_THIN_REVERSED ||
-      this == ArrowTypeEnum.THIN_REVERSED ||
-      this == ArrowTypeEnum.MEDIUM_REVERSED ||
-      this == ArrowTypeEnum.LARGE_REVERSED
-      // || this == ArrowType.HUGE_REVERSED
-  ;
+          this == ArrowTypeEnum.THIN_REVERSED ||
+          this == ArrowTypeEnum.MEDIUM_REVERSED ||
+          this == ArrowTypeEnum.LARGE_REVERSED
+  // || this == ArrowType.HUGE_REVERSED
+      ;
+
+  static final List<ArrowTypeEntry> entries = UnmodifiableListView<ArrowTypeEntry>(
+    values.map<ArrowTypeEntry>(
+          (ArrowTypeEnum pointerType) =>
+          ArrowTypeEntry(
+            value: pointerType,
+            label: pointerType.name,
+            // enabled: color.label != 'Grey',
+            // style: MenuItemButton.styleFrom(foregroundColor: color.color),
+          ),
+    ),
+  );
 }
+
+typedef ArrowTypeEntry = DropdownMenuEntry<ArrowTypeEnum>;

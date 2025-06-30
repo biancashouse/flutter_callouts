@@ -8,18 +8,14 @@ class NamedScrollController extends ScrollController {
   final Axis axis; // need axis for bubble pos translate
   final ValueNotifier<int>? targetNotifier;
 
-  static final Map<ScrollControllerName, NamedScrollController>
-      namedScrollControllers = {};
+  static final Map<ScrollControllerName, NamedScrollController> namedScrollControllers = {};
 
-  NamedScrollController(
-    this.name,
-    this.axis, {
-    super.initialScrollOffset,
-    debugLabel,
-    this.targetNotifier,
-  }) {
-    namedScrollControllers.putIfAbsent(name, ()=>this);
-      // namedScrollControllers[name] = this;
+  // Find the nearest ancestor
+  static NamedScrollController? maybeOf(context) => context.findAncestorWidgetOfExactType<NamedScrollController>();
+
+  NamedScrollController(this.name, this.axis, {super.initialScrollOffset, debugLabel, this.targetNotifier}) {
+    namedScrollControllers.putIfAbsent(name, () => this);
+    // namedScrollControllers[name] = this;
     // onAttach() {
     //   fca.logger.i('********************************** onAttach() - ${positions.length} positions' );
     // }
@@ -48,8 +44,7 @@ class NamedScrollController extends ScrollController {
     }
   }
 
-  static List<ScrollController> allControllers() =>
-      namedScrollControllers.values.toList();
+  static List<ScrollController> allControllers() => namedScrollControllers.values.toList();
 
   // static void restoreOffset(ScrollControllerName? scName) {
   //   if (scName == null) return;
@@ -67,24 +62,18 @@ class NamedScrollController extends ScrollController {
   //   sC?.jumpTo(scOffset);
   // }
 
-  static NamedScrollController? instance(ScrollControllerName scName) =>
-      namedScrollControllers[scName];
+  static NamedScrollController? instance(ScrollControllerName scName) => namedScrollControllers[scName];
 
-  static bool exists(ScrollControllerName scName) =>
-      namedScrollControllers.containsKey(scName);
+  static bool exists(ScrollControllerName scName) => namedScrollControllers.containsKey(scName);
 
   static double scrollOffset(ScrollControllerName? scName) =>
       // scName != null ? (_scrollOffsetMap[scName] ?? 0.0) : 0.0;
-      scName != null && (instance(scName)?.hasClients ?? false)
-          ? (instance(scName)?.offset ?? 0.0)
-          : 0.0;
+      scName != null && (instance(scName)?.hasClients ?? false) ? (instance(scName)?.offset ?? 0.0) : 0.0;
 
   static double hScrollOffset(ScrollControllerName? scName) {
     if (scName == null) return 0.0;
     var namedSC = instance(scName);
-    double result = namedSC != null && namedSC.axis == Axis.horizontal
-        ? scrollOffset(scName)
-        : 0.0;
+    double result = namedSC != null && namedSC.axis == Axis.horizontal ? scrollOffset(scName) : 0.0;
     // if (result != 0.0) fca.logger.i('hScrollOffset!=0');
     return result;
   }
@@ -92,9 +81,7 @@ class NamedScrollController extends ScrollController {
   static double vScrollOffset(ScrollControllerName? scName) {
     if (scName == null) return 0.0;
     var namedSC = instance(scName);
-    double result = namedSC != null && namedSC.axis == Axis.vertical
-        ? scrollOffset(scName)
-        : 0.0;
+    double result = namedSC != null && namedSC.axis == Axis.vertical ? scrollOffset(scName) : 0.0;
     // if (result != 0.0) fca.logger.i('vScrollOffset!=0');
     return result;
   }

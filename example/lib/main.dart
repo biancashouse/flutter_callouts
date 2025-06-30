@@ -1,13 +1,10 @@
-// import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
-// import 'package:hydrated_bloc/hydrated_bloc.dart';
 
-// lazy ;-)
-bool followScroll = false;
-bool showCutout = true;
-bool didScroll = false;
+import 'callout_with_barrier_demo.dart';
+import 'callout_with_pointer_demo.dart';
+import 'callout_following_scroll_demo.dart';
+import 'toast_demo.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,514 +17,112 @@ Future<void> main() async {
 
   await fca.initLocalStorage();
 
-  runApp(const MaterialApp(
-    title: 'flutter_callouts demo',
-    home: CounterDemoPage(),
-  ));
+  runApp(const MaterialApp(title: 'flutter_callouts demo', home: IntroPage()));
 }
 
-class CounterDemoPage extends StatefulWidget {
-  const CounterDemoPage({super.key});
+class IntroPage extends StatefulWidget {
+  const IntroPage({super.key});
 
   @override
-  State<CounterDemoPage> createState() => CounterDemoPageState();
+  State<IntroPage> createState() => IntroPageState();
 }
 
 /// it's important to add the mixin, because callouts are animated
-class CounterDemoPageState extends State<CounterDemoPage> with TickerProviderStateMixin {
-  late GlobalKey fabGK;
-  late GlobalKey countGK;
-  late CalloutConfigModel fabCC;
-
-  final TextEditingController gravityController = TextEditingController();
-  AlignmentEnum? selectedGravity;
-
-  NamedScrollController namedSC = NamedScrollController(
-    'main',
-    Axis.vertical,
-  );
-
-  late List<Alignment> alignments;
-
-  @override
-  void initState() {
-    super.initState();
-
-    namedSC.addListener(() {
-      if (namedSC.hasClients && namedSC.offset > 0) didScroll = true;
-    });
-
-    /// target's key
-    fabGK = GlobalKey();
-    countGK = GlobalKey();
-
-    fabCC = basicCalloutConfig(namedSC)
-      ..arrowType = ArrowTypeEnum.POINTY
-      ..barrier = showCutout
-          ? CalloutBarrierConfig(
-              cutoutPadding: fca.isWeb ? 20 : 10,
-              excludeTargetFromBarrier: true,
-              roundExclusion: true,
-              closeOnTapped: false,
-              color: Colors.grey,
-              opacity: .7,
-            )
-          : null;
-
-    fca.afterNextBuildDo(() {
-      // namedSC.jumpTo(150.0);
-
-      showMainCallout();
-
-      fca.afterMsDelayDo(
-        800,
-        () => _showToast(AlignmentEnum.topCenter),
-      );
-    });
-  }
-
-  @override
-  void dispose() {
-    namedSC.dispose();
-    super.dispose();
-  }
-
-  void showMainCallout() {
-    fca.showOverlay(
-      calloutConfig: fabCC,
-      calloutContent: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              showCutout
-                  ? 'Pointing out this (currently disabled) floating action button.'
-                  : 'Pointing out the Increment Counter floating action button.',
-            ),
-            Padding(
-              padding: const EdgeInsets.all(28.0),
-              child: Text(
-                  showCutout
-                      ? 'This callout makes a cutout in the barrier (around the FAB).\n'
-                          'Also, any callout can be draggable and resizeable. Try it...'
-                      : 'When scrolling, you can have the callout stay in place\n'
-                          'of follow the scroll. Try it...',
-                  style: TextStyle(color: Colors.green[900], fontStyle: FontStyle.italic)),
-            ),
-            if (!showCutout)
-              SizedBox(
-                width: 200,
-                child: Row(
-                  children: [
-                    const Text('followScroll?'),
-                    StatefulBuilder(
-                        builder: (context, setState) => Checkbox(
-                            value: fabCC.followScroll,
-                            onChanged: (_) {
-                              setState(() => toggleFollowScroll());
-                            })),
-                  ],
-                ),
-              )
-            else
-              SizedBox(
-                width: 360,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(elevation: 6),
-                  onPressed: () {
-                    showCutout = false;
-                    // fca.dismiss('basic');
-                    fca.dismissAll();
-                    fabCC = basicCalloutConfig(namedSC)..arrowType = ArrowTypeEnum.VERY_THIN;
-                    showMainCallout();
-                  },
-                  child: const Text('tap this button to remove the barrier and\n'
-                      'and proceed to the scroll part of this demo'),
-                ),
-              ),
-            SizedBox(height: 20),
-            SizedBox(
-              width: 300,
-              child: Row(
-                children: [
-                  SegmentedButton<CalloutPointerTypeEnum?>(
-                    style: const ButtonStyle(
-                      backgroundColor: WidgetStatePropertyAll(Colors.white),
-                      foregroundColor: WidgetStatePropertyAll(Colors.purple),
-                      side: WidgetStatePropertyAll(BorderSide(color: Colors.purple)),
-                      visualDensity: VisualDensity(horizontal: -4, vertical: -4),
-                    ),
-                    segments: const <ButtonSegment<CalloutPointerTypeEnum?>>[
-                      ButtonSegment<CalloutPointerTypeEnum?>(
-                        value: CalloutPointerTypeEnum.ARROW,
-                        label: Text('arrow'),
-                      ),
-                      ButtonSegment<CalloutPointerTypeEnum?>(
-                        value: CalloutPointerTypeEnum.BUBBLE,
-                        label: Text('bubble'),
-                      ),
-                    ],
-                    selected: <CalloutPointerTypeEnum?>{
-                      fabCC.arrowType == ArrowTypeEnum.POINTY ? CalloutPointerTypeEnum.BUBBLE : CalloutPointerTypeEnum.ARROW
-                    },
-                    onSelectionChanged: (Set<CalloutPointerTypeEnum?> newSelection) {
-                      // By default there is only a single segment that can be
-                      // selected at one time, so its value is always the first
-                      // item in the selected set.
-                      fca.dismissAll();
-                      CalloutPointerTypeEnum value = newSelection.first!;
-                      ArrowTypeEnum newType = value == CalloutPointerTypeEnum.ARROW ? ArrowTypeEnum.THIN : ArrowTypeEnum.POINTY;
-                      //updateArrowType(newType);
-                      showMainCallout();
-                    },
-                  ),
-                  Spacer(),
-                  SizedBox(height: 20),
-                ],
-              ),
-            )
-          ],
-        ),
-      ),
-      targetGkF: () => fabGK,
-    );
-  }
-
-  void toggleFollowScroll() {
-    setState(() {
-      fabCC.followScroll = !fabCC.followScroll;
-      fabCC.rebuild(() {});
-    });
-  }
-
-  void toggleShowCutout() {
-    setState(() {
-      showCutout = !showCutout;
-      fabCC.rebuild(() {});
-    });
-  }
-
-  void updateArrowType(ArrowTypeEnum newType) {
-    setState(() {
-      fabCC.arrowType = newType;
-      //fabCC.rebuild(() {});
-      fca.refreshAll();
-    });
-  }
-
+class IntroPageState extends State<IntroPage> {
   @override
   void didChangeDependencies() {
     fca.initWithContext(context);
     super.didChangeDependencies();
   }
 
-  void _showToast(AlignmentEnum gravity, {int showForMs = 0, VoidCallback? onDismissedF}) {
-    if (!showCutout) return;
-
-    // keep away from the edge of screen by 50
-    double? contentTranslateX;
-    double? contentTranslateY;
-    switch (gravity) {
-      case AlignmentEnum.topLeft:
-        contentTranslateX = 50;
-        contentTranslateY = 50;
-        break;
-      case AlignmentEnum.topRight:
-        contentTranslateX = -50;
-        contentTranslateY = 50;
-        break;
-      case AlignmentEnum.topCenter:
-        contentTranslateY = 50;
-        break;
-      case AlignmentEnum.centerLeft:
-        contentTranslateX = 50;
-        break;
-      case AlignmentEnum.centerRight:
-        contentTranslateX = -50;
-        break;
-      case AlignmentEnum.center:
-        break;
-      case AlignmentEnum.bottomLeft:
-        contentTranslateX = 50;
-        contentTranslateY = -50;
-        break;
-      case AlignmentEnum.bottomCenter:
-        contentTranslateY = -50;
-        break;
-      case AlignmentEnum.bottomRight:
-        contentTranslateX = -50;
-        contentTranslateY = -50;
-        break;
-    }
-
-    fca.showToastOverlay(
-      removeAfterMs: showForMs,
-      calloutConfig: CalloutConfigModel(
-        cId: 'main-toast',
-        gravity: gravity,
-        initialCalloutW: 500,
-        initialCalloutH: 200,
-        fillColor: ColorModel.black26(),
-        showCloseButton: true,
-        borderThickness: 5,
-        borderRadius: 16,
-        borderColor: ColorModel.yellow(),
-        elevation: 10,
-        scrollControllerName: namedSC.name,
-        onDismissedF: () => onDismissedF?.call(),
-        contentTranslateX: contentTranslateX,
-        contentTranslateY: contentTranslateY,
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    drawer: Drawer(
+      child: Column(
+        children: [
+          ListTile(
+            title: Text('Toasts demo'),
+            onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const ToastDemoPage())),
+          ),
+        ],
       ),
-      calloutContent: Center(
+    ),
+    body: Center(
+      child: SizedBox(
+        width: fca.scrW * .6,
+        height: fca.scrH * .95,
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
           children: [
-            Padding(
-              padding: const EdgeInsets.all(18.0),
-              child: Text('this is a Toast callout, positioned according to the gravity:', style: TextStyle(color: Colors.white)),
+            Text(
+              'Welcome to the flutter_callouts pkg demo\n',
+              style: TextStyle(fontWeight: FontWeight.bold),
+              textScaler: TextScaler.linear(2.0),
             ),
-            Padding(
-              padding: const EdgeInsets.all(28.0),
-              child: DropdownMenu<AlignmentEnum>(
-                initialSelection: gravity,
-                controller: gravityController,
-                requestFocusOnTap: true,
-                inputDecorationTheme: const InputDecorationTheme(
-                  filled: true,
-                  contentPadding: EdgeInsets.all(20.0),
-                ),
-                label: const Text(
-                  'Gravity',
-                  style: TextStyle(color: Colors.blueGrey),
-                ),
-                onSelected: (AlignmentEnum? newGravity) {
-                  fca.dismiss('main-toast');
-                  _showToast(selectedGravity = newGravity ?? AlignmentEnum.topCenter);
-                },
-                dropdownMenuEntries: AlignmentEnum.entries,
+            Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: 'This Flutter API can be used to create flutter overlays (callouts) that can be shown over your app\n\n',
+                    style: TextStyle(fontStyle: FontStyle.normal, fontSize: 18),
+                  ),
+
+                  TextSpan(
+                    text: "Callouts are great for popping up messages (toasts etc), and for highlighting or pointing stuff out.\n\n",
+                    style: TextStyle(fontStyle: FontStyle.normal, fontSize: 18),
+                  ),
+
+                  TextSpan(
+                    text:
+                        "Flutter apps tend to have much more functionality, so adding callouts can really help your users learn about your app faster.\n\n",
+                    style: TextStyle(fontStyle: FontStyle.normal, fontSize: 18),
+                  ),
+
+                  TextSpan(
+                    text: "The API is quite comprehensive. Here are a series of demos to show off the package's capabilities...",
+                    style: TextStyle(fontStyle: FontStyle.normal, fontSize: 18),
+                  ),
+                ],
               ),
-            )
+            ),
+
+            Container(
+              height: 500,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    FilledButton(
+                      onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ToastDemoPage())),
+                      child: Text('Toasts demo'),
+                    ),
+                    SizedBox(height: 20),
+                    FilledButton(
+                      onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ScrollingDemo())),
+                      child: Text('Simple callout demo'),
+                    ),
+                    SizedBox(height: 20),
+                    FilledButton(
+                      onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const BarrierDemo())),
+                      child: Text('Barrier demo'),
+                    ),
+                    SizedBox(height: 20),
+                    FilledButton(
+                      onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const PointerDemo())),
+                      child: Text('Target Pointer demo'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Spacer(),
+            Text(
+              "\n\nBTW - We also offer another pkg, built on top of this one, that extends this API with an accompanying admin UI. It makes it easy to create, configure, store as json, and publish to callouts your own editorial content (text, images, files, videos, polls etc). All the widgets delivered are flutter's own, or 3rd party widgets from pub.dev.",
+              style: TextStyle(fontSize: 12),
+            ),
           ],
         ),
       ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider<CounterBloc>(
-      create: (_) => CounterBloc(),
-      child: CounterView(this, namedSC, fabGK, countGK),
-    );
-  }
-}
-
-class CounterView extends StatelessWidget {
-  final CounterDemoPageState parentState;
-  final NamedScrollController namedSC;
-  final GlobalKey fabGK;
-  final GlobalKey countGK;
-
-  const CounterView(this.parentState, this.namedSC, this.fabGK, this.countGK, {super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Flutter_Callouts demo'),
-      ),
-      body: Center(
-        child: BlocBuilder<CounterBloc, int>(
-          builder: (context, state) {
-            return NotificationListener<SizeChangedLayoutNotification>(
-              onNotification: (SizeChangedLayoutNotification notification) {
-                fca.afterMsDelayDo(
-                  800,
-                  () {
-                    fca.refreshAll();
-                  },
-                );
-
-                return true;
-              },
-              child: SizeChangedLayoutNotifier(
-                child: Center(
-                  child: SingleChildScrollView(
-                    controller: namedSC,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height - 200,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                key: countGK,
-                                '$state',
-                                style: Theme.of(context).textTheme.headlineMedium,
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          height: 100,
-                          child: Align(
-                            alignment: Alignment.centerRight,
-                            child: Padding(
-                              padding: const EdgeInsets.all(18.0),
-                              child: FloatingActionButton(
-                                key: fabGK,
-                                onPressed: () async {
-                                  if (!didScroll) {
-                                    await showDialog<void>(
-                                      context: context,
-                                      barrierDismissible: false,
-                                      builder: (ctx) => AlertDialog(
-                                        alignment: Alignment.bottomCenter,
-                                        title: const Text('Try the scrolling first'),
-                                        actions: <Widget>[
-                                          TextButton(
-                                            child: const Text('ok, I will.'),
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  }
-                                  if (!didScroll) return;
-
-                                  context.read<CounterBloc>().add(CounterIncrementPressed());
-                                  // point out the number using a callout
-                                  fca.dismissAll(exceptToasts: true);
-                                  int index = state % AlignmentEnum.values.length;
-                                  AlignmentEnum ca = AlignmentEnum.of(index)!;
-                                  AlignmentEnum ta = ca.oppositeEnum;
-                                  fca.showOverlay(
-                                    calloutConfig: basicCalloutConfig(namedSC)
-                                      ..calloutAlignment = ca.flutterValue
-                                      ..targetAlignment = ta.flutterValue
-                                      ..calloutW = 200
-                                      ..calloutH = 80
-                                      ..fillColor = ColorModel.orangeAccent(),
-                                    calloutContent: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: const Text(
-                                        'You have pushed the +\nbutton this many times:',
-                                      ),
-                                    ),
-                                    targetGkF: () => countGK,
-                                    removeAfterMs: 3000,
-                                  );
-                                },
-                                tooltip: 'Increment',
-                                child: const Icon(Icons.add),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          height: 1000,
-                          width: double.infinity,
-                          color: Colors.blue[50],
-                          child: const Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text('Scroll to see that the yellow callout is Scroll-aware  --  '
-                                'Resize the window to see the pointer refreshing --  '
-                                'The yellow callout is draggable'),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
-}
-
-sealed class CounterEvent {}
-
-final class CounterIncrementPressed extends CounterEvent {}
-
-final class CounterDecrementPressed extends CounterEvent {}
-
-class CounterBloc extends Bloc<CounterEvent, int> {
-  CounterBloc() : super(0) {
-    on<CounterIncrementPressed>((event, emit) => emit(state + 1));
-    on<CounterDecrementPressed>((event, emit) => emit(state - 1));
-  }
-
-  int fromJson(Map<String, dynamic> json) => json['value'] as int;
-
-  Map<String, int> toJson(int state) => {'value': state};
-}
-
-/// the CalloutConfig object is where you configure the callout and its pointer
-/// All params are shown, and many are commented out for this example callout
-CalloutConfigModel basicCalloutConfig(NamedScrollController nsc) {
-  final fillColor = showCutout ? ColorModel.fromColor(Colors.cyan) : ColorModel.fromColor(Colors.yellow[700]!);
-  return CalloutConfigModel(
-    cId: 'basic',
-    // -- initial pos and animation ---------------------------------
-    initialTargetAlignment: AlignmentEnum.topLeft,
-    initialCalloutAlignment: AlignmentEnum.bottomRight,
-    // initialCalloutPos:
-    finalSeparation: 100,
-    // fromDelta: 0.0,
-    // toDelta : 0.0,
-    // initialAnimatedPositionDurationMs:
-    // -- optional barrier (when opacity > 0) ----------------------
-    // barrier: CalloutBarrier(
-    //   opacity: .5,
-    //   onTappedF: () {
-    //     Callout.dismiss("basic");
-    //   },
-    // ),
-    // -- callout appearance ----------------------------------------
-    // suppliedCalloutW: 280, // if not supplied, callout content widget gets measured
-    // suppliedCalloutH: 200, // if not supplied, callout content widget gets measured
-    // borderRadius: 12,
-    borderThickness: 3,
-    fillColor: fillColor,
-    // elevation: 10,
-    // frameTarget: true,
-    // -- optional close button and got it button -------------------
-    // showGotitButton: true,
-    // showCloseButton: true,
-    // closeButtonColor:
-    // closeButtonPos:
-    // gotitAxis:
-    // -- pointer -------------------------------------------------
-    arrowColor: ColorModel.green(),
-    arrowType: ArrowTypeEnum.THIN,
-    animate: true,
-    // lineLabel: Text('line label'),
-    // fromDelta: -20,
-    // toDelta: -20,
-    // lengthDeltaPc: ,
-    // contentTranslateX: ,
-    // contentTranslateY:
-    // targetTranslateX:
-    // targetTranslateY:
-    scaleTarget: 1.0,
-    // -- resizing -------------------------------------------------
-    resizeableH: true,
-    resizeableV: true,
-    // -- dragging -------------------------------------------------
-    // draggable: false,
-    // draggableColor: Colors.green,
-    // dragHandleHeight: ,
-    scrollControllerName: nsc.name,
-    followScroll: false,
+    ),
   );
 }
-
-enum CalloutPointerTypeEnum { ARROW, BUBBLE }

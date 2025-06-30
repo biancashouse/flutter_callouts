@@ -5,6 +5,7 @@ class DottedDecoration extends Decoration {
   final LinePosition linePosition;
   final Shape shape;
   final Color borderColor;
+  final Color borderBgColor;
   final Gradient? borderGradient;
   final Color fillColor;
   final Gradient? fillGradient;
@@ -16,6 +17,7 @@ class DottedDecoration extends Decoration {
     this.shape = Shape.line,
     this.linePosition = LinePosition.bottom,
     this.borderColor = Colors.grey,
+    this.borderBgColor = Colors.white,
     this.borderGradient,
     this.fillColor = Colors.white,
     this.fillGradient,
@@ -26,7 +28,7 @@ class DottedDecoration extends Decoration {
 
   @override
   BoxPainter createBoxPainter([VoidCallback? onChanged]) {
-    return _DottedDecoratorPainter(shape, linePosition, borderColor, fillColor, borderRadius, dash, strokeWidth);
+    return _DottedDecoratorPainter(shape, linePosition, borderColor, borderBgColor, fillColor, borderRadius, dash, strokeWidth);
   }
 }
 
@@ -34,6 +36,7 @@ class _DottedDecoratorPainter extends BoxPainter {
   LinePosition linePosition;
   Shape shape;
   Color borderColor;
+  Color borderBgColor;
   Gradient? borderGradient;
   Color? fillColor;
   Gradient? fillGradient;
@@ -41,7 +44,7 @@ class _DottedDecoratorPainter extends BoxPainter {
   List<int> dash;
   double strokeWidth;
 
-  _DottedDecoratorPainter(this.shape, this.linePosition, this.borderColor, this.fillColor, this.borderRadius, this.dash, this.strokeWidth) {
+  _DottedDecoratorPainter(this.shape, this.linePosition, this.borderColor, this.borderBgColor, this.fillColor, this.borderRadius, this.dash, this.strokeWidth) {
     borderRadius = borderRadius ?? BorderRadius.circular(0);
   }
 
@@ -103,6 +106,15 @@ class _DottedDecoratorPainter extends BoxPainter {
           ..style = PaintingStyle.fill,
       );
     }
+
+    canvas.drawPath(
+      drawPath,
+      Paint()
+        ..color = borderBgColor!
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = strokeWidth+2,
+    );
+
     canvas.drawPath(
       drawPath,
       Paint()

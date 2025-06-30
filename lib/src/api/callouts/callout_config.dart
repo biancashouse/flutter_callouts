@@ -110,7 +110,7 @@ class CalloutConfigModel
   final double? contentTranslateY;
   final double? targetTranslateX;
   final double? targetTranslateY;
-  final bool animate;
+  bool animate;
   final Widget? lineLabel;
   final bool frameTarget;
   final double scaleTarget;
@@ -409,7 +409,7 @@ class CalloutConfigModel
     isDraggable = draggable;
 
     // calloutColor = fillColor ?? Colors.white;
-    draggableColor ??= Colors.blue.withOpacity(.1); //JIC ??
+    draggableColor ??= Colors.blue.withValues(alpha: .1); //JIC ??
 
     _separation = finalSeparation ?? 0;
 
@@ -1241,9 +1241,9 @@ class CalloutConfigModel
           ? targetAlignmentIntersectionPos - calloutAlignmentIntersectionPos : Offset.zero;
 
       startingCalloutTop = initialCalloutPos!.dy +
-          (followScroll ? scrollOffsetY() : 0.0) + startingCalloutTopLeftRelativeToTarget.dy;
+          (followScroll ? -scrollOffsetY() : 0.0) + startingCalloutTopLeftRelativeToTarget.dy;
       startingCalloutLeft = initialCalloutPos!.dx +
-          (followScroll ? scrollOffsetX() : 0.0) + startingCalloutTopLeftRelativeToTarget.dx;
+          (followScroll ? -scrollOffsetX() : 0.0) + startingCalloutTopLeftRelativeToTarget.dx;
     }
 
     actualTop = startingCalloutTop;
@@ -1910,11 +1910,11 @@ class CalloutBarrierConfig {
   final VoidCallback? onTappedF;
   final double opacity;
   final Color color;
-  final bool excludeTargetFromBarrier;
+  bool excludeTargetFromBarrier;
   final double cutoutPadding;
 
   // create a circular hole in the barrier? false means rectangular
-  final bool roundExclusion;
+  bool roundExclusion;
   final bool dismissible;
 
   CalloutBarrierConfig({
