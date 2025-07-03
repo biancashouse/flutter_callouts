@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 ### Fixed
 - dart fixes
+- remove vector\_math exlicit usage
 
 ## 5.1.6 - 2025-06-15
 ### Fixed
