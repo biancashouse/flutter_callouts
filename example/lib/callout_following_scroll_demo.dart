@@ -64,7 +64,7 @@ class _ScrollingDemoState extends State<ScrollingDemo> {
     // -- callout appearance ----------------------------------------
     initialCalloutW: 200,
     // if not supplied, callout content widget gets measured
-    initialCalloutH: 110,
+    initialCalloutH: 120,
     // if not supplied, callout content widget gets measured
     // borderRadius: 12,
     borderThickness: 3,

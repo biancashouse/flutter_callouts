@@ -59,11 +59,11 @@ mixin WidgetHelperMixin {
 //   if (shadow) {
 //     return Container(
 //         decoration: BoxDecoration(
-//           border: Border.all(width: 1.0, color: Colors.black87.withOpacity(.25)),
+//           border: Border.all(width: 1.0, color: Colors.black87.withValues(alpha:.25)),
 //           boxShadow: [
 //             BoxShadow(
 //               blurRadius: 4.0,
-//               color: Colors.black.withOpacity(.5),
+//               color: Colors.black.withValues(alpha:.5),
 //               offset: Offset(2.0, 2.0),
 //             ),
 //           ],
@@ -167,7 +167,7 @@ mixin WidgetHelperMixin {
 //           child: Opacity(
 //             opacity: .5,
 //             child: Container(
-//               color: theOverflowColor.withOpacity(.6),
+//               color: theOverflowColor.withValues(alpha:.6),
 //               width: 90.0,
 //               height: 200.0,
 //             ),

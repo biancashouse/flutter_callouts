@@ -108,7 +108,7 @@ class FeaturedWidget extends StatefulWidget {
             theDescr,
             style: TextStyle(
               fontSize: textSize * 16.0,
-              color: theColor.withOpacity(0.95),
+              color: theColor.withValues(alpha:0.95),
             ),
           ),
           if (includeGotit)
@@ -388,7 +388,7 @@ class FeaturedWidgetState extends State<FeaturedWidget> with TickerProviderState
             child: Container(
               width: double.infinity,
               height: double.infinity,
-              color: Colors.black.withOpacity(.5),
+              color: Colors.black.withValues(alpha:.5),
             ),
           ),
         ),
@@ -405,7 +405,7 @@ class FeaturedWidgetState extends State<FeaturedWidget> with TickerProviderState
               height: OVERLAY_RADIUS * 2,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: widget.overlayBgColor.withOpacity(widget.overlayOpacity),
+                color: widget.overlayBgColor.withValues(alpha:widget.overlayOpacity),
               ),
             ),
           ),
@@ -477,7 +477,7 @@ class FeaturedWidgetState extends State<FeaturedWidget> with TickerProviderState
             height: OVERLAY_RADIUS * 2,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: widget.overlayBgColor.withOpacity(widget.overlayOpacity),
+              color: widget.overlayBgColor.withValues(alpha:widget.overlayOpacity),
             ),
           ),
         ),
@@ -732,7 +732,7 @@ class _CircularPulse extends StatelessWidget {
         height: radius() * 2,
         decoration: const BoxDecoration(
           shape: BoxShape.circle,
-          color: Colors.transparent, //Colors.white.withOpacity(opacity()),
+          color: Colors.transparent, //Colors.white.withValues(alpha:opacity()),
         ),
       ),
     );
@@ -798,7 +798,7 @@ class _RectangularPulse extends StatelessWidget {
             color: Colors.white,
             shape: BoxShape.rectangle,
             border: Border.all(color: Colors.white, width: 3.0, style: BorderStyle.solid),
-            //color: Colors.orange, //Colors.white.withOpacity(opacity()),
+            //color: Colors.orange, //Colors.white.withValues(alpha:opacity()),
           ),
           child: builder!(context),
         ),

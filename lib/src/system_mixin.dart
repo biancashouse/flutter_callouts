@@ -25,7 +25,7 @@ mixin SystemMixin {
   );
   final Logger loggerNs = Logger(
     filter: MyFilter(),
-    printer: PrettyPrinter(methodCount: 0),
+    printer: PrettyPrinter(methodCount: 6),
   );
 
   bool get isWeb => kIsWeb;

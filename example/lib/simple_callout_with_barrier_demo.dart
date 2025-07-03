@@ -54,7 +54,7 @@ class _CounterViewWithCalloutState extends State<CounterViewWithCallout> {
     super.dispose();
   }
 
-  _createCounterCalloutConfig() {
+  void _createCounterCalloutConfig() {
     _counterCC = CalloutConfigModel(
       cId: 'count',
       // -- initial pos and animation ---------------------------------
@@ -121,7 +121,7 @@ class _CounterViewWithCalloutState extends State<CounterViewWithCallout> {
     );
   }
 
-  _createFabCalloutConfig() {
+  void _createFabCalloutConfig() {
     _fabCC = CalloutConfigModel(
       cId: 'count',
       // -- initial pos and animation ---------------------------------

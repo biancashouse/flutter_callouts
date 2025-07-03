@@ -1,5 +1,5 @@
 name: flutter_callouts
-description: Point stuff out for your users => Target, Transform, Configure Callouts, Record to JSON in Dev, and Play in Producton
+description: Point stuff out for your users => Target, Transform, Configure Callouts, Record to JSON in Dev, and Play in Production
 version: 5.1.6
 maintainer: Ian White
 homepage: https://github.com/biancashouse/flutter_callouts
@@ -8,7 +8,6 @@ repository: https://github.com/biancashouse/flutter-callouts
 
 environment:
   sdk: ^3.8.1
-  flutter: ">=1.17.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -20,7 +19,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  logger: ^2.5.0
+  logger: ^2.6.0
   pointer_interceptor: ^0.10.1+2
   gradient_borders: ^1.0.1
   package_info_plus: ^8.0.2
@@ -28,12 +27,11 @@ dependencies:
   hydrated_bloc: ^10.0.0
   path_provider: ^2.1.5
   image_network: ^2.5.6
-  vector_math: ^2.1.4
   intl: ^0.20.2
   timeago: ^3.7.0
   gap: ^3.0.1
   #  shared_preferences: ^2.3.4
-  device_info_plus: ^11.2.0
+  device_info_plus: ^11.5.0
   json_annotation: ^4.9.0
   dart_mappable: ^4.5.0
 
@@ -44,16 +42,16 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-#  test: ^1.26.0
 #  mockito: ^5.4.4
-  build_runner: ^2.4.15
+  build_runner: ^2.5.4
   json_serializable: ^6.9.5
   #  vector_math: ^2.1.2
   #  text_editor: ^0.7.0
   #  bloc_test: ^9.1.1
   flutter_lints: any
   dart_mappable_builder: ^4.5.0
-#  analyzer: ^6.4.1
+  analyzer: ^7.5.4
+
 
 #false_secrets:
 #  - /example/lib/firebase_options.dart

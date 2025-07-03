@@ -75,9 +75,7 @@ class Rectangle extends Rect {
       case Side.TOP:
         return Coord.sameValue2(thePoint.y, t) &&
             roughlyWithin(thePoint.x, l, r);
-      default:
-        return false;
-    }
+      }
   }
 
   bool outside(Coord thePos) {

@@ -69,7 +69,7 @@ class PointingLinePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     // Rect r = Rect.fromLTWH(0, 0, size.width, size.height);
-    // canvas.drawRect(r, bgPaint(Colors.purple.withOpacity(.3)));
+    // canvas.drawRect(r, bgPaint(Colors.purple.withValues(alpha:.3)));
 
     // line must be shortened by radius before drawing starts
     Coord toBefore = Coord.fromOffset(to);
