@@ -87,7 +87,7 @@ class _CommentsHeader extends StatelessWidget {
         children: [
           const Text('Comments'),
           const SizedBox(height: 8),
-          Divider(color: Colors.black.withOpacity(0.5), height: 2, thickness: 2),
+          Divider(color: Colors.black.withValues(alpha:0.5), height: 2, thickness: 2),
         ],
       ),
     );

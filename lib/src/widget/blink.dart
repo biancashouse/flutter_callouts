@@ -80,7 +80,7 @@ class _BlinkState extends State<Blink> with TickerProviderStateMixin {
       animation: controller,
       builder: (BuildContext context, Widget? child) =>
           Container(
-            color: color.withOpacity(opacity),
+            color: color.withValues(alpha:opacity),
             child: widget.child,
           ),
     )

@@ -3,7 +3,6 @@
 // ignore_for_file: constant_identifier_names
 
 // import 'flutter_callouts.dart';
-
 import 'package:flutter_callouts/src/kbd_mixin.dart';
 import 'package:flutter_callouts/src/ls_mixin.dart';
 import 'package:flutter_callouts/src/measuring_mixin.dart';
@@ -56,6 +55,11 @@ export 'src/widget/blink.dart';
 export 'src/widget/constant_scroll_behavior.dart';
 export 'src/widget/error.dart';
 export 'src/widget/widget_helper_mixin.dart';
+
+// re-export
+export 'package:logger/src/logger.dart';
+export 'package:logger/src/log_filter.dart';
+export 'package:logger/src/printers/pretty_printer.dart';
 
 // client apps will only access this functionality thru this global instance
 FlutterCalloutMixins fca = FlutterCalloutMixins.instance;

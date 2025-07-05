@@ -87,7 +87,7 @@ class IntroPageState extends State<IntroPage> {
               ),
             ),
 
-            Container(
+            SizedBox(
               height: 500,
               child: SingleChildScrollView(
                 child: Column(

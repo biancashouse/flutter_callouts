@@ -3,7 +3,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
-import 'package:vector_math/vector_math_64.dart' show Vector3;
 
 mixin MeasuringMixin {
 
@@ -22,8 +21,7 @@ mixin MeasuringMixin {
       return bounds;
     } else {
       Rect bounds = renderObject.paintBounds;
-      final Vector3 translation =
-      renderObject.getTransformTo(null).getTranslation();
+      final translation = renderObject.getTransformTo(null).getTranslation();
       bounds = bounds.translate(translation.x, translation.y);
       return bounds;
     }

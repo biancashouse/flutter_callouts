@@ -110,7 +110,7 @@ class _DottedDecoratorPainter extends BoxPainter {
     canvas.drawPath(
       drawPath,
       Paint()
-        ..color = borderBgColor!
+        ..color = borderBgColor
         ..style = PaintingStyle.stroke
         ..strokeWidth = strokeWidth+2,
     );

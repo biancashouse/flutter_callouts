@@ -16,8 +16,8 @@ class _PointerDemoState extends State<PointerDemo> {
 
   // user can change callout properties even when a callout is already shown
   bool _showBarrier = false;
-  bool _animateArrow = false;
-  ArrowTypeEnum _pointerType = ArrowTypeEnum.THIN;
+  final bool _animateArrow = false;
+  final ArrowTypeEnum _pointerType = ArrowTypeEnum.THIN;
 
   @override
   void initState() {

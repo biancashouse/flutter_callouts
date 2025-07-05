@@ -370,7 +370,7 @@ class CalloutConfigModel
       decorationShape = DecorationShapeEnum.rounded_rectangle;
     }
     // fillColor = ColorModel.fromColor(
-    //     Colors.white); //FCallouts().FUCHSIA_X.withOpacity(.9);
+    //     Colors.white); //FCallouts().FUCHSIA_X.withValues(alpha:.9);
     arrowColor ??= fillColor;
     // assert((dragHandle != null) && (dragHandleHeight != null), 'if using a drag handle, it must have height > 0.0 !');
     // assert((widthF != null && heightF != null) || context != null, 'if either widthF or heightF null, must provide a context for measuring !');
@@ -1784,7 +1784,7 @@ class CalloutConfigModel
 // // },
 //               child: !kIsWeb && tR() != null
 //                   ? ColorFiltered(
-//                       colorFilter: ColorFilter.mode(Colors.black.withOpacity(barrier!.opacity), BlendMode.srcOut),
+//                       colorFilter: ColorFilter.mode(Colors.black.withValues(alpha:barrier!.opacity), BlendMode.srcOut),
 //                       child: Container(
 //                         decoration: const BoxDecoration(
 //                           color: Colors.transparent,
@@ -1827,12 +1827,12 @@ class CalloutConfigModel
 //                           ),
 //                         )
 //                       : Container(
-//                           color: Colors.black.withOpacity(barrier!.opacity),
+//                           color: Colors.black.withValues(alpha:barrier!.opacity),
 //                         )
 // //     : ClipPath(
 // //   clipper: DarkScreenWithHolePainter1(tR, barrierOpacity, padding: barrierHolePadding, round: barrierHasCircularHole),
 // //   child: Container(
-// //     color: Colors.black.withOpacity(barrierOpacity),
+// //     color: Colors.black.withValues(alpha:barrierOpacity),
 // //   ),
 // // )
 // // CustomPaint(
@@ -1843,7 +1843,7 @@ class CalloutConfigModel
 // //   duration: kThemeAnimationDuration,
 // //   tween: ColorTween(
 // //     begin: Colors.transparent,
-// //     end: barrierOpacity != null ? Colors.black.withOpacity(barrierOpacity) : Colors.transparent,
+// //     end: barrierOpacity != null ? Colors.black.withValues(alpha:barrierOpacity) : Colors.transparent,
 // //   ),
 // //   builder: (context, color, child) {
 // //     return ColoredBox(color: color);
@@ -1908,8 +1908,8 @@ class CalloutBarrierConfig {
   final bool closeOnTapped;
   final bool hideOnTapped;
   final VoidCallback? onTappedF;
-  final double opacity;
-  final Color color;
+  double opacity;
+  Color color;
   bool excludeTargetFromBarrier;
   final double cutoutPadding;
 
