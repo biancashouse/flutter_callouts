@@ -119,7 +119,7 @@ class ToastDemoPageState extends State<ToastDemoPage> with TickerProviderStateMi
   @override
   Widget build(BuildContext context) => PopScope(
     canPop: true,
-    onPopInvokedWithResult: (_, _) {
+    onPopInvokedWithResult: (_, __) {
       fca.dismissAll();
     },
     child: Scaffold(

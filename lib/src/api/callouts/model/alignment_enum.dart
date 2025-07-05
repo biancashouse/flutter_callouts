@@ -48,6 +48,19 @@ enum AlignmentEnum   {
   String toSource() => 'Alignment.$name';
 
   static AlignmentEnum? of(int? index) => index != null ? AlignmentEnum.values.elementAtOrNull(index) : null;
+
+  static AlignmentEnum fromAlignment(Alignment al) => switch (al) {
+    Alignment.topLeft => AlignmentEnum.topLeft,
+    Alignment.topCenter => AlignmentEnum.topCenter,
+    Alignment.topRight => AlignmentEnum.topRight,
+    Alignment.centerLeft => AlignmentEnum.centerLeft,
+    Alignment.center => AlignmentEnum.center,
+    Alignment.centerRight => AlignmentEnum.centerRight,
+    Alignment.bottomLeft => AlignmentEnum.bottomLeft,
+    Alignment.bottomCenter => AlignmentEnum.bottomCenter,
+    Alignment.bottomRight => AlignmentEnum.bottomRight,
+    Alignment() => AlignmentEnum.center,
+  };
 }
 
 typedef GravityEntry = DropdownMenuEntry<AlignmentEnum>;
