@@ -11,11 +11,12 @@ import 'src/canvas/canvas_mixin.dart';
 import 'src/feature_discovery/discovery_mixin.dart';
 import 'src/gotits_mixin.dart';
 import 'src/mq_mixin.dart';
-import 'src/rootcontext_mixin.dart';
+import 'src/root_context_mixin.dart';
 import 'src/system_mixin.dart';
 import 'src/widget/widget_helper_mixin.dart';
 
 export 'src/api/callouts/callout_config.dart';
+
 // export mixin
 export 'src/api/callouts/callout_mixin.dart';
 export 'src/api/callouts/callout_using_overlayportal.dart';
@@ -46,10 +47,8 @@ export 'src/ls_mixin.dart';
 export 'src/measuring/measure_sizebox.dart';
 export 'src/measuring_mixin.dart';
 export 'src/mq_mixin.dart';
-export 'src/rootcontext_mixin.dart';
+export 'src/root_context_mixin.dart';
 export 'src/system_mixin.dart';
-export 'src/text_editing/string_editor.dart';
-export 'src/text_editing/textfield_callout.dart';
 export 'src/typedefs.dart';
 export 'src/widget/blink.dart';
 export 'src/widget/constant_scroll_behavior.dart';
@@ -83,20 +82,19 @@ class FlutterCalloutMixins
     // logger.i('FlutterCallouts._internal()');
   }
 
-
   static FlutterCalloutMixins get instance {
     return FlutterCalloutMixins._internal();
   }
 
-// Storage get localStorage {
-//   return HydratedBloc.storage;
-// }
-//
-// Future<void> init() async {
-//   HydratedBloc.storage = await HydratedStorage.build(
-//     storageDirectory: kIsWeb
-//         ? HydratedStorageDirectory.web
-//         : HydratedStorageDirectory((await getTemporaryDirectory()).path),
-//   );
-// }
+  // Storage get localStorage {
+  //   return HydratedBloc.storage;
+  // }
+  //
+  // Future<void> init() async {
+  //   HydratedBloc.storage = await HydratedStorage.build(
+  //     storageDirectory: kIsWeb
+  //         ? HydratedStorageDirectory.web
+  //         : HydratedStorageDirectory((await getTemporaryDirectory()).path),
+  //   );
+  // }
 }

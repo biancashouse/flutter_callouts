@@ -322,25 +322,29 @@ mixin CalloutMixin {
   void showToast({
     required CalloutId cId,
     required String msg,
-    required Color bgColor,
-    required Color textColor,
+    Color? bgColor,
+    Color? textColor,
     AlignmentEnum gravity = AlignmentEnum.topCenter,
     bool showCPI = false,
+    bool onlyOnce = false,
     int removeAfterMs = 0,
+    double? width,
+    double? height,
   }) {
     var cc = CalloutConfigModel(
       cId: cId,
       gravity: gravity,
-      fillColor: ColorModel.fromColor(bgColor),
-      initialCalloutW: fca.scrW * .8,
-      initialCalloutH: 40,
+      fillColor: ColorModel.fromColor(bgColor??Colors.white),
+      initialCalloutW: width ?? fca.scrW * .8,
+      initialCalloutH: height ?? 40,
       scrollControllerName: null,
       showcpi: showCPI,
+      onlyOnce: onlyOnce,
     );
 
     showToastOverlay(
       calloutConfig: cc,
-      calloutContent: Center(child: fca.coloredText(msg, color: textColor)),
+      calloutContent: Center(child: fca.coloredText(msg, color: textColor??Colors.black)),
       removeAfterMs: removeAfterMs,
     );
   }
@@ -444,50 +448,50 @@ mixin CalloutMixin {
     }
   }
 
-  //   void showCircularProgressIndicator(bool show,
-  //       {ScrollControllerName? scName, required String reason}) {
-  // // if (width != null && height == null) height = 60;
-  //     BuildContext? cachedContext = fca.rootContext;
-  //     if (show && (cachedContext.mounted)) {
-  //       showOverlay(
-  //         calloutConfig: CalloutConfig(
-  //           cId: reason,
-  //           gravity: Alignment.topCenter,
-  //           // scale: 1.0,
-  //           initialCalloutW: 600,
-  //           initialCalloutH: 50,
-  //           fillColor: Colors.white70,
-  //           elevation: 5,
-  //           borderRadius: 10,
-  //           alwaysReCalcSize: true,
-  //           arrowType: ArrowType.NONE,
-  //           draggable: false,
-  //           scrollControllerName: scName,
-  //         ),
-  //         calloutContent: Center(
-  //           child: Container(
-  // //width: w,
-  // // decoration: BoxDecoration(
-  // //   color: background,
-  // //   borderRadius: BorderRadius.circular(backgroundRadius),
-  // // ),
-  //             margin: const EdgeInsets.symmetric(horizontal: 20),
-  //             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-  //             child: Center(
-  //               child: Row(
-  //                 children: [
-  //                   const CircularProgressIndicator(),
-  //                   Text(reason),
-  //                 ],
-  //               ),
-  //             ),
-  //           ),
-  //         ),
-  //       );
-  //     } else {
-  //       dismiss(reason);
-  //     }
-  //   }
+    void showCircularProgressIndicator(bool show,
+        {ScrollControllerName? scName, required String reason}) {
+  // if (width != null && height == null) height = 60;
+      BuildContext? cachedContext = fca.rootContext;
+      if (show && (cachedContext.mounted)) {
+        showOverlay(
+          calloutConfig: CalloutConfigModel(
+            cId: reason,
+            gravity: AlignmentEnum.topCenter,
+            // scale: 1.0,
+            initialCalloutW: 600,
+            initialCalloutH: 50,
+            fillColor: ColorModel.fromColor(Colors.white70),
+            elevation: 5,
+            borderRadius: 10,
+            alwaysReCalcSize: true,
+            arrowType: ArrowTypeEnum.NONE,
+            draggable: false,
+            scrollControllerName: scName,
+          ),
+          calloutContent: Center(
+            child: Container(
+  //width: w,
+  // decoration: BoxDecoration(
+  //   color: background,
+  //   borderRadius: BorderRadius.circular(backgroundRadius),
+  // ),
+              margin: const EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Center(
+                child: Row(
+                  children: [
+                    const CircularProgressIndicator(),
+                    Text(reason),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      } else {
+        dismiss(reason);
+      }
+    }
 
   /// given a Rect, returns most appropriate alignment between target and callout within the wrapper
   /// NOTICE does not depend on callout size

@@ -23,7 +23,7 @@ class FlatIconButtonWithHelpCalloutButton extends StatefulWidget {
   final MaterialTapTargetSize? materialTapTargetSize;
   final Widget? optionalIcon;
   final Widget? label;
-  final CalloutId feature;
+  final CalloutId cId;
   final Widget? calloutContentsWidget;
   final double contentsWidth;
   final double contentsHeight;
@@ -57,7 +57,7 @@ class FlatIconButtonWithHelpCalloutButton extends StatefulWidget {
       this.materialTapTargetSize,
       this.optionalIcon,
       this.label,
-      this.feature = 'feature-not-supplied',
+      this.cId = 'feature-not-supplied',
       this.calloutContentsWidget,
       this.contentsWidth = 300,
       this.contentsHeight = 300,
@@ -77,11 +77,11 @@ class _FlatIconButtonWithHelpCalloutButtonState
     extends State<FlatIconButtonWithHelpCalloutButton> {
   @override
   Widget build(BuildContext context) {
-    bool gotit = fca.alreadyGotit(widget.feature);
+    bool gotit = fca.alreadyGotit(widget.cId);
 
     // GlobalKey gk = GlobalKey();
     var playBtn = PlayCalloutButton(
-      feature: widget.feature,
+      feature: widget.cId,
       calloutContents: widget.calloutContentsWidget,
       contentsWidth: widget.contentsWidth,
       contentsHeight: widget.contentsHeight,

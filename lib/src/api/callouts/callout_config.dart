@@ -1651,7 +1651,7 @@ class CalloutConfigModel
           arrowType.reverse ? to : from,
           arrowType.reverse ? from : to,
           arrowType,
-          arrowColor!.flutterValue,
+          arrowColor?.flutterValue ?? Colors.white,
           lengthDeltaPc: lengthDeltaPc,
           animate: animate,
         ),
