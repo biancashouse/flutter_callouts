@@ -672,7 +672,7 @@ mixin CalloutMixin {
   }
 
   void dismissAll({List<CalloutId> exceptFeatures = const [], bool onlyToasts = false, bool exceptToasts = false}) {
-    fca.logger.d("dismaissAll");
+    fca.logger.d("dismissAll");
     List<CalloutId> overlays2bRemoved = [];
     for (OE oe in OE.list) {
       // if (oe.entry != null) {
