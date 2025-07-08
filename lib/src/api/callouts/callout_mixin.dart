@@ -269,7 +269,7 @@ mixin CalloutMixin {
   }
 
   Future<void> _possiblyAnimateSeparation(CalloutConfigModel calloutConfig, VoidCallback? onReadyF) async {
-    print('_possiblyAnimateSeparation finalSep: ${calloutConfig.finalSeparation}');
+    // print('_possiblyAnimateSeparation finalSep: ${calloutConfig.finalSeparation}');
     if ((calloutConfig.finalSeparation ?? 0.0) > 0.0) {
       // animate separation, top or left
       AnimationController animationController = AnimationController(duration: const Duration(milliseconds: 500), vsync: calloutConfig);
