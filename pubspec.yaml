@@ -1,6 +1,6 @@
 name: flutter_callouts
 description: Point stuff out for your users => Target, Transform, Configure Callouts, Record to JSON in Dev, and Play in Production
-version: 6.1.2
+version: 6.2.0
 maintainer: Ian White
 homepage: https://github.com/biancashouse/flutter_callouts
 repository: https://github.com/biancashouse/flutter-callouts
@@ -50,7 +50,7 @@ dev_dependencies:
   #  bloc_test: ^9.1.1
   flutter_lints: any
   dart_mappable_builder: ^4.5.0
-  analyzer: ^7.5.4
+  analyzer: ^7.0.0
 
 
 #false_secrets:
