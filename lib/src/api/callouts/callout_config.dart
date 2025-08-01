@@ -794,7 +794,7 @@ class CalloutConfigModel
   Widget oeContentWidget({
     // ZoomerState? zoomer, // if supplied, will be a descendant of an OverlayPortal
     required Rect targetRect,
-    required WidgetBuilder calloutContent,
+    required WidgetBuilder calloutContentF,
     required VoidCallback rebuildF,
     // TargetModel? configurableTarget,
   }) {
@@ -820,7 +820,7 @@ class CalloutConfigModel
 
     return Offstage(
       offstage: fca.isHidden(cId),
-      child: _renderCallout(targetRect, calloutContent, rebuildF),
+      child: _renderCallout(targetRect, calloutContentF, rebuildF),
     );
   }
 
@@ -828,7 +828,7 @@ class CalloutConfigModel
     required BuildContext
     context, // if supplied, will be a descendant of an OverlayPortal
     required Rect targetRect,
-    required WidgetBuilder calloutContent,
+    required WidgetBuilder calloutContentF,
     required VoidCallback rebuildF,
   }) {
     opDescendantContext =
@@ -836,7 +836,7 @@ class CalloutConfigModel
     // _zoomer = Zoomer.of(context);
     return _calloutW == null || _calloutH == null
         ? const Offstage()
-        : _renderCallout(targetRect, calloutContent, rebuildF);
+        : _renderCallout(targetRect, calloutContentF, rebuildF);
   }
 
   // Future<Widget> _measureThenRenderCallout(
@@ -1931,10 +1931,10 @@ class CalloutBarrierConfig {
 }
 
 class PositionedBoxContent extends StatelessWidget {
-  final CalloutConfigModel calloutConfig;
+  final CalloutConfigModel cc;
   final Widget child;
 
-  const PositionedBoxContent(this.calloutConfig,
+  const PositionedBoxContent(this.cc,
       this.child, {
         super.key,
       });
@@ -1944,8 +1944,6 @@ class PositionedBoxContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final CalloutConfigModel cc = calloutConfig;
-
     if (cc.initialCalloutPos == null &&
         cc.calloutAlignment == null &&
         cc.targetAlignment == null) {
@@ -2014,7 +2012,7 @@ class PositionedBoxContent extends StatelessWidget {
               ),
               // cc.elevation,
               child: FocusableActionDetector(
-                focusNode: calloutConfig.focusNode,
+                focusNode: cc.focusNode,
                 autofocus: true,
                 child: Stack(
                   children: <Widget>[

@@ -139,7 +139,7 @@ class WrappedCalloutState extends State<WrappedCallout>  implements TickerProvid
       return _config.opContentWidget(
         context: context,
         targetRect: r,
-        calloutContent: (ctx) => Builder(builder: (context) {
+        calloutContentF: (ctx) => Builder(builder: (context) {
           return widget.calloutBoxContentBuilderF(context);
         }),
         rebuildF: () => opController.show(),
