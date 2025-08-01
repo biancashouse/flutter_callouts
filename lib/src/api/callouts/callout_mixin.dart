@@ -547,8 +547,8 @@ mixin CalloutMixin {
     if (calloutRect.left > (fca.scrW - minVisibleH)) {
       resultLeft = fca.scrW - minVisibleH;
     }
-    if (calloutRect.top > (fca.scrH - minVisibleV - fca.kbdH)) {
-      resultTop = fca.scrH - minVisibleV - fca.kbdH;
+    if (calloutRect.top > (fca.scrH - minVisibleV - fca.keyboardHeight)) {
+      resultTop = fca.scrH - minVisibleV - fca.keyboardHeight;
     }
     if (calloutRect.right < minVisibleH) {
       resultLeft = minVisibleH - calloutRect.width;

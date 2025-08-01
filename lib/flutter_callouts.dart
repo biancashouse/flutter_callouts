@@ -10,7 +10,6 @@ import 'src/api/callouts/callout_mixin.dart';
 import 'src/canvas/canvas_mixin.dart';
 import 'src/feature_discovery/discovery_mixin.dart';
 import 'src/gotits_mixin.dart';
-import 'src/mq_mixin.dart';
 import 'src/root_context_mixin.dart';
 import 'src/system_mixin.dart';
 import 'src/widget/widget_helper_mixin.dart';
@@ -46,7 +45,6 @@ export 'src/kbd_mixin.dart';
 export 'src/ls_mixin.dart';
 export 'src/measuring/measure_sizebox.dart';
 export 'src/measuring_mixin.dart';
-export 'src/mq_mixin.dart';
 export 'src/root_context_mixin.dart';
 export 'src/system_mixin.dart';
 export 'src/typedefs.dart';
@@ -69,7 +67,6 @@ class FlutterCalloutMixins
         CalloutMixin,
         DiscoveryMixin,
         RootContextMixin,
-        MQMixin,
         SystemMixin,
         KeystrokesMixin,
         LocalStorageMixin,

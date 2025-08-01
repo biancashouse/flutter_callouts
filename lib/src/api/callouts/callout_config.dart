@@ -1137,7 +1137,7 @@ class CalloutConfigModel
 
   bool wouldBeOnscreenY(double top) {
     if (_finishedAnimatingSeparation) return true;
-    bool onscreen = top + _calloutH! < fca.scrH - fca.kbdH;
+    bool onscreen = top + _calloutH! < fca.scrH - fca.keyboardHeight;
     return onscreen;
   }
 
@@ -1253,7 +1253,7 @@ class CalloutConfigModel
     // only needs  to be scrollable when can't fit on screen
     // fca.logger.i('============   screenH = ${Useful.screenH()}');
     needsToScrollH = _calloutW! > fca.scrW;
-    needsToScrollV = _calloutH! > (fca.scrH - fca.kbdH);
+    needsToScrollV = _calloutH! > (fca.scrH - fca.keyboardHeight);
     if (!notToast) {
       fca.logger.i('must skip screen bounds check');
     }

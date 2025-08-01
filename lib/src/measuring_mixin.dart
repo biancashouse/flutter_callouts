@@ -54,12 +54,10 @@ mixin MeasuringMixin {
     required String text,
     required TextStyle style,
     required int numLines,
-    double textScaleFactor = 1.0,
   }) {
     final TextPainter textPainter = TextPainter(
       text: TextSpan(text: text.replaceAll("`10`", "\n"), style: style),
       textDirection: TextDirection.ltr,
-      textScaler: fca.textScaler,
       maxLines: 6,
     )..layout(minWidth: 0, maxWidth: double.infinity);
 

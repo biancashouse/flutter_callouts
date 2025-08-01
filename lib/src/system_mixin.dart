@@ -1,5 +1,8 @@
 // ignore_for_file: constant_identifier_names
 
+// import 'package:device_info_plus/device_info_plus.dart';
+import 'dart:ui';
+
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -24,11 +27,7 @@ mixin SystemMixin {
   PlatformEnum? _platform;
   Logger logger = Logger(
     filter: MyFilter(),
-    printer: PrettyPrinter(
-      colors: true,
-      printEmojis: false,
-
-    ),
+    printer: PrettyPrinter(colors: true, printEmojis: false),
   );
   final Logger loggerNs = Logger(
     filter: MyFilter(),
@@ -80,7 +79,9 @@ mixin SystemMixin {
   Future<bool> canInformUserOfNewVersion() async {
     // decide whether new version loaded
     // var box = Hive.box(await yamlAppName);
-    String? storedVersionAndBuild = (await fca.localStorage).read("versionAndBuild");
+    String? storedVersionAndBuild = (await fca.localStorage).read(
+      "versionAndBuild",
+    );
     String latestVersionAndBuild = '$yamlVersion-$yamlBuildNumber';
     if (latestVersionAndBuild != (storedVersionAndBuild ?? '')) {
       (await fca.localStorage).write('versionAndBuild', latestVersionAndBuild);
@@ -112,21 +113,22 @@ mixin SystemMixin {
     return buildNum.isEmpty ? ver : '$ver-$buildNum';
   }
 
-// https://github.com/flutter/flutter/issues/25827 ---------------------------
+  // https://github.com/flutter/flutter/issues/25827 ---------------------------
   Widget androidAwareBuild(BuildContext context, Widget pageWidget) =>
       FutureBuilder<double?>(
-          future: _whenNotZero(
-            Stream<double>.periodic(const Duration(milliseconds: 50),
-                (_) => MediaQuery.sizeOf(context).width),
+        future: _whenNotZero(
+          Stream<double>.periodic(
+            const Duration(milliseconds: 50),
+            (_) => MediaQuery.sizeOf(context).width,
           ),
-          builder: (BuildContext context, snapshot) {
-            if (snapshot.hasData && (snapshot.data ?? 0) > 0) {
-              return pageWidget;
-            }
-            return const CircularProgressIndicator(
-              color: Colors.orange,
-            );
-          });
+        ),
+        builder: (BuildContext context, snapshot) {
+          if (snapshot.hasData && (snapshot.data ?? 0) > 0) {
+            return pageWidget;
+          }
+          return const CircularProgressIndicator(color: Colors.orange);
+        },
+      );
 
   Future<double?> _whenNotZero(Stream<double> source) async {
     await for (double value in source) {
@@ -138,7 +140,7 @@ mixin SystemMixin {
     // stream exited without a true value, maybe return an exception.
   }
 
-// https://github.com/flutter/flutter/issues/25827 ---------------------------
+  // https://github.com/flutter/flutter/issues/25827 ---------------------------
 
   /// The build number. `CFBundleVersion` on iOS, `versionCode` on Android.
   /// Note, on iOS if an app has no buildNumber specified this property will return version
@@ -154,8 +156,11 @@ mixin SystemMixin {
     });
   }
 
-  Future afterMsDelayDo(int millis, VoidCallback fn,
-      {bool maintainSCOffsets = false}) async {
+  Future afterMsDelayDo(
+    int millis,
+    VoidCallback fn, {
+    bool maintainSCOffsets = false,
+  }) async {
     // Map<ScrollController, double> savedOffsets = maintainSCOffsets
     //     ? saveScrollOffsets()
     //     : {};
@@ -188,13 +193,61 @@ mixin SystemMixin {
 
   // Logger pkg ---------------------------------------------------------------
 
-// formattedDate(int ms) => DateFormat.yMMMd().format(DateTime.fromMillisecondsSinceEpoch(ms));
+  // formattedDate(int ms) => DateFormat.yMMMd().format(DateTime.fromMillisecondsSinceEpoch(ms));
   formattedDate(int ms) =>
       DateFormat('MMMMd').format(DateTime.fromMillisecondsSinceEpoch(ms));
 
   String removeNonNumeric(s) => s.replaceAll(RegExp(r"\D"), "");
-}
 
+  double get pixelRatio => WidgetsBinding.instance.renderViews.isNotEmpty
+      ? WidgetsBinding.instance.renderViews.first.flutterView.devicePixelRatio
+      : 1;
+
+  double get scrW => WidgetsBinding.instance.renderViews.isNotEmpty
+      ? WidgetsBinding
+                .instance
+                .renderViews
+                .first
+                .flutterView
+                .physicalSize
+                .width /
+            pixelRatio
+      : 0.0;
+
+  double get scrH => WidgetsBinding.instance.renderViews.isNotEmpty
+      ? WidgetsBinding
+                .instance
+                .renderViews
+                .first
+                .flutterView
+                .physicalSize
+                .height /
+            pixelRatio
+      : 0.0;
+
+  Size get scrSize => Size(scrW, scrH);
+
+  ViewPadding get viewPadding => WidgetsBinding.instance.renderViews.isNotEmpty
+      ? WidgetsBinding.instance.renderViews.first.flutterView.viewPadding
+      : ViewPadding.zero;
+
+  ViewPadding get viewInsets => WidgetsBinding.instance.renderViews.isNotEmpty
+      ? WidgetsBinding.instance.renderViews.first.flutterView.viewInsets
+      : ViewPadding.zero;
+
+  // TextScaler get textScaler => WidgetsBinding.instance.platformDispatcher.t;
+
+  double get keyboardHeight => WidgetsBinding.instance.renderViews.isNotEmpty
+      ? WidgetsBinding.instance.renderViews.first.flutterView.viewInsets.bottom
+      : 0;
+
+  double kDefaultNarrowWidthThreshold =
+      600.0; // Example threshold in logical pixels
+
+  bool get narrowWidth {
+    return scrW < kDefaultNarrowWidthThreshold;
+  }
+}
 
 enum PlatformEnum { android, ios, web, windows, osx, fuchsia, linux }
 
