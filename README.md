@@ -143,7 +143,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return const FC_MaterialApp(
       title: 'flutter_callouts demo',
       home: MyHomePage(),
     );

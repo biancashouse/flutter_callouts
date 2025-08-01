@@ -4,30 +4,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
 
+import 'api/app_keys.dart';
+
 mixin RootContextMixin {
 
-  static BuildContext? _rootContext;
-
   BuildContext get rootContext {
-    if (_rootContext == null) {
-      throw (Exception("NULL rootContext !"));
-    } else {
-      return _rootContext!;
+    // This gives the context of the Navigator, which is what you usually want for overlays
+    var rc = navigatorKey.currentContext;
+    if (rc == null) {
+      throw Exception("NULL rootContext ! - you must use FC_MaterialApp instead of MaterialApp");
     }
+    return rc;
   }
 
-  set rootContext(BuildContext? newContext) {
-    if (newContext == null) {
-      throw (Exception("setting rootContext NULL !"));
-    }
-    _rootContext = newContext;
-  }
-
-  // must be called from a widget build
-  void initWithContext(BuildContext context) {
-    // fca.logger.i('initWithContext');
-    rootContext = context;
-    fca.initDeviceInfoAndPlatform();
-    // fca.createOffstageOverlay(context);
+  OverlayState? get overlayState {
+    // This is often more direct for inserting OverlayEntry widgets
+    return navigatorKey.currentState?.overlay;
   }
 }

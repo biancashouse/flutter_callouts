@@ -22,18 +22,7 @@ class ToastDemoPageState extends State<ToastDemoPage> with TickerProviderStateMi
     fca.afterNextBuildDo(() => _showToast(AlignmentEnum.topCenter));
   }
 
-  // @override
-  // void dispose() {
-  //   super.dispose();
-  // }
-
-  @override
-  void didChangeDependencies() {
-    fca.initWithContext(context);
-    super.didChangeDependencies();
-  }
-
-  void _showToast(AlignmentEnum gravity, {int showForMs = 0}) {
+   void _showToast(AlignmentEnum gravity, {int showForMs = 0}) {
     // keep away from the edge of screen by 50
     double? contentTranslateX;
     double? contentTranslateY;

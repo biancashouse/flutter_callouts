@@ -287,12 +287,6 @@ class _PointerDemoState extends State<PointerDemo> {
   }
 
   @override
-  void didChangeDependencies() {
-    fca.initWithContext(context);
-    super.didChangeDependencies();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return PopScope(
       canPop: true,

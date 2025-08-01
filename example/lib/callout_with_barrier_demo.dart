@@ -25,7 +25,11 @@ class _BarrierDemoState extends State<BarrierDemo> {
     fca.afterNextBuildDo(() {
       // namedSC.jumpTo(150.0);
       // showOverlay requires a callout config + callout content + optionally, a target widget globalKey
-      fca.showOverlay(calloutConfig: _cc = _createFabCalloutConfig(), calloutContent: _createFabCalloutContent(), targetGkF: () => _gk);
+      fca.showOverlay(
+        calloutConfig: _cc = _createFabCalloutConfig(),
+        calloutContent: _createFabCalloutContent(),
+        targetGkF: () => _gk,
+      );
     });
   }
 
@@ -158,7 +162,9 @@ class _BarrierDemoState extends State<BarrierDemo> {
               const Text('round cutout ?'),
               StatefulBuilder(
                 builder: (context, setState) => Checkbox(
-                  value: (_cc.barrier?.excludeTargetFromBarrier ?? false) && (_cc.barrier?.roundExclusion ?? false),
+                  value:
+                      (_cc.barrier?.excludeTargetFromBarrier ?? false) &&
+                      (_cc.barrier?.roundExclusion ?? false),
                   onChanged: (_) {
                     setState(() => toggleCutoutShape());
                   },
@@ -182,7 +188,8 @@ class _BarrierDemoState extends State<BarrierDemo> {
   void toggleCutout() {
     setState(() {
       if (_cc.barrier != null) {
-        _cc.barrier!.excludeTargetFromBarrier = !_cc.barrier!.excludeTargetFromBarrier;
+        _cc.barrier!.excludeTargetFromBarrier =
+            !_cc.barrier!.excludeTargetFromBarrier;
         fca.rebuild('some-callout-id');
       }
     });
@@ -198,18 +205,12 @@ class _BarrierDemoState extends State<BarrierDemo> {
   }
 
   @override
-  void didChangeDependencies() {
-    fca.initWithContext(context);
-    super.didChangeDependencies();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return PopScope(
       canPop: true,
-      onPopInvokedWithResult: (_,_){
+      onPopInvokedWithResult: (_, _) {
         fca.dismissAll();
-      } ,
+      },
       child: Scaffold(
         appBar: AppBar(title: Text('flutter_callouts scrolling demo')),
         // give it extra height to show how scrolling can work with callouts
@@ -224,7 +225,11 @@ class _BarrierDemoState extends State<BarrierDemo> {
                 'The barrier will cover the entire screen below the callout unless\n'
                 ' you specify a cutout section over the target.\n\n'
                 'Your cutout can be circular or a rectangle.',
-                style: TextStyle(color: Colors.green[900], fontStyle: FontStyle.italic, fontSize: 24),
+                style: TextStyle(
+                  color: Colors.green[900],
+                  fontStyle: FontStyle.italic,
+                  fontSize: 24,
+                ),
               ),
               SizedBox(height: 200),
               Center(child: Icon(key: _gk, Icons.adb_rounded)),
@@ -234,7 +239,10 @@ class _BarrierDemoState extends State<BarrierDemo> {
         bottomSheet: Container(
           color: Colors.black,
           padding: EdgeInsets.all(8),
-          child: Text('demonstrating barrier under callout', style: TextStyle(color: Colors.white)),
+          child: Text(
+            'demonstrating barrier under callout',
+            style: TextStyle(color: Colors.white),
+          ),
         ),
       ),
     );

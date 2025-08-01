@@ -17,6 +17,7 @@ import 'src/widget/widget_helper_mixin.dart';
 export 'src/api/callouts/callout_config.dart';
 
 // export mixin
+export 'src/api/material_app_with_navigator_key.dart';
 export 'src/api/callouts/callout_mixin.dart';
 export 'src/api/callouts/callout_using_overlayportal.dart';
 export 'src/api/callouts/color_values.dart';

@@ -234,7 +234,7 @@ mixin CalloutMixin {
     }
 
     // fca.afterNextBuildDo(() {
-    Overlay.of(fca.rootContext).insert(entry, below: lowestOverlay);
+    fca.overlayState?.insert(entry, below: lowestOverlay);
     // });
 
     // // animate separation just once

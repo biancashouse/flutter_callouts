@@ -15,11 +15,6 @@ class IntroPage extends StatefulWidget {
 
 /// it's important to add the mixin, because callouts are animated
 class IntroPageState extends State<IntroPage> {
-  @override
-  void didChangeDependencies() {
-    fca.initWithContext(context);
-    super.didChangeDependencies();
-  }
 
   @override
   Widget build(BuildContext context) => Scaffold(
