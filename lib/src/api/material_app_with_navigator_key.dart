@@ -1,7 +1,6 @@
 // lib/widgets/global_material_app.dart (or similar)
 import 'package:flutter/material.dart';
-
-import 'app_keys.dart';
+import 'package:flutter_callouts/flutter_callouts.dart';
 
 /// A custom [MaterialApp] wrapper that automatically instantiates and uses
 /// a global [navigatorKey].
@@ -186,7 +185,7 @@ class FC_MaterialApp extends StatelessWidget {
     } else {
       return MaterialApp(
         key: super.key, // Use the widget's key for MaterialApp
-        navigatorKey: navigatorKey, // Crucially, assign the global key here
+        navigatorKey: fca.globalNavigatorKey, // Crucially, assign the global key here
         scaffoldMessengerKey: scaffoldMessengerKey,
         home: home,
         routes: routes,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
 
-import 'callouts-intro.dart';
+import 'callouts_intro.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
