@@ -270,6 +270,30 @@ mixin SystemMixin {
             .longestSide
       : 0.0;
 
+
+  /// Gets the current orientation based on the primary view's dimensions (snapshot).
+  /// For reactive UI, use `MediaQuery.of(context).orientation`.
+  Orientation get currentOrientationSnapshot {
+    if (WidgetsBinding.instance.renderViews.isEmpty) return Orientation.portrait;
+    try {
+      final view = WidgetsBinding.instance.renderViews.first.flutterView;
+      final physicalSize = view.physicalSize; // ui.Size in physical pixels
+      // No need for devicePixelRatio here, as we're just comparing width and height
+
+      if (physicalSize.width < physicalSize.height) {
+        return Orientation.portrait;
+      } else {
+        return Orientation.landscape;
+      }
+    } catch (e) {
+      print("Warning: Could not get orientation snapshot. Error: $e. Defaulting to portrait.");
+      return Orientation.portrait; // Fallback
+    }
+  }
+
+  bool get isPortrait => currentOrientationSnapshot == Orientation.portrait;
+  bool get isLandscape => currentOrientationSnapshot != Orientation.portrait;
+
   // The equivalent of the "smallestWidth" qualifier on Android.
   bool get usePhoneLayout => shortestSide < 600;
 
