@@ -247,6 +247,60 @@ mixin SystemMixin {
   bool get narrowWidth {
     return scrW < kDefaultNarrowWidthThreshold;
   }
+
+  double get shortestSide => WidgetsBinding.instance.renderViews.isNotEmpty
+      ? WidgetsBinding
+            .instance
+            .renderViews
+            .first
+            .flutterView
+            .display
+            .size
+            .shortestSide
+      : 0.0;
+
+  double get longestSide => WidgetsBinding.instance.renderViews.isNotEmpty
+      ? WidgetsBinding
+            .instance
+            .renderViews
+            .first
+            .flutterView
+            .display
+            .size
+            .longestSide
+      : 0.0;
+
+  // The equivalent of the "smallestWidth" qualifier on Android.
+  bool get usePhoneLayout => shortestSide < 600;
+
+  bool get useTabletLayout => !kIsWeb && shortestSide >= 600;
+
+  bool get isDesktopSized {
+    return !isIOS && !isAndroid && scrW > 1023;
+  }
+
+  // double get shortestSide {
+  //   if (WidgetsBinding.instance.renderViews.isNotEmpty) {
+  //     return 0.0;
+  //   } else {
+  //     /// Gets the shortest side of the screen in logical pixels (snapshot).
+  //     /// For reactive UI, use `MediaQuery.of(context).size.shortestSide`.
+  //     final view = WidgetsBinding.instance.renderViews.first.flutterView;
+  //     view.physicalSize.
+  //     final physicalSize = view
+  //         .physicalSize; // This is a ui.Size (width, height) in physical pixels
+  //     final devicePixelRatio = view.devicePixelRatio;
+  //
+  //     if (devicePixelRatio == 0) return 0; // Avoid division by zero
+  //
+  //     // Calculate logical width and height
+  //     final double logicalWidth = physicalSize.width / devicePixelRatio;
+  //     final double logicalHeight = physicalSize.height / devicePixelRatio;
+  //
+  //     // Return the smaller of the two
+  //     return math.min(logicalWidth, logicalHeight);
+  //   }
+  // }
 }
 
 enum PlatformEnum { android, ios, web, windows, osx, fuchsia, linux }
