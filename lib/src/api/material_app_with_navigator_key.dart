@@ -95,7 +95,7 @@ class FC_MaterialApp extends StatelessWidget {
         routerConfig = null,
         backButtonDispatcher = null;
 
-  /// Creates a [GlobalMaterialApp] that uses the [Router] instead of a [Navigator].
+  /// Creates a [MaterialApp] that uses the GoRouter
   const FC_MaterialApp.router({
     super.key,
     this.scaffoldMessengerKey,

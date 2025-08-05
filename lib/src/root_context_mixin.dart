@@ -20,6 +20,7 @@ mixin RootContextMixin {
 
   OverlayState? get overlayState {
     // This is often more direct for inserting OverlayEntry widgets
-    return _navigatorKey.currentState?.overlay;
+    var cs = _navigatorKey.currentState;
+    return cs?.overlay;
   }
 }

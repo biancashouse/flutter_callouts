@@ -19,13 +19,14 @@ extension GlobalKeyExtension on GlobalKey {
 
     // var cw = currentWidget;
     var cc = currentContext;
-    Size? scrSize;
+    // Size? scrSize;
     if (cc == null) {
-      //fca.logger.i('GlobalKeyExtension: currentContext NULL!');
-    } else {
-      scrSize = MediaQuery.sizeOf(cc);
+      fca.logger.i('GlobalKeyExtension: currentContext NULL!');
+      return null;
     }
-    final renderObject = cc?.findRenderObject();
+    //   scrSize = MediaQuery.sizeOf(cc);
+    // }
+    final renderObject = cc.findRenderObject();
     final translation = renderObject?.getTransformTo(null).getTranslation();
     Rect? paintBounds;
     try {
@@ -37,7 +38,7 @@ extension GlobalKeyExtension on GlobalKey {
     if (!_alreadyGaveGlobalPosAndSizeWarning &&
         !skipWidthConstraintWarning &&
         !skipHeightConstraintWarning &&
-        (paintBounds?.width == scrSize!.width ||
+        (paintBounds?.width == fca.scrSize.width ||
             paintBounds?.height == fca.scrH)) {
       _alreadyGaveGlobalPosAndSizeWarning = true;
       fca.showOverlay(
