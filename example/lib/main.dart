@@ -14,6 +14,6 @@ Future<void> main() async {
 
   await fca.initLocalStorage();
 
-  runApp(const FC_MaterialApp(title: 'flutter_callouts demo', home: IntroPage()));
+  runApp(const FlutterCalloutsApp(title: 'flutter_callouts demo', home: IntroPage()));
 }
 

@@ -7,7 +7,7 @@ import 'package:flutter_callouts/flutter_callouts.dart';
 ///
 /// This simplifies setting up global navigation access. All parameters of
 /// the standard [MaterialApp] are exposed.
-class FC_MaterialApp extends StatelessWidget {
+class FlutterCalloutsApp extends StatelessWidget {
   // Expose all the parameters you normally use for MaterialApp
   final GlobalKey<ScaffoldMessengerState>? scaffoldMessengerKey;
   final Widget? home;
@@ -52,7 +52,7 @@ class FC_MaterialApp extends StatelessWidget {
   final RouterConfig<Object>? routerConfig;
   final BackButtonDispatcher? backButtonDispatcher;
   // Removed widget.key and passed it to super constructor instead
-  const FC_MaterialApp({
+  const FlutterCalloutsApp({
     super.key, // Use super.key for the widget itself
     this.scaffoldMessengerKey,
     this.home,
@@ -95,50 +95,52 @@ class FC_MaterialApp extends StatelessWidget {
         routerConfig = null,
         backButtonDispatcher = null;
 
-  /// Creates a [MaterialApp] that uses the GoRouter
-  const FC_MaterialApp.router({
-    super.key,
-    this.scaffoldMessengerKey,
-    this.routeInformationProvider,
-    this.routeInformationParser,
-    this.routerDelegate,
-    this.routerConfig,
-    this.backButtonDispatcher,
-    this.builder,
-    this.title = '',
-    this.onGenerateTitle,
-    this.color,
-    this.theme,
-    this.darkTheme,
-    this.highContrastTheme,
-    this.highContrastDarkTheme,
-    this.themeMode = ThemeMode.system,
-    this.themeAnimationDuration = kThemeAnimationDuration,
-    this.themeAnimationCurve = Curves.linear,
-    this.locale,
-    this.localizationsDelegates,
-    this.localeListResolutionCallback,
-    this.localeResolutionCallback,
-    this.supportedLocales = const <Locale>[Locale('en', 'US')],
-    this.debugShowMaterialGrid = false,
-    this.showPerformanceOverlay = false,
-    this.checkerboardRasterCacheImages = false,
-    this.checkerboardOffscreenLayers = false,
-    this.showSemanticsDebugger = false,
-    this.debugShowCheckedModeBanner = true,
-    this.shortcuts,
-    this.actions,
-    this.restorationScopeId,
-    this.scrollBehavior,
-    this.useInheritedMediaQuery = false,
-  })  : navigatorObservers = const <NavigatorObserver>[], // Not used by router
-        home = null,
-        routes = const <String, WidgetBuilder>{},
-        initialRoute = null,
-        onGenerateRoute = null,
-        onGenerateInitialRoutes = null,
-        onUnknownRoute = null,
-        assert(routerDelegate != null || routerConfig != null);
+  /// Creates a [MaterialApp] that would use a Router
+  /// advice: This pkg doesn't make use of a router. Use the flutter_content pkg if you want to have multiple Go_Router routes.
+  /// That's why this .router constructor is commented out
+  // const FlutterCalloutsApp.router({
+  //   super.key,
+  //   this.scaffoldMessengerKey,
+  //   this.routeInformationProvider,
+  //   this.routeInformationParser,
+  //   this.routerDelegate,
+  //   this.routerConfig,
+  //   this.backButtonDispatcher,
+  //   this.builder,
+  //   this.title = '',
+  //   this.onGenerateTitle,
+  //   this.color,
+  //   this.theme,
+  //   this.darkTheme,
+  //   this.highContrastTheme,
+  //   this.highContrastDarkTheme,
+  //   this.themeMode = ThemeMode.system,
+  //   this.themeAnimationDuration = kThemeAnimationDuration,
+  //   this.themeAnimationCurve = Curves.linear,
+  //   this.locale,
+  //   this.localizationsDelegates,
+  //   this.localeListResolutionCallback,
+  //   this.localeResolutionCallback,
+  //   this.supportedLocales = const <Locale>[Locale('en', 'US')],
+  //   this.debugShowMaterialGrid = false,
+  //   this.showPerformanceOverlay = false,
+  //   this.checkerboardRasterCacheImages = false,
+  //   this.checkerboardOffscreenLayers = false,
+  //   this.showSemanticsDebugger = false,
+  //   this.debugShowCheckedModeBanner = true,
+  //   this.shortcuts,
+  //   this.actions,
+  //   this.restorationScopeId,
+  //   this.scrollBehavior,
+  //   this.useInheritedMediaQuery = false,
+  // })  : navigatorObservers = const <NavigatorObserver>[], // Not used by router
+  //       home = null,
+  //       routes = const <String, WidgetBuilder>{},
+  //       initialRoute = null,
+  //       onGenerateRoute = null,
+  //       onGenerateInitialRoutes = null,
+  //       onUnknownRoute = null,
+  //       assert(routerDelegate != null || routerConfig != null);
 
   @override
   Widget build(BuildContext context) {
@@ -147,8 +149,10 @@ class FC_MaterialApp extends StatelessWidget {
 
     if (usesRouter) {
       return MaterialApp.router(
-        key: super.key, // Use the widget's key for MaterialApp
-        // navigatorKey is NOT used by MaterialApp.router
+        key: super.key,
+        // navigatorKey is NOT used by MaterialApp.router,
+        // instead you have to pass fca.globalNavigatorKey to the
+        // GoRouter.routingConfig() constructor
         scaffoldMessengerKey: scaffoldMessengerKey,
         routeInformationProvider: routeInformationProvider,
         routeInformationParser: routeInformationParser,

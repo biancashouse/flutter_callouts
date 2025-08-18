@@ -12,12 +12,17 @@ mixin RootContextMixin {
     var rc = _navigatorKey.currentContext;
     if (rc == null) {
       throw Exception(
-        "NULL rootContext ! - you must use FC_MaterialApp instead of MaterialApp",
+            "NULL rootContext ! - you must have passed globalNavigatorKey to your MaterialApp or to your router constructor:\n\n"
+            "MaterialApp(navigatorKey: fca.globalNavigatorKey,)\n\n"
+            " or\n\n"
+            "router = GoRouter.routingConfig(navigatorKey: fco.globalNavigatorKey,...\n\n"
+                "NOTE - flutter_content uses this pkg and introduces go_router usage"
       );
     }
     return rc;
   }
 
+  // callouts get created in the context of the navigator
   OverlayState? get overlayState {
     // This is often more direct for inserting OverlayEntry widgets
     var cs = _navigatorKey.currentState;

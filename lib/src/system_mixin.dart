@@ -85,7 +85,7 @@ mixin SystemMixin {
     String latestVersionAndBuild = '$yamlVersion-$yamlBuildNumber';
     if (latestVersionAndBuild != (storedVersionAndBuild ?? '')) {
       (await fca.localStorage).write('versionAndBuild', latestVersionAndBuild);
-      if (storedVersionAndBuild != null) return true;
+      return true;
     }
     return false;
   }
