@@ -60,7 +60,7 @@ export 'package:logger/src/log_filter.dart';
 export 'package:logger/src/printers/pretty_printer.dart';
 
 // client apps will only access this functionality thru this global instance
-FlutterCalloutMixins fca = FlutterCalloutMixins.instance;
+FlutterCalloutMixins fca = FlutterCalloutMixins._internal();
 
 class FlutterCalloutMixins
     with
@@ -80,9 +80,9 @@ class FlutterCalloutMixins
     // logger.i('FlutterCallouts._internal()');
   }
 
-  static FlutterCalloutMixins get instance {
-    return FlutterCalloutMixins._internal();
-  }
+  // static FlutterCalloutMixins get instance {
+  //   return FlutterCalloutMixins._internal();
+  // }
 
   // Storage get localStorage {
   //   return HydratedBloc.storage;

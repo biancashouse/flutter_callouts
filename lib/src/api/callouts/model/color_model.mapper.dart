@@ -1,5 +1,6 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format off
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, unnecessary_cast, override_on_non_overriding_member
 // ignore_for_file: strict_raw_type, inference_failure_on_untyped_parameter
@@ -28,6 +29,12 @@ class ColorModelMapper extends ClassMapperBase<ColorModel> {
   static const Field<ColorModel, double> _f$g = Field('g', _$g);
   static double _$b(ColorModel v) => v.b;
   static const Field<ColorModel, double> _f$b = Field('b', _$b);
+  static Color _$flutterValue(ColorModel v) => v.flutterValue;
+  static const Field<ColorModel, Color> _f$flutterValue = Field(
+    'flutterValue',
+    _$flutterValue,
+    mode: FieldMode.member,
+  );
 
   @override
   final MappableFields<ColorModel> fields = const {
@@ -35,11 +42,16 @@ class ColorModelMapper extends ClassMapperBase<ColorModel> {
     #r: _f$r,
     #g: _f$g,
     #b: _f$b,
+    #flutterValue: _f$flutterValue,
   };
 
   static ColorModel _instantiate(DecodingData data) {
     return ColorModel(
-        data.dec(_f$a), data.dec(_f$r), data.dec(_f$g), data.dec(_f$b));
+      data.dec(_f$a),
+      data.dec(_f$r),
+      data.dec(_f$g),
+      data.dec(_f$b),
+    );
   }
 
   @override
@@ -56,28 +68,36 @@ class ColorModelMapper extends ClassMapperBase<ColorModel> {
 
 mixin ColorModelMappable {
   String toJson() {
-    return ColorModelMapper.ensureInitialized()
-        .encodeJson<ColorModel>(this as ColorModel);
+    return ColorModelMapper.ensureInitialized().encodeJson<ColorModel>(
+      this as ColorModel,
+    );
   }
 
   Map<String, dynamic> toMap() {
-    return ColorModelMapper.ensureInitialized()
-        .encodeMap<ColorModel>(this as ColorModel);
+    return ColorModelMapper.ensureInitialized().encodeMap<ColorModel>(
+      this as ColorModel,
+    );
   }
 
   ColorModelCopyWith<ColorModel, ColorModel, ColorModel> get copyWith =>
       _ColorModelCopyWithImpl<ColorModel, ColorModel>(
-          this as ColorModel, $identity, $identity);
+        this as ColorModel,
+        $identity,
+        $identity,
+      );
   @override
   String toString() {
-    return ColorModelMapper.ensureInitialized()
-        .stringifyValue(this as ColorModel);
+    return ColorModelMapper.ensureInitialized().stringifyValue(
+      this as ColorModel,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return ColorModelMapper.ensureInitialized()
-        .equalsValue(this as ColorModel, other);
+    return ColorModelMapper.ensureInitialized().equalsValue(
+      this as ColorModel,
+      other,
+    );
   }
 
   @override
@@ -107,22 +127,25 @@ class _ColorModelCopyWithImpl<$R, $Out>
   late final ClassMapperBase<ColorModel> $mapper =
       ColorModelMapper.ensureInitialized();
   @override
-  $R call({double? a, double? r, double? g, double? b}) =>
-      $apply(FieldCopyWithData({
-        if (a != null) #a: a,
-        if (r != null) #r: r,
-        if (g != null) #g: g,
-        if (b != null) #b: b
-      }));
+  $R call({double? a, double? r, double? g, double? b}) => $apply(
+    FieldCopyWithData({
+      if (a != null) #a: a,
+      if (r != null) #r: r,
+      if (g != null) #g: g,
+      if (b != null) #b: b,
+    }),
+  );
   @override
   ColorModel $make(CopyWithData data) => ColorModel(
-      data.get(#a, or: $value.a),
-      data.get(#r, or: $value.r),
-      data.get(#g, or: $value.g),
-      data.get(#b, or: $value.b));
+    data.get(#a, or: $value.a),
+    data.get(#r, or: $value.r),
+    data.get(#g, or: $value.g),
+    data.get(#b, or: $value.b),
+  );
 
   @override
   ColorModelCopyWith<$R2, ColorModel, $Out2> $chain<$R2, $Out2>(
-          Then<$Out2, $R2> t) =>
-      _ColorModelCopyWithImpl<$R2, $Out2>($value, $cast, t);
+    Then<$Out2, $R2> t,
+  ) => _ColorModelCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
+

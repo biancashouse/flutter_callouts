@@ -1,5 +1,6 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format off
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, unnecessary_cast, override_on_non_overriding_member
 // ignore_for_file: strict_raw_type, inference_failure_on_untyped_parameter
@@ -24,11 +25,18 @@ class OffsetModelMapper extends ClassMapperBase<OffsetModel> {
   static const Field<OffsetModel, double> _f$dx = Field('dx', _$dx);
   static double _$dy(OffsetModel v) => v.dy;
   static const Field<OffsetModel, double> _f$dy = Field('dy', _$dy);
+  static Offset _$value(OffsetModel v) => v.value;
+  static const Field<OffsetModel, Offset> _f$value = Field(
+    'value',
+    _$value,
+    mode: FieldMode.member,
+  );
 
   @override
   final MappableFields<OffsetModel> fields = const {
     #dx: _f$dx,
     #dy: _f$dy,
+    #value: _f$value,
   };
 
   static OffsetModel _instantiate(DecodingData data) {
@@ -49,28 +57,36 @@ class OffsetModelMapper extends ClassMapperBase<OffsetModel> {
 
 mixin OffsetModelMappable {
   String toJson() {
-    return OffsetModelMapper.ensureInitialized()
-        .encodeJson<OffsetModel>(this as OffsetModel);
+    return OffsetModelMapper.ensureInitialized().encodeJson<OffsetModel>(
+      this as OffsetModel,
+    );
   }
 
   Map<String, dynamic> toMap() {
-    return OffsetModelMapper.ensureInitialized()
-        .encodeMap<OffsetModel>(this as OffsetModel);
+    return OffsetModelMapper.ensureInitialized().encodeMap<OffsetModel>(
+      this as OffsetModel,
+    );
   }
 
   OffsetModelCopyWith<OffsetModel, OffsetModel, OffsetModel> get copyWith =>
       _OffsetModelCopyWithImpl<OffsetModel, OffsetModel>(
-          this as OffsetModel, $identity, $identity);
+        this as OffsetModel,
+        $identity,
+        $identity,
+      );
   @override
   String toString() {
-    return OffsetModelMapper.ensureInitialized()
-        .stringifyValue(this as OffsetModel);
+    return OffsetModelMapper.ensureInitialized().stringifyValue(
+      this as OffsetModel,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return OffsetModelMapper.ensureInitialized()
-        .equalsValue(this as OffsetModel, other);
+    return OffsetModelMapper.ensureInitialized().equalsValue(
+      this as OffsetModel,
+      other,
+    );
   }
 
   @override
@@ -101,13 +117,15 @@ class _OffsetModelCopyWithImpl<$R, $Out>
       OffsetModelMapper.ensureInitialized();
   @override
   $R call({double? dx, double? dy}) => $apply(
-      FieldCopyWithData({if (dx != null) #dx: dx, if (dy != null) #dy: dy}));
+    FieldCopyWithData({if (dx != null) #dx: dx, if (dy != null) #dy: dy}),
+  );
   @override
   OffsetModel $make(CopyWithData data) =>
       OffsetModel(data.get(#dx, or: $value.dx), data.get(#dy, or: $value.dy));
 
   @override
   OffsetModelCopyWith<$R2, OffsetModel, $Out2> $chain<$R2, $Out2>(
-          Then<$Out2, $R2> t) =>
-      _OffsetModelCopyWithImpl<$R2, $Out2>($value, $cast, t);
+    Then<$Out2, $R2> t,
+  ) => _OffsetModelCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
+
