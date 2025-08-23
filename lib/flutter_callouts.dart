@@ -3,6 +3,8 @@
 // ignore_for_file: constant_identifier_names
 
 // import 'flutter_callouts.dart';
+import 'package:logger/logger.dart';
+
 import 'package:flutter_callouts/src/kbd_mixin.dart';
 import 'package:flutter_callouts/src/ls_mixin.dart';
 import 'package:flutter_callouts/src/measuring_mixin.dart';
@@ -61,6 +63,15 @@ export 'package:logger/src/printers/pretty_printer.dart';
 
 // client apps will only access this functionality thru this global instance
 FlutterCalloutMixins fca = FlutterCalloutMixins._internal();
+late Logger _logger;
+late Logger _loggerNs;
+
+class MyLogFilter extends LogFilter {
+  @override
+  bool shouldLog(LogEvent event) {
+    return true;
+  }
+}
 
 class FlutterCalloutMixins
     with
@@ -76,9 +87,18 @@ class FlutterCalloutMixins
         CanvasMixin {
   FlutterCalloutMixins._internal() // Private constructor
   {
-    // BaseMixins.instance;
-    // logger.i('FlutterCallouts._internal()');
+     _logger = Logger(
+      filter: MyLogFilter(),
+      printer: PrettyPrinter(colors: true, printEmojis: false),
+    );
+    _loggerNs = Logger(
+      filter: MyLogFilter(),
+      printer: PrettyPrinter(methodCount: 6),
+    );
   }
+
+  Logger get logger => _logger;
+  Logger get loggerNs => _loggerNs;
 
   // static FlutterCalloutMixins get instance {
   //   return FlutterCalloutMixins._internal();

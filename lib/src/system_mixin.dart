@@ -9,30 +9,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
 import 'package:intl/intl.dart';
-import 'package:logger/logger.dart' show LogEvent;
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:universal_platform/universal_platform.dart';
 
-// import 'logger_filter.dart';
-
-class MyFilter extends LogFilter {
-  @override
-  bool shouldLog(LogEvent event) {
-    return true;
-  }
-}
 
 mixin SystemMixin {
   String? _deviceInfo;
   PlatformEnum? _platform;
-  Logger logger = Logger(
-    filter: MyFilter(),
-    printer: PrettyPrinter(colors: true, printEmojis: false),
-  );
-  final Logger loggerNs = Logger(
-    filter: MyFilter(),
-    printer: PrettyPrinter(methodCount: 6),
-  );
 
   bool get isWeb => kIsWeb;
 

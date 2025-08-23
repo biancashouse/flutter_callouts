@@ -9,7 +9,8 @@ import 'package:image_network/image_network.dart';
 mixin WidgetHelperMixin {
   bool SHOW_BOXED = false;
   bool DEBUGGING = false;
-  Color FUCHSIA_X = const Color.fromRGBO(255, 0, 255, 1);
+
+  Color get FUCHSIA_X => const Color.fromRGBO(255, 0, 255, 1);
 
   Widget boxedStep({Color? theColor,
     Color theBgColor = Colors.transparent,
