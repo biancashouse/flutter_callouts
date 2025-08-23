@@ -1,13 +1,14 @@
 // lib/widgets/global_material_app.dart (or similar)
 import 'package:flutter/material.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
 /// A custom [MaterialApp] wrapper that automatically instantiates and uses
 /// a global [navigatorKey].
 ///
 /// This simplifies setting up global navigation access. All parameters of
 /// the standard [MaterialApp] are exposed.
-class FlutterCalloutsApp extends StatelessWidget {
+class FlutterCalloutsApp extends HookWidget {
   // Expose all the parameters you normally use for MaterialApp
   final GlobalKey<ScaffoldMessengerState>? scaffoldMessengerKey;
   final Widget? home;
@@ -144,6 +145,57 @@ class FlutterCalloutsApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 1. State to track if initialization is complete
+    final isInitialized = useState(false);
+    // Optional: State to track if there was an error during initialization
+    final initializationError = useState<Object?>(null);
+
+    // 2. useEffect to run the initialization logic once
+    useEffect(() {
+      // This async self-invoking function runs the initialization
+      Future<void> initialize() async {
+        try {
+          await fca.initLocalStorage();
+          fca.loggerNs.i('await fca.initLocalStorage();');
+          fca.loggerNs.w('Just a warning!');
+          fca.logger.e('Error! Something bad happened', error: 'Test Error');
+          fca.loggerNs.t({'key': 5, 'value': 'something'});
+          isInitialized.value = true;   // Set state to true after completion
+        } catch (e) {
+          initializationError.value = e; // Store error if any
+          // You might want to log the error as well
+          debugPrint('Error during initLocalStorage: $e');
+        }
+      }
+
+      initialize();
+
+      // useEffect can return a cleanup function, but it's not needed here
+      // if initLocalStorage doesn't require explicit teardown.
+      return null;
+    }, const []); // Empty list `[]` means this effect runs only once after the first build.
+
+    // 3. Conditionally render UI based on initialization state
+    if (initializationError.value != null) {
+      // Optional: Show an error message if initialization failed
+      return Center(
+        child: Text(
+          'Failed to initialize: ${initializationError.value}',
+          style: const TextStyle(color: Colors.red),
+        ),
+      );
+    }
+
+    if (!isInitialized.value) {
+      // While not initialized, show a loading indicator
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    // Once initialized, build your actual widget content
+    return _build(context);
+  }
+
+  Widget _build(BuildContext context) {
     // Determine if we are using the router constructor or the navigator constructor
     final bool usesRouter = routerDelegate != null || routerConfig != null;
 

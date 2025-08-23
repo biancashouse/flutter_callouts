@@ -14,7 +14,7 @@ mixin GotitsMixin {
 
   Future<void> gotit(String feature,
       {bool notUsingHydratedStorage = false}) async {
-    assert(initCalled, "Didn't call initGotits() !");
+    assert(initCalled, "gotit: Didn't call initGotits() !");
     if (!gotits.contains(feature)) {
       gotits.add(feature);
       (await fca.localStorage).write('gotits', gotits);
@@ -23,7 +23,7 @@ mixin GotitsMixin {
 
   /// assumes initGotits called
   bool alreadyGotit(String feature, {bool notUsingHydratedStorage = false}) {
-    assert(initCalled, "Didn't call initGotits() !");
+    assert(initCalled, "alreadyGotit: Didn't call initGotits() !");
     return (fca.localStorage.read('gotits') ?? []).contains(feature);
   }
 

@@ -18,16 +18,16 @@ class IntroPageState extends State<IntroPage> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    drawer: Drawer(
-      child: Column(
-        children: [
-          ListTile(
-            title: Text('Toasts demo'),
-            onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const ToastDemoPage())),
-          ),
-        ],
-      ),
-    ),
+    // drawer: Drawer(
+    //   child: Column(
+    //     children: [
+    //       ListTile(
+    //         title: Text('Toasts demo'),
+    //         onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const ToastDemoPage())),
+    //       ),
+    //     ],
+    //   ),
+    // ),
     body: Center(
       child: SizedBox(
         width: fca.scrW * .6,
@@ -61,7 +61,7 @@ class IntroPageState extends State<IntroPage> {
                   ),
 
                   TextSpan(
-                    text: "The API is quite comprehensive. Here are a series of demos to show off the package's capabilities...",
+                    text: "The API is quite comprehensive. Here are a series of demos to show off the package's capabilities...\n",
                     style: TextStyle(fontStyle: FontStyle.normal, fontSize: 18),
                   ),
                 ],
@@ -69,7 +69,7 @@ class IntroPageState extends State<IntroPage> {
             ),
 
             SizedBox(
-              height: 500,
+              height: 490,
               child: SingleChildScrollView(
                 child: Column(
                   children: [
@@ -98,7 +98,14 @@ class IntroPageState extends State<IntroPage> {
             ),
             Spacer(),
             Text(
-              "\n\nBTW - We also offer another pkg, built on top of this one, that extends this API with an accompanying admin UI. It makes it easy to create, configure, store as json, and publish to callouts your own editorial content (text, images, files, videos, polls etc). All the widgets delivered are flutter's own, or 3rd party widgets from pub.dev.",
+              "\n\nBTW - We also offer another pkg (flutter_content), "
+                  "built on top of this one, "
+                  "that extends this API with an accompanying admin UI. It "
+                  "makes it easy to configure your callouts and store "
+                  "those configurations as json in firestore, and also to"
+                  " publish in the callouts your own editorial content "
+                  "(text, images, files, videos, polls etc)"
+                  " in real time from your firestore database.",
               style: TextStyle(fontSize: 12),
             ),
           ],
