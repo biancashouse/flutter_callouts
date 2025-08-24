@@ -1,6 +1,6 @@
 name: flutter_callouts_example
 description: "A Flutter Callouts demo project."
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+#publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 version: 1.0.0+1
 
@@ -11,13 +11,8 @@ dependencies:
   flutter:
     sdk: flutter
 
-  flutter_bloc: ^9.0.0
-  hydrated_bloc: ^10.0.0
-  path_provider: ^2.1.5
-
   flutter_callouts:
     path: ..
-
 
 dev_dependencies:
   flutter_test:

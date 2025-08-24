@@ -18,16 +18,6 @@ class IntroPageState extends State<IntroPage> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    // drawer: Drawer(
-    //   child: Column(
-    //     children: [
-    //       ListTile(
-    //         title: Text('Toasts demo'),
-    //         onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const ToastDemoPage())),
-    //       ),
-    //     ],
-    //   ),
-    // ),
     body: Center(
       child: SizedBox(
         width: fca.scrW * .6,
