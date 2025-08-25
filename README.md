@@ -1,10 +1,8 @@
-A dart/flutter API that allows you to pop up a content widget in a flutter overlay. This is the **callout**.
-
 # Point stuff out: Animated Callouts for Flutter
 
-Whether you want popup windows, callouts that popint to a target widget, or toast popups, this API does it all.
+Whether you want simple popup windows, or callouts that point to a target widget, or toast popups, this API does it all.
 
-Being able have your callout to point to a **target** widget is very potent tool for helping your the users understand and navigate your app. A callout overlay’s pointing line can follow its target widget  (by assigning the target a **GlobalKey**). 
+Being able have your callout point to a **target** widget is a very potent tool for helping your the users understand and navigate your app. A callout overlay’s pointing line can follow its target widget  (by assigning the target a **GlobalKey**). 
 
 | Web  | Android | iOS  | macOS | Windows | Linux  |
 |------|---------|------|-------|---------|--------|
@@ -26,25 +24,26 @@ Being able have your callout to point to a **target** widget is very potent tool
 
 * make configuration serializable (json)
 
+**The intro page leads to 4 demo pages**
+
 ![](https://github.com/biancashouse/flutter_callouts/blob/main/readme_images/intro_page.png?raw=true)
 
-The intro page leads to 4 demo pages
+**Callout points out target widgets, and is draggable and can follow scroll**
 
 ![](https://github.com/biancashouse/flutter_callouts/blob/main/readme_images/dragging_and_scrolling.gif?raw=true)
 
-Callout points out target widgets, and is draggable and can follow scroll
+**A barrier can be configured behind the callout, with a cutout for the target**
 
 ![](https://github.com/biancashouse/flutter_callouts/blob/main/readme_images/barrier_demo.gif?raw=true)
 
-A barrier can be configured behind the callout, with a cutout for the target.
+**The callout pointer can be configured, as well as a line label, and many other options**
 
 ![](https://github.com/biancashouse/flutter_callouts/blob/main/readme_images/pointer_demo.gif?raw=true)
 
-The callout pointer can be configured, as well as a line label, and many other options.
+**The callouts api can also be used to pop up toast from multiple directions**
 
 ![](https://github.com/biancashouse/flutter_callouts/blob/main/readme_images/toast_demo.gif?raw=true)
 
-The callouts api can also be used to pop up toast from multiple directions .
 
 ## Quick Start
 
