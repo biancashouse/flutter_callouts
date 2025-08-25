@@ -221,10 +221,11 @@ class _BarrierDemoState extends State<BarrierDemo> {
               SizedBox(height: 50),
               Text(
                 'A callout can have a barrier underneath.\n\n'
-                'Taps on the barrier can trigger closing the callout (closeOnTap).\n\n'
+                'Taps on the barrier can be configured to trigger closing the callout.\n\n'
                 'The barrier will cover the entire screen below the callout unless\n'
                 ' you specify a cutout section over the target.\n\n'
-                'Your cutout can be circular or a rectangle.',
+                'Your cutout can be circular or a rectangle.\n\n'
+                    'Try the checkboxes...',
                 style: TextStyle(
                   color: Colors.green[900],
                   fontStyle: FontStyle.italic,

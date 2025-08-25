@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The message format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Changed
+- update readme with animated gif files
+
+## [7.8.0] - 2025-08-25
+### Changed
+- update readme and provide animated gif files
+
+## [7.7.0] - 2025-08-24
+### Changed
+- update readme.md
+
 ## [7.6.0] - 2025-08-24
 ### Changed
 - refactor s.t. has simplest pubspec with no extra deps
@@ -156,6 +168,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - updated pubspec and example/pubspec
 - Initial version comes with a simple example app
 
+[Unreleased]: https://github.com/flutter_callouts/project/compare/7.8.0...HEAD
+[7.8.0]: https://github.com/flutter_callouts/project/compare/7.7.0...7.8.0
+[7.7.0]: https://github.com/flutter_callouts/project/compare/7.6.0...7.7.0
 [7.6.0]: https://github.com/flutter_callouts/project/compare/7.5.0...7.6.0
 [7.5.0]: https://github.com/flutter_callouts/project/compare/7.4.1...7.5.0
 [7.4.1]: https://github.com/flutter_callouts/project/compare/7.4.0...7.4.1

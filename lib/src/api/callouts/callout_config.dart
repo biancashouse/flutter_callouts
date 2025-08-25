@@ -57,7 +57,7 @@ class CalloutConfigModel
   bool followScroll;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  final GlobalKey? callerGK; // option, allowing caller context to be tracked
+  // final GlobalKey? callerGK; // option, allowing caller context to be tracked
 
   // final VoidCallback? onHidden;
 
@@ -81,8 +81,8 @@ class CalloutConfigModel
   @JsonKey(includeFromJson: false, includeToJson: false)
   CalloutBarrierConfig? barrier;
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  final bool modal;
+  // @JsonKey(includeFromJson: false, includeToJson: false)
+  // final bool modal;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   final bool showCloseButton;
@@ -111,7 +111,7 @@ class CalloutConfigModel
   final double? targetTranslateX;
   final double? targetTranslateY;
   bool animate;
-  final Widget? lineLabel;
+  Widget? lineLabel;
   final bool frameTarget;
   final double scaleTarget;
 
@@ -150,7 +150,7 @@ class CalloutConfigModel
   final bool alwaysReCalcSize;
   Color? draggableColor;
 
-  final bool containsTextField;
+  // final bool containsTextField;
 
   final bool notUsingHydratedStorage;
 
@@ -218,8 +218,8 @@ class CalloutConfigModel
   // we'll be adding the callout to the overlay relative to the targetRect
   // Size get calloutSize => Size(_calloutW, _calloutH);
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  late bool isHidden;
+  // @JsonKey(includeFromJson: false, includeToJson: false)
+  // late bool isHidden;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   bool needsToScrollH = false;
@@ -293,7 +293,7 @@ class CalloutConfigModel
   CalloutConfigModel({
     // required this.refreshOPParent,
     required this.cId,
-    this.callerGK,
+    // this.callerGK,
     this.movedOrResizedNotifier,
     this.gravity,
     // this.scale = 1.0,
@@ -318,7 +318,7 @@ class CalloutConfigModel
     this.arrowType = ArrowTypeEnum.THIN,
     this.arrowColor,
     this.barrier,
-    this.modal = false,
+    // this.modal = false,
     this.showCloseButton = false,
     this.closeButtonPos = const Offset(10, 10),
     this.onCloseButtonPressF,
@@ -353,7 +353,7 @@ class CalloutConfigModel
     this.onGotitPressedF,
     this.showcpi = false,
     this.onlyOnce,
-    this.containsTextField = false,
+    // this.containsTextField = false,
     this.alwaysReCalcSize = false,
     this.ignoreCalloutResult = false,
     this.finalSeparation,
@@ -443,7 +443,7 @@ class CalloutConfigModel
     ArrowTypeEnum? arrowType,
     ColorModel? arrowColor,
     CalloutBarrierConfig? barrier,
-    bool? modal,
+    // bool? modal,
     bool? showCloseButton,
     Offset? closeButtonPos,
     VoidCallback? onCloseButtonPressF,
@@ -476,7 +476,7 @@ class CalloutConfigModel
     VoidCallback? onGotitPressedF,
     bool? showcpi,
     bool? onlyOnce,
-    bool? containsTextField,
+    // bool? containsTextField,
     bool? alwaysReCalcSize,
     bool? ignoreCalloutResult,
     double? finalSeparation,

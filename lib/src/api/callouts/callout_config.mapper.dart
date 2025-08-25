@@ -28,10 +28,6 @@ class CalloutConfigModelMapper extends ClassMapperBase<CalloutConfigModel> {
 
   static String _$cId(CalloutConfigModel v) => v.cId;
   static const Field<CalloutConfigModel, String> _f$cId = Field('cId', _$cId);
-  static GlobalKey<State<StatefulWidget>>? _$callerGK(CalloutConfigModel v) =>
-      v.callerGK;
-  static const Field<CalloutConfigModel, GlobalKey<State<StatefulWidget>>>
-  _f$callerGK = Field('callerGK', _$callerGK, opt: true);
   static ValueNotifier<int>? _$movedOrResizedNotifier(CalloutConfigModel v) =>
       v.movedOrResizedNotifier;
   static const Field<CalloutConfigModel, ValueNotifier<int>>
@@ -178,13 +174,6 @@ class CalloutConfigModelMapper extends ClassMapperBase<CalloutConfigModel> {
   static CalloutBarrierConfig? _$barrier(CalloutConfigModel v) => v.barrier;
   static const Field<CalloutConfigModel, CalloutBarrierConfig> _f$barrier =
       Field('barrier', _$barrier, opt: true);
-  static bool _$modal(CalloutConfigModel v) => v.modal;
-  static const Field<CalloutConfigModel, bool> _f$modal = Field(
-    'modal',
-    _$modal,
-    opt: true,
-    def: false,
-  );
   static bool _$showCloseButton(CalloutConfigModel v) => v.showCloseButton;
   static const Field<CalloutConfigModel, bool> _f$showCloseButton = Field(
     'showCloseButton',
@@ -413,13 +402,6 @@ class CalloutConfigModelMapper extends ClassMapperBase<CalloutConfigModel> {
     _$onlyOnce,
     opt: true,
   );
-  static bool _$containsTextField(CalloutConfigModel v) => v.containsTextField;
-  static const Field<CalloutConfigModel, bool> _f$containsTextField = Field(
-    'containsTextField',
-    _$containsTextField,
-    opt: true,
-    def: false,
-  );
   static bool _$alwaysReCalcSize(CalloutConfigModel v) => v.alwaysReCalcSize;
   static const Field<CalloutConfigModel, bool> _f$alwaysReCalcSize = Field(
     'alwaysReCalcSize',
@@ -597,12 +579,6 @@ class CalloutConfigModelMapper extends ClassMapperBase<CalloutConfigModel> {
     _$lineLabelPos,
     mode: FieldMode.member,
   );
-  static bool _$isHidden(CalloutConfigModel v) => v.isHidden;
-  static const Field<CalloutConfigModel, bool> _f$isHidden = Field(
-    'isHidden',
-    _$isHidden,
-    mode: FieldMode.member,
-  );
   static bool _$needsToScrollH(CalloutConfigModel v) => v.needsToScrollH;
   static const Field<CalloutConfigModel, bool> _f$needsToScrollH = Field(
     'needsToScrollH',
@@ -704,7 +680,6 @@ class CalloutConfigModelMapper extends ClassMapperBase<CalloutConfigModel> {
   @override
   final MappableFields<CalloutConfigModel> fields = const {
     #cId: _f$cId,
-    #callerGK: _f$callerGK,
     #movedOrResizedNotifier: _f$movedOrResizedNotifier,
     #gravity: _f$gravity,
     #scrollControllerName: _f$scrollControllerName,
@@ -728,7 +703,6 @@ class CalloutConfigModelMapper extends ClassMapperBase<CalloutConfigModel> {
     #arrowType: _f$arrowType,
     #arrowColor: _f$arrowColor,
     #barrier: _f$barrier,
-    #modal: _f$modal,
     #showCloseButton: _f$showCloseButton,
     #closeButtonPos: _f$closeButtonPos,
     #onCloseButtonPressF: _f$onCloseButtonPressF,
@@ -761,7 +735,6 @@ class CalloutConfigModelMapper extends ClassMapperBase<CalloutConfigModel> {
     #onGotitPressedF: _f$onGotitPressedF,
     #showcpi: _f$showcpi,
     #onlyOnce: _f$onlyOnce,
-    #containsTextField: _f$containsTextField,
     #alwaysReCalcSize: _f$alwaysReCalcSize,
     #ignoreCalloutResult: _f$ignoreCalloutResult,
     #finalSeparation: _f$finalSeparation,
@@ -788,7 +761,6 @@ class CalloutConfigModelMapper extends ClassMapperBase<CalloutConfigModel> {
     #bottomLeftCorner: _f$bottomLeftCorner,
     #bottomRightCorner: _f$bottomRightCorner,
     #lineLabelPos: _f$lineLabelPos,
-    #isHidden: _f$isHidden,
     #needsToScrollH: _f$needsToScrollH,
     #needsToScrollV: _f$needsToScrollV,
     #dragCalloutOffset: _f$dragCalloutOffset,
@@ -810,7 +782,6 @@ class CalloutConfigModelMapper extends ClassMapperBase<CalloutConfigModel> {
   static CalloutConfigModel _instantiate(DecodingData data) {
     return CalloutConfigModel(
       cId: data.dec(_f$cId),
-      callerGK: data.dec(_f$callerGK),
       movedOrResizedNotifier: data.dec(_f$movedOrResizedNotifier),
       gravity: data.dec(_f$gravity),
       scrollControllerName: data.dec(_f$scrollControllerName),
@@ -834,7 +805,6 @@ class CalloutConfigModelMapper extends ClassMapperBase<CalloutConfigModel> {
       arrowType: data.dec(_f$arrowType),
       arrowColor: data.dec(_f$arrowColor),
       barrier: data.dec(_f$barrier),
-      modal: data.dec(_f$modal),
       showCloseButton: data.dec(_f$showCloseButton),
       closeButtonPos: data.dec(_f$closeButtonPos),
       onCloseButtonPressF: data.dec(_f$onCloseButtonPressF),
@@ -867,7 +837,6 @@ class CalloutConfigModelMapper extends ClassMapperBase<CalloutConfigModel> {
       onGotitPressedF: data.dec(_f$onGotitPressedF),
       showcpi: data.dec(_f$showcpi),
       onlyOnce: data.dec(_f$onlyOnce),
-      containsTextField: data.dec(_f$containsTextField),
       alwaysReCalcSize: data.dec(_f$alwaysReCalcSize),
       ignoreCalloutResult: data.dec(_f$ignoreCalloutResult),
       finalSeparation: data.dec(_f$finalSeparation),
@@ -956,7 +925,6 @@ abstract class CalloutConfigModelCopyWith<
   OffsetModelCopyWith<$R, OffsetModel, OffsetModel>? get initialCalloutPos;
   $R call({
     String? cId,
-    GlobalKey<State<StatefulWidget>>? callerGK,
     ValueNotifier<int>? movedOrResizedNotifier,
     AlignmentEnum? gravity,
     String? scrollControllerName,
@@ -980,7 +948,6 @@ abstract class CalloutConfigModelCopyWith<
     ArrowTypeEnum? arrowType,
     ColorModel? arrowColor,
     CalloutBarrierConfig? barrier,
-    bool? modal,
     bool? showCloseButton,
     Offset? closeButtonPos,
     void Function()? onCloseButtonPressF,
@@ -1013,7 +980,6 @@ abstract class CalloutConfigModelCopyWith<
     Function? onGotitPressedF,
     bool? showcpi,
     bool? onlyOnce,
-    bool? containsTextField,
     bool? alwaysReCalcSize,
     bool? ignoreCalloutResult,
     double? finalSeparation,
@@ -1053,7 +1019,6 @@ class _CalloutConfigModelCopyWithImpl<$R, $Out>
   @override
   $R call({
     String? cId,
-    Object? callerGK = $none,
     Object? movedOrResizedNotifier = $none,
     Object? gravity = $none,
     Object? scrollControllerName = $none,
@@ -1077,7 +1042,6 @@ class _CalloutConfigModelCopyWithImpl<$R, $Out>
     ArrowTypeEnum? arrowType,
     Object? arrowColor = $none,
     Object? barrier = $none,
-    bool? modal,
     bool? showCloseButton,
     Offset? closeButtonPos,
     Object? onCloseButtonPressF = $none,
@@ -1110,7 +1074,6 @@ class _CalloutConfigModelCopyWithImpl<$R, $Out>
     Object? onGotitPressedF = $none,
     bool? showcpi,
     Object? onlyOnce = $none,
-    bool? containsTextField,
     bool? alwaysReCalcSize,
     bool? ignoreCalloutResult,
     Object? finalSeparation = $none,
@@ -1122,7 +1085,6 @@ class _CalloutConfigModelCopyWithImpl<$R, $Out>
   }) => $apply(
     FieldCopyWithData({
       if (cId != null) #cId: cId,
-      if (callerGK != $none) #callerGK: callerGK,
       if (movedOrResizedNotifier != $none)
         #movedOrResizedNotifier: movedOrResizedNotifier,
       if (gravity != $none) #gravity: gravity,
@@ -1148,7 +1110,6 @@ class _CalloutConfigModelCopyWithImpl<$R, $Out>
       if (arrowType != null) #arrowType: arrowType,
       if (arrowColor != $none) #arrowColor: arrowColor,
       if (barrier != $none) #barrier: barrier,
-      if (modal != null) #modal: modal,
       if (showCloseButton != null) #showCloseButton: showCloseButton,
       if (closeButtonPos != null) #closeButtonPos: closeButtonPos,
       if (onCloseButtonPressF != $none)
@@ -1184,7 +1145,6 @@ class _CalloutConfigModelCopyWithImpl<$R, $Out>
       if (onGotitPressedF != $none) #onGotitPressedF: onGotitPressedF,
       if (showcpi != null) #showcpi: showcpi,
       if (onlyOnce != $none) #onlyOnce: onlyOnce,
-      if (containsTextField != null) #containsTextField: containsTextField,
       if (alwaysReCalcSize != null) #alwaysReCalcSize: alwaysReCalcSize,
       if (ignoreCalloutResult != null)
         #ignoreCalloutResult: ignoreCalloutResult,
@@ -1200,7 +1160,6 @@ class _CalloutConfigModelCopyWithImpl<$R, $Out>
   @override
   CalloutConfigModel $make(CopyWithData data) => CalloutConfigModel(
     cId: data.get(#cId, or: $value.cId),
-    callerGK: data.get(#callerGK, or: $value.callerGK),
     movedOrResizedNotifier: data.get(
       #movedOrResizedNotifier,
       or: $value.movedOrResizedNotifier,
@@ -1236,7 +1195,6 @@ class _CalloutConfigModelCopyWithImpl<$R, $Out>
     arrowType: data.get(#arrowType, or: $value.arrowType),
     arrowColor: data.get(#arrowColor, or: $value.arrowColor),
     barrier: data.get(#barrier, or: $value.barrier),
-    modal: data.get(#modal, or: $value.modal),
     showCloseButton: data.get(#showCloseButton, or: $value.showCloseButton),
     closeButtonPos: data.get(#closeButtonPos, or: $value.closeButtonPos),
     onCloseButtonPressF: data.get(
@@ -1287,10 +1245,6 @@ class _CalloutConfigModelCopyWithImpl<$R, $Out>
     onGotitPressedF: data.get(#onGotitPressedF, or: $value.onGotitPressedF),
     showcpi: data.get(#showcpi, or: $value.showcpi),
     onlyOnce: data.get(#onlyOnce, or: $value.onlyOnce),
-    containsTextField: data.get(
-      #containsTextField,
-      or: $value.containsTextField,
-    ),
     alwaysReCalcSize: data.get(#alwaysReCalcSize, or: $value.alwaysReCalcSize),
     ignoreCalloutResult: data.get(
       #ignoreCalloutResult,

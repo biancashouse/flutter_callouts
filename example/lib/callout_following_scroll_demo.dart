@@ -10,7 +10,10 @@ class ScrollingDemo extends StatefulWidget {
 }
 
 class _ScrollingDemoState extends State<ScrollingDemo> {
-  final NamedScrollController _namedSC = NamedScrollController('some-name', Axis.vertical);
+  final NamedScrollController _namedSC = NamedScrollController(
+    'some-name',
+    Axis.vertical,
+  );
   final GlobalKey _gk = GlobalKey();
   late CalloutConfigModel _cc;
 
@@ -31,7 +34,11 @@ class _ScrollingDemoState extends State<ScrollingDemo> {
     fca.afterNextBuildDo(() {
       // namedSC.jumpTo(150.0);
       // showOverlay requires a callout config + callout content + optionally, a target widget globalKey
-      fca.showOverlay(calloutConfig: _cc = _createFabCalloutConfig(), calloutContent: _createFabCalloutContent(), targetGkF: () => _gk);
+      fca.showOverlay(
+        calloutConfig: _cc = _createFabCalloutConfig(),
+        calloutContent: _createFabCalloutContent(),
+        targetGkF: () => _gk,
+      );
     });
   }
 
@@ -142,9 +149,9 @@ class _ScrollingDemoState extends State<ScrollingDemo> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: true,
-      onPopInvokedWithResult: (_,_){
+      onPopInvokedWithResult: (_, _) {
         fca.dismissAll();
-      } ,
+      },
       child: Scaffold(
         appBar: AppBar(title: Text('flutter_callouts scrolling demo')),
         // give it extra height to show how scrolling can work with callouts
@@ -155,15 +162,24 @@ class _ScrollingDemoState extends State<ScrollingDemo> {
             children: [
               SizedBox(height: 50),
               Text(
-                'This callout was created in the initState method, after the initial build.\n\n'
-                'Any callout can be draggable and resizeable. Try it...\n\n'
+                'The yellow callout points to the blue icon widget.\n\n'
+                'The callout has been configured to be draggable, resizeable,\n'
+                'with the pointer animated.\n\n'
                 'When scrolling your UI, you can have the callout stay in place\n'
-                'of follow the scroll. Try it...\n\n'
-                '(You have to pass a NamedScrollController when you configure the callout).',
-                style: TextStyle(color: Colors.green[900], fontStyle: FontStyle.italic, fontSize: 24),
+                'of follow the scroll.\n\n'
+                'The configuration can be updated in real time. E.g. when you change the\n'
+                '"followScroll?" checkbox, the scroll behaviour changes.\n\n'
+                'Try dragging the yellow callout and scrolling the screen...',
+                style: TextStyle(
+                  color: Colors.green[900],
+                  fontStyle: FontStyle.italic,
+                  fontSize: 24,
+                ),
               ),
               SizedBox(height: 200),
-              Center(child: Icon(key: _gk, Icons.adb_rounded)),
+              Center(
+                child: Icon(key: _gk, Icons.adb_rounded, color: Colors.blue),
+              ),
               SizedBox(height: fca.scrH),
             ],
           ),
@@ -171,7 +187,10 @@ class _ScrollingDemoState extends State<ScrollingDemo> {
         bottomSheet: Container(
           color: Colors.black,
           padding: EdgeInsets.all(8),
-          child: Text('demonstrating dragging, resizing, and scrolling with callouts', style: TextStyle(color: Colors.white)),
+          child: Text(
+            'demonstrating dragging, resizing, and scrolling with callouts',
+            style: TextStyle(color: Colors.white),
+          ),
         ),
       ),
     );

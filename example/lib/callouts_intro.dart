@@ -40,13 +40,13 @@ class IntroPageState extends State<IntroPage> {
                   ),
 
                   TextSpan(
-                    text: "Callouts are great for popping up messages (toasts etc), and for highlighting or pointing stuff out.\n\n",
+                    text: "Callouts are great for highlighting or pointing stuff out, or for popping up messages (toasts etc).\n\n",
                     style: TextStyle(fontStyle: FontStyle.normal, fontSize: 18),
                   ),
 
                   TextSpan(
                     text:
-                    "Flutter apps tend to have much more functionality, so adding callouts can really help your users learn about your app faster.\n\n",
+                    "Flutter apps tend to have much more functionality, so adding callouts can really help declutter the ui,\nand help your users understand your app faster.\n\n",
                     style: TextStyle(fontStyle: FontStyle.normal, fontSize: 18),
                   ),
 
@@ -59,15 +59,10 @@ class IntroPageState extends State<IntroPage> {
             ),
 
             SizedBox(
-              height: 490,
+              height: 450,
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    FilledButton(
-                      onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ToastDemoPage())),
-                      child: Text('Toasts demo'),
-                    ),
-                    SizedBox(height: 20),
                     FilledButton(
                       onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ScrollingDemo())),
                       child: Text('Simple callout demo'),
@@ -81,6 +76,11 @@ class IntroPageState extends State<IntroPage> {
                     FilledButton(
                       onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const PointerDemo())),
                       child: Text('Target Pointer demo'),
+                    ),
+                    SizedBox(height: 20),
+                    FilledButton(
+                      onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ToastDemoPage())),
+                      child: Text('Toasts demo'),
                     ),
                   ],
                 ),

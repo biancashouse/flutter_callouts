@@ -16,18 +16,18 @@ class _PointerDemoState extends State<PointerDemo> {
 
   // user can change callout properties even when a callout is already shown
   bool _showBarrier = false;
-  final bool _animateArrow = false;
+  // final bool _animateArrow = false;
+  bool _showLineLabel = false;
   final ArrowTypeEnum _pointerType = ArrowTypeEnum.THIN;
 
   @override
   void initState() {
     super.initState();
 
-    /// auto show a callout pointing at the FAB
     fca.afterNextBuildDo(() {
       // namedSC.jumpTo(150.0);
       // showOverlay requires a callout config + callout content + optionally, a target widget globalKey
-      fca.showOverlay(calloutConfig: _cc = _createFabCalloutConfig(), calloutContent: _createFabCalloutContent(), targetGkF: () => _gk);
+      fca.showOverlay(calloutConfig: _cc = _createCalloutConfig(), calloutContent: _createCalloutContent(), targetGkF: () => _gk);
     });
   }
 
@@ -73,7 +73,7 @@ class _PointerDemoState extends State<PointerDemo> {
   /// CalloutConfig objects are where you configure callouts and the way they point at their target.
   /// All params are shown, and many are commented out for this example callout.
   /// NOTE - a callout can be updated after it is created by updating properties and rebuilding it.
-  CalloutConfigModel _createFabCalloutConfig() {
+  CalloutConfigModel _createCalloutConfig() {
     _bc = CalloutBarrierConfig(
       cutoutPadding: fca.isWeb ? 20 : 10,
       excludeTargetFromBarrier: false,
@@ -104,7 +104,7 @@ class _PointerDemoState extends State<PointerDemo> {
       // -- callout appearance ----------------------------------------
       initialCalloutW: 280,
       // if not supplied, callout content widget gets measured
-      initialCalloutH: 320,
+      initialCalloutH: 350,
       // if not supplied, callout content widget gets measured
       // borderRadius: 12,
       borderThickness: 3,
@@ -120,8 +120,9 @@ class _PointerDemoState extends State<PointerDemo> {
       // -- pointer -------------------------------------------------
       // arrowColor: ColorModel.yellow(),
       arrowType: _pointerType,
-      animate: _animateArrow,
-      // lineLabel: Text('line label'),
+      animate: false,
+      lineLabel: _showLineLabel ? Text('line label') : null,
+      // frameTarget: true,
       // fromDelta: -20,
       // toDelta: -20,
       // lengthDeltaPc: ,
@@ -143,7 +144,7 @@ class _PointerDemoState extends State<PointerDemo> {
     );
   }
 
-  Widget _createFabCalloutContent() => Padding(
+  Widget _createCalloutContent() => Padding(
     padding: const EdgeInsets.all(8.0),
     child: Column(
       mainAxisSize: MainAxisSize.min,
@@ -214,13 +215,12 @@ class _PointerDemoState extends State<PointerDemo> {
             label: const Text('Pointer Type', style: TextStyle(color: Colors.blueGrey)),
             onSelected: (ArrowTypeEnum? newType) {
               if (newType == null) return;
-              fca.dismiss('main-toast');
               _changePointerType(newType);
             },
             dropdownMenuEntries: ArrowTypeEnum.entries,
           ),
         ),
-        if (_cc.arrowType != ArrowTypeEnum.NONE)
+        if (_cc.arrowType != ArrowTypeEnum.NONE && _cc.arrowType != ArrowTypeEnum.POINTY)
           SizedBox(
             width: double.infinity,
             child: Row(
@@ -232,14 +232,32 @@ class _PointerDemoState extends State<PointerDemo> {
                   builder: (context, setState) => Checkbox(
                     value: _cc.animate,
                     onChanged: (_) {
-                      setState(() => toggleAnimatedArrow());
+                      toggleAnimatedArrow();
                     },
                   ),
                 ),
               ],
             ),
           ),
-      ],
+        if (_cc.arrowType != ArrowTypeEnum.NONE && _cc.arrowType != ArrowTypeEnum.POINTY)
+          SizedBox(
+            width: double.infinity,
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text('show line label ?'),
+                StatefulBuilder(
+                  builder: (context, setState) => Checkbox(
+                    value: _showLineLabel,
+                    onChanged: (newVal) {
+                      toggleLineLabel(newVal??false);
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),      ],
     ),
   );
 
@@ -272,7 +290,8 @@ class _PointerDemoState extends State<PointerDemo> {
   void _changePointerType(ArrowTypeEnum newType) {
     setState(() {
       _cc.arrowType = newType;
-      fca.rebuild('some-callout-id');
+      fca.dismiss('some-callout-id');
+      fca.showOverlay(calloutConfig: _cc, calloutContent: _createCalloutContent(), targetGkF: () => _gk);
     });
   }
 
@@ -282,7 +301,16 @@ class _PointerDemoState extends State<PointerDemo> {
       // because animate requires a controller created in its intState, we simply recreate the callout rather just rebuild
       // TODO may refine later
       fca.dismiss('some-callout-id');
-      fca.showOverlay(calloutConfig: _cc, calloutContent: _createFabCalloutContent(), targetGkF: () => _gk);
+      fca.showOverlay(calloutConfig: _cc, calloutContent: _createCalloutContent(), targetGkF: () => _gk);
+    });
+  }
+
+  void toggleLineLabel(bool newVal) {
+    setState(() {
+      _showLineLabel = newVal;
+      fca.dismiss('some-callout-id');
+      _cc.lineLabel = newVal ? Text('line label') : null;
+      fca.showOverlay(calloutConfig: _cc, calloutContent: _createCalloutContent(), targetGkF: () => _gk);
     });
   }
 
@@ -302,7 +330,7 @@ class _PointerDemoState extends State<PointerDemo> {
             children: [
               SizedBox(height: 50),
               Text(
-                'A callout can optionally point to a target.\n\n'
+                'How your callout points to a target is highly configurable.\n\n'
                 'Use the dropdown menu to try different ways.\n\n'
                 'Drag the callout around to see how the callout keeps its pointer updated.',
                 style: TextStyle(color: Colors.green[900], fontStyle: FontStyle.italic, fontSize: 24),
