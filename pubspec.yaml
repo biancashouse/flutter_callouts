@@ -1,6 +1,6 @@
 name: flutter_callouts
 description: Point stuff out for your users => Target, Transform, Configure Callouts, Record to JSON in Dev, and Play in Production
-version: 8.0.3
+version: 8.1.0
 maintainer: Ian White
 homepage: https://github.com/biancashouse/flutter_callouts
 repository: https://github.com/biancashouse/flutter_callouts
