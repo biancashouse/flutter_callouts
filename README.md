@@ -1,5 +1,7 @@
 # *flutter\_callouts* package
 
+[![pub package](https://img.shields.io/pub/v/flutter_expandable_fab.svg)](https://pub.dartlang.org/packages/flutter_expandable_fab)
+
 ## Key Concepts
 
 The *flutter\_callouts* package allows you to pop up a content widget in a window; i.e. in a flutter overlay. This is the **callout**.
@@ -32,27 +34,27 @@ This package allows communication with the user in a multitude of ways:
 
 This project’s repository includes an example flutter app, that illustrates some of the more important capabilities of the api.
 
-![](readme_images/intro_page.png)
+![](https://github.com/biancashouse/flutter_callouts/blob/main/readme_images/intro_page.png?raw=true)
 <img src= "readme_images/intro_page.png" alt="" style="border: 2px solid grey;">
 
 The intro page leads to 4 demo pages
 
-![](readme_images/dragging_and_scrolling.gif)
+![](https://github.com/biancashouse/flutter_callouts/blob/main/readme_images/dragging_and_scrolling.gif?raw=true)
 <img src= "readme_images/dragging_and_scrolling.gif" alt="" style="border: 2px solid grey;">
 
 Callout points out target widgets, and is draggable and can follow scroll
 
-![](readme_images/barrier_demo.gif)
+![](https://github.com/biancashouse/flutter_callouts/blob/main/readme_images/barrier_demo.gif?raw=true)
 <img src= "readme_images/barrier_demo.gif" alt="" style="border: 2px solid grey;">
 
 A barrier can be configured behind the callout, with a cutout for the target.
 
-![](readme_images/pointer_demo.gif)
+![](https://github.com/biancashouse/flutter_callouts/blob/main/readme_images/pointer_demo.gif?raw=true)
 <img src= "readme_images/pointer_demo.gif" alt="" style="border: 2px solid grey;">
 
 The callout pointer can be configured, as well as a line label, and many other options.
 
-![](readme_images/toast_demo.gif)
+![](https://github.com/biancashouse/flutter_callouts/blob/main/readme_images/toast_emo.gif?raw=true)
 <img src= "readme_images/toast_demo.gif" alt="" style="border: 2px solid grey;">
 
 The callouts api can also be used to pop up toast from multiple directions .
@@ -67,6 +69,16 @@ The *flutter\_callouts* package defines many classes, the most important of whic
 
 * Global object **fca** \- you access the api using this global object
   (which is an instance of FlutterCalloutMixins).
+
+You create a callout at runtime by calling the following method:
+
+```dart
+  fca.showOverlay(
+        calloutConfig: ...,
+        calloutContent: ...,
+        targetGkF: ...,
+      );
+```
 
 * **Serializable property classes and enums** used to configure callouts:
   * AlignmentEnum
