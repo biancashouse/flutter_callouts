@@ -32,21 +32,21 @@ This package allows communication with the user in a multitude of ways:
 
 This project’s repository includes an example flutter app, that illustrates some of the more important capabilities of the api.
 
-#### ![](readme_images/intro_page.png)
+#### ![](https://github.com/biancashouse/flutter_callouts/blob/main/readme_images/intro_page.png?raw=true)
 
 The intro page leads to 4 demo pages
 
-## ![](readme_images/dragging_and_scrolling.gif)
+## ![](https://github.com/biancashouse/flutter_callouts/blob/main/readme_images/dragging_and_scrolling.gif?raw=true)
 
 Callout points out target widgets, and is draggable and can follow scroll
 
-![](readme_images/barrier_demo.gif)
+![](https://github.com/biancashouse/flutter_callouts/blob/main/readme_images/barrier_demo.gif?raw=true)
 A barrier can be configured behind the callout, with a cutout for the target.
 
-![](readme_images/pointer_demo.gif)
+![](https://github.com/biancashouse/flutter_callouts/blob/main/readme_images/pointer_demo.gif?raw=true)
 The callout pointer can be configured, as well as a line label, and many other options.
 
-![](readme_images/toast_emo.gif)
+![](https://github.com/biancashouse/flutter_callouts/blob/main/readme_images/toast_emo.gif?raw=true)
 The callouts api can also be used to pop up toast from multiple directions .
 
 ## API Usage
@@ -59,6 +59,16 @@ The *flutter\_callouts* package defines many classes, the most important of whic
 
 * Global object **fca** \- you access the api using this global object
   (which is an instance of FlutterCalloutMixins).
+
+You create a callout at runtime by calling the following method:
+
+```dart
+  fca.showOverlay(
+        calloutConfig: ...,
+        calloutContent: ...,
+        targetGkF: ...,
+      );
+```
 
 * **Serializable property classes and enums** used to configure callouts:
   * AlignmentEnum
