@@ -46,7 +46,7 @@ A barrier can be configured behind the callout, with a cutout for the target.
 ![](readme_images/pointer_demo.gif)
 The callout pointer can be configured, as well as a line label, and many other options.
 
-![](readme_images/toast_demo.gif)
+![](readme_images/toast_emo.gif)
 The callouts api can also be used to pop up toast from multiple directions .
 
 ## API Usage
