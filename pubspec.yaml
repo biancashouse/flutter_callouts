@@ -1,10 +1,15 @@
 name: flutter_callouts
 description: Point stuff out for your users => Target, Transform, Configure Callouts, Record to JSON in Dev, and Play in Production
-version: 8.2.0
+version: 8.3.0
 maintainer: Ian White
 homepage: https://github.com/biancashouse/flutter_callouts
 repository: https://github.com/biancashouse/flutter_callouts
 #publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+topics:
+  - callouts
+  - help
+  - toasts
 
 environment:
   sdk: ^3.9.0
@@ -54,6 +59,13 @@ dev_dependencies:
   dart_mappable_builder: ^4.5.0
   analyzer: ^7.0.0
 
+platforms:
+  android:
+  ios:
+  linux:
+  macos:
+  web:
+  windows:
 
 #false_secrets:
 #  - /example/lib/firebase_options.dart
