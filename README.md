@@ -32,21 +32,29 @@ This package allows communication with the user in a multitude of ways:
 
 This project’s repository includes an example flutter app, that illustrates some of the more important capabilities of the api.
 
-#### ![](readme_images/intro_page.png)
+![](readme_images/intro_page.png)
+<img src= "readme_images/intro_page.png" alt="" style="border: 2px solid grey;">
 
 The intro page leads to 4 demo pages
 
-## ![](readme_images/dragging_and_scrolling.gif)
+![](readme_images/dragging_and_scrolling.gif)
+<img src= "readme_images/dragging_and_scrolling.gif" alt="" style="border: 2px solid grey;">
 
 Callout points out target widgets, and is draggable and can follow scroll
 
 ![](readme_images/barrier_demo.gif)
+<img src= "readme_images/barrier_demo.gif" alt="" style="border: 2px solid grey;">
+
 A barrier can be configured behind the callout, with a cutout for the target.
 
 ![](readme_images/pointer_demo.gif)
+<img src= "readme_images/pointer_demo.gif" alt="" style="border: 2px solid grey;">
+
 The callout pointer can be configured, as well as a line label, and many other options.
 
 ![](readme_images/toast_demo.gif)
+<img src= "readme_images/toast_demo.gif" alt="" style="border: 2px solid grey;">
+
 The callouts api can also be used to pop up toast from multiple directions .
 
 ## API Usage
