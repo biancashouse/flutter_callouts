@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - update readme with animated gif files
 
+### Fixed
+- skip problematic git tag
+
 ## [7.8.0] - 2025-08-25
 ### Changed
 - update readme and provide animated gif files
