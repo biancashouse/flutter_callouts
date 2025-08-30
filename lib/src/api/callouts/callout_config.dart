@@ -28,6 +28,7 @@ class CalloutConfigModel
   // ignore: constant_identifier_names
   final String cId;
 
+  // if moved or resized, will bump every time
   @JsonKey(includeFromJson: false, includeToJson: false)
   final ValueNotifier<int>? movedOrResizedNotifier;
 

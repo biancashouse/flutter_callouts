@@ -1,6 +1,6 @@
 name: flutter_callouts_example
 description: "A Flutter Callouts demo project."
-#publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 version: 1.0.0+1
 
@@ -11,6 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
 
+  window_manager: ^0.5.1
   flutter_callouts:
     path: ..
 
