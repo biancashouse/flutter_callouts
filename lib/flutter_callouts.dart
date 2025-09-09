@@ -59,6 +59,7 @@ export 'src/widget/widget_helper_mixin.dart';
 // re-export
 export 'package:logger/src/logger.dart';
 export 'package:logger/src/log_filter.dart';
+export 'package:logger/src/log_event.dart';
 export 'package:logger/src/printers/pretty_printer.dart';
 
 // client apps will only access this functionality thru this global instance
@@ -89,7 +90,7 @@ class FlutterCalloutMixins
   {
      _logger = Logger(
       filter: MyLogFilter(),
-      printer: PrettyPrinter(colors: true, printEmojis: false),
+      printer: PrettyPrinter(colors: false, printEmojis: false),
     );
     _loggerNs = Logger(
       filter: MyLogFilter(),

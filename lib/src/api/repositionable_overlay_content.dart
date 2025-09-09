@@ -56,7 +56,7 @@ class _RepositionableOverlayContentState
   void didChangeMetrics() {
     // This is the key callback for MediaQuery changes!
     if (mounted) {
-      print("MediaQuery metrics changed. Updating overlay position.");
+      // print("MediaQuery metrics changed. Updating overlay position.");
       // Metrics have changed, recalculate and update position
       _refresh();
     }

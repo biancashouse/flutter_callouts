@@ -62,10 +62,10 @@ class ToastDemoPageState extends State<ToastDemoPage> with TickerProviderStateMi
     fca.showToastOverlay(
       removeAfterMs: showForMs,
       calloutConfig: CalloutConfigModel(
-        cId: 'main-toast',
+        cId: 'toast-${gravity.name}',
         gravity: gravity,
-        initialCalloutW: 500,
-        initialCalloutH: 200,
+        initialCalloutW: fca.isAndroid ? 200 : 500,
+        initialCalloutH: 240,
         fillColor: ColorModel.black26(),
         showCloseButton: true,
         borderThickness: 5,
@@ -93,7 +93,7 @@ class ToastDemoPageState extends State<ToastDemoPage> with TickerProviderStateMi
                 inputDecorationTheme: const InputDecorationTheme(filled: true, contentPadding: EdgeInsets.all(20.0)),
                 label: const Text('Gravity', style: TextStyle(color: Colors.blueGrey)),
                 onSelected: (AlignmentEnum? newGravity) {
-                  fca.dismiss('main-toast');
+                  fca.dismissToast(gravity);
                   _showToast(selectedGravity = newGravity ?? AlignmentEnum.topCenter);
                 },
                 dropdownMenuEntries: AlignmentEnum.entries,
@@ -111,27 +111,29 @@ class ToastDemoPageState extends State<ToastDemoPage> with TickerProviderStateMi
     onPopInvokedWithResult: (_, __) {
       fca.dismissAll();
     },
-    child: Scaffold(
-      appBar: AppBar(title: const Text('Flutter_Callouts demo')),
-      body: Center(
-        child: SizedBox(
-          height: 200,
-          child: Column(
-            children: [
-              if (!justShowNextDemoButton)
-                Text(
-                  'This page of the demo shows how you can overlay messages\n(popping on the screen like toast) over your app.\n\n'
-                  'Try changing the "Gravity" pulldown...',
-                ),
-            ],
+    child: SafeArea(
+      child: Scaffold(
+        appBar: AppBar(title: const Text('Flutter_Callouts demo')),
+        body: Center(
+          child: SizedBox(
+            height: 200,
+            child: Column(
+              children: [
+                if (!justShowNextDemoButton)
+                  Text(
+                    'This page of the demo shows how you can overlay messages\n(popping on the screen like toast) over your app.\n\n'
+                    'Try changing the "Gravity" pulldown...',
+                  ),
+              ],
+            ),
           ),
         ),
+        bottomSheet: Container(
+        color: Colors.black,
+        padding: EdgeInsets.all(8),
+        child: Text('demonstrating callouts as Toasts', style: TextStyle(color: Colors.white)),
       ),
-      bottomSheet: Container(
-      color: Colors.black,
-      padding: EdgeInsets.all(8),
-      child: Text('demonstrating callouts as Toasts', style: TextStyle(color: Colors.white)),
-    ),
+      ),
     ),
   );
 }

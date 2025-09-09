@@ -69,7 +69,7 @@ class _BarrierDemoState extends State<BarrierDemo> {
       //   },
       // ),
       // -- callout appearance ----------------------------------------
-      initialCalloutW: 200,
+      initialCalloutW: 240,
       // if not supplied, callout content widget gets measured
       initialCalloutH: 200,
       // if not supplied, callout content widget gets measured
@@ -206,13 +206,21 @@ class _BarrierDemoState extends State<BarrierDemo> {
 
   @override
   Widget build(BuildContext context) {
+    double fontSize = fca.scrW < 600 ? 12.0 : 18.0;
+
     return PopScope(
       canPop: true,
       onPopInvokedWithResult: (_, _) {
         fca.dismissAll();
       },
       child: Scaffold(
-        appBar: AppBar(title: Text('flutter_callouts scrolling demo')),
+        appBar: AppBar(
+          title: Text(
+            'flutter_callouts barrier demo',
+            style: TextStyle(fontWeight: FontWeight.bold),
+            textScaler: TextScaler.linear(1.4),
+          ),
+        ),
         // give it extra height to show how scrolling can work with callouts
         // also notice we pass in the named scroll controller
         body: Center(
@@ -229,7 +237,7 @@ class _BarrierDemoState extends State<BarrierDemo> {
                 style: TextStyle(
                   color: Colors.green[900],
                   fontStyle: FontStyle.italic,
-                  fontSize: 24,
+                  fontSize: fontSize,
                 ),
               ),
               SizedBox(height: 200),

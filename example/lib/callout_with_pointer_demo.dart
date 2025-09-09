@@ -87,10 +87,10 @@ class _PointerDemoState extends State<PointerDemo> {
     return CalloutConfigModel(
       cId: 'some-callout-id',
       // -- initial pos and animation ---------------------------------
-      initialCalloutAlignment: AlignmentEnum.centerLeft,
-      initialTargetAlignment: AlignmentEnum.centerRight,
+      initialTargetAlignment: fca.isAndroid? AlignmentEnum.topCenter : AlignmentEnum.centerLeft,
+      initialCalloutAlignment: fca.isAndroid? AlignmentEnum.bottomCenter : AlignmentEnum.centerRight,
       // initialCalloutPos:
-      finalSeparation: 40,
+      finalSeparation: 100,
       // fromDelta: 0.0,
       // toDelta : 0.0,
       // initialAnimatedPositionDurationMs:
@@ -104,7 +104,7 @@ class _PointerDemoState extends State<PointerDemo> {
       // -- callout appearance ----------------------------------------
       initialCalloutW: 280,
       // if not supplied, callout content widget gets measured
-      initialCalloutH: 350,
+      initialCalloutH: 400,
       // if not supplied, callout content widget gets measured
       // borderRadius: 12,
       borderThickness: 3,

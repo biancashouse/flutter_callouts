@@ -23,11 +23,12 @@ mixin CalloutMixin {
     int? removeAfterMs,
     VoidCallback? onReadyF,
     // TargetModel? configurableTarget,
-    final skipWidthConstraintWarning = false,
-    final skipHeightConstraintWarning = false,
+    bool skipWidthConstraintWarning = false,
+    bool skipHeightConstraintWarning = false,
+    bool wrapInPointerInterceptor = false,
   }) async
   // #end
-      {
+  {
     print('showOverlay: ${calloutConfig.cId}');
 
     if (await fca.alreadyGotit(calloutConfig.cId)) return;
@@ -42,7 +43,7 @@ mixin CalloutMixin {
       print('removeAfterMS: $removeAfterMs');
       calloutConfig.removalTimer = Timer(
         Duration(milliseconds: removeAfterMs),
-            () {
+        () {
           dismiss(calloutConfig.cId);
         },
       );
@@ -78,19 +79,20 @@ mixin CalloutMixin {
       fca
           .measureWidgetRect(context: fca.rootContext, widget: calloutContent)
           .then((rect) {
-        calloutConfig.calloutW = rect.width;
-        calloutConfig.calloutH = rect.height;
-        fca.logger.i('measured content size: ${rect.toString()}');
-        _createOverlayDefinitelyHasSize(
-          calloutConfig,
-          calloutContent,
-          // zoomer,
-          targetGkF,
-          ValueNotifier<int>(0),
-          ensureLowestOverlay,
-          onReadyF,
-        );
-      });
+            calloutConfig.calloutW = rect.width;
+            calloutConfig.calloutH = rect.height;
+            fca.logger.i('measured content size: ${rect.toString()}');
+            _createOverlayDefinitelyHasSize(
+              calloutConfig,
+              calloutContent,
+              // zoomer,
+              targetGkF,
+              ValueNotifier<int>(0),
+              ensureLowestOverlay,
+              onReadyF,
+              wrapInPointerInterceptor,
+            );
+          });
     } else {
       // width and height supplied
       // calloutConfig.initialCalloutW = calloutConfig.initialCalloutH = 0.0;
@@ -102,25 +104,30 @@ mixin CalloutMixin {
         ValueNotifier<int>(0),
         ensureLowestOverlay,
         onReadyF,
+        wrapInPointerInterceptor,
       );
     }
 
     await Future.delayed(const Duration(milliseconds: 800));
   }
 
-  void _createOverlayDefinitelyHasSize(CalloutConfigModel calloutConfig,
-      Widget calloutContent,
-      // ZoomerState? zoomer,
-      TargetKeyFunc? targetGkF,
-      ValueNotifier<int>? targetChangedNotifier,
-      bool ensureLowestOverlay,
-      VoidCallback? onReadyF,) {
+  void _createOverlayDefinitelyHasSize(
+    CalloutConfigModel calloutConfig,
+    Widget calloutContent,
+    // ZoomerState? zoomer,
+    TargetKeyFunc? targetGkF,
+    ValueNotifier<int>? targetChangedNotifier,
+    bool ensureLowestOverlay,
+    VoidCallback? onReadyF,
+    bool wrapInPointerInterceptor,
+  ) {
     OverlayEntry oEntry = _createOverlay(
       // zoomer,
       calloutConfig,
       calloutContent,
       targetGkF,
       ensureLowestOverlay,
+      wrapInPointerInterceptor,
     ); // will be null if target not present
     // if a notifer was passed in, means inside another overlay, so the target would change as the overlay gets moved or resized
     targetChangedNotifier?.addListener(() {
@@ -137,11 +144,14 @@ mixin CalloutMixin {
     });
   }
 
-  OverlayEntry _createOverlay(// ZoomerState? zoomer,
-      CalloutConfigModel calloutConfig,
-      Widget boxContent,
-      TargetKeyFunc? targetGkF,
-      bool ensureLowestOverlay,) {
+  OverlayEntry _createOverlay(
+    // ZoomerState? zoomer,
+    CalloutConfigModel calloutConfig,
+    Widget boxContent,
+    TargetKeyFunc? targetGkF,
+    bool ensureLowestOverlay,
+    bool wrapInPointerInterceptor,
+  ) {
     // in the event that finalSeparation specified, ensure initial callout at zero separation
     double? savedFinalSeparation = calloutConfig.finalSeparation;
     if ((calloutConfig.finalSeparation ?? 0.0) > 0.0) {
@@ -201,22 +211,22 @@ mixin CalloutMixin {
           child: calloutConfig.oeContentWidget(
             // zoomer: zoomer,
             targetRect: r,
-            calloutContentF: (_) =>
-                RepositionableOverlayContent(
-                  reshowF: () {
-                    fca.dismiss(calloutConfig.cId);
-                    showOverlay(
-                      calloutConfig: calloutConfig,
-                      calloutContent: boxContent,
-                      targetGkF: targetGkF,
-                      ensureLowestOverlay: ensureLowestOverlay,
-                    );
-                  },
-                  child: boxContent,
-                ),
+            calloutContentF: (_) => RepositionableOverlayContent(
+              reshowF: () {
+                fca.dismiss(calloutConfig.cId);
+                showOverlay(
+                  calloutConfig: calloutConfig,
+                  calloutContent: boxContent,
+                  targetGkF: targetGkF,
+                  ensureLowestOverlay: ensureLowestOverlay,
+                );
+              },
+              child: boxContent,
+            ),
             rebuildF: () {
               entry.markNeedsBuild();
             },
+            wrapInPointerInterceptor: wrapInPointerInterceptor,
           ),
         );
       },
@@ -265,8 +275,10 @@ mixin CalloutMixin {
     return entry;
   }
 
-  Future<void> _possiblyAnimateSeparation(CalloutConfigModel calloutConfig,
-      VoidCallback? onReadyF,) async {
+  Future<void> _possiblyAnimateSeparation(
+    CalloutConfigModel calloutConfig,
+    VoidCallback? onReadyF,
+  ) async {
     // print('_possiblyAnimateSeparation finalSep: ${calloutConfig.finalSeparation}');
     if ((calloutConfig.finalSeparation ?? 0.0) > 0.0) {
       // animate separation, top or left
@@ -305,9 +317,9 @@ mixin CalloutMixin {
     int removeAfterMs = 0,
   }) {
     assert(
-    calloutConfig.gravity != null &&
-        calloutConfig.initialCalloutW != null &&
-        calloutConfig.initialCalloutH != null,
+      calloutConfig.gravity != null &&
+          calloutConfig.initialCalloutW != null &&
+          calloutConfig.initialCalloutH != null,
     );
 
     CalloutConfigModel toastCC = calloutConfig.cloneWith(
@@ -338,10 +350,15 @@ mixin CalloutMixin {
   }
 
   void showToast({
-    required CalloutId cId,
     required String msg,
     Color? bgColor,
     Color? textColor,
+    double? fontSize,
+    String? fontFamily,
+    double? letterSpacing,
+    FontWeight? fontWeight,
+    FontStyle? fontStyle,
+    double scaleFactor = 1.0,
     AlignmentEnum gravity = AlignmentEnum.topCenter,
     bool showCPI = false,
     bool onlyOnce = false,
@@ -350,11 +367,11 @@ mixin CalloutMixin {
     double? height,
   }) {
     var cc = CalloutConfigModel(
-      cId: cId,
+      cId: 'toast-${gravity.name}',
       gravity: gravity,
       fillColor: ColorModel.fromColor(bgColor ?? Colors.white),
       initialCalloutW: width ?? fca.scrW * .8,
-      initialCalloutH: height ?? 40,
+      initialCalloutH: height ?? 80,
       scrollControllerName: null,
       showcpi: showCPI,
       onlyOnce: onlyOnce,
@@ -363,61 +380,81 @@ mixin CalloutMixin {
     showToastOverlay(
       calloutConfig: cc,
       calloutContent: Center(
-        child: fca.coloredText(msg, color: textColor ?? Colors.black),
-      ),
-      removeAfterMs: removeAfterMs,
-    );
-  }
-
-  void showToastBlueOnYellow({
-    required CalloutId cId,
-    required String msg,
-    bool showCPI = false,
-    int removeAfterMs = 0,
-  }) =>
-      showToast(
-        cId: cId,
-        msg: msg,
-        bgColor: Colors.yellow,
-        textColor: Colors.black,
-        showCPI: showCPI,
-        removeAfterMs: removeAfterMs,
-      );
-
-  void showToastPurpleOnLightWhite({
-    required CalloutId cId,
-    required String msg,
-    int removeAfterMs = 0,
-    double? widthPC,
-  }) {
-    var cc = CalloutConfigModel(
-      cId: cId,
-      gravity: AlignmentEnum.topCenter,
-      fillColor: ColorModel.white(),
-      initialCalloutW: widthPC == null
-          ? fca.scrW * .8
-          : fca.scrW * widthPC / 100,
-      initialCalloutH: 80,
-      scrollControllerName: null,
-    );
-
-    showToastOverlay(
-      calloutConfig: cc,
-      calloutContent: Center(
-        child: fca.coloredText(
-          msg,
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          color: Colors.purple,
+        child: Padding(
+          padding: const EdgeInsets.all(18.0),
+          child: fca.coloredText(
+            msg,
+            color: textColor ?? Colors.black,
+            fontFamily: fontFamily,
+            fontSize: fontSize,
+            fontStyle: fontStyle,
+            fontWeight: fontWeight,
+            scaleFactor: scaleFactor,
+          ),
         ),
       ),
       removeAfterMs: removeAfterMs,
     );
   }
 
-  static Offset _initialOffsetFromGravity(Alignment alignment,
-      double w,
-      double h,) {
+  void showToastColor1OnColor2({
+    AlignmentEnum gravity = AlignmentEnum.topCenter,
+    required String msg,
+    required Color textColor,
+    double? fontSize,
+    String? fontFamily,
+    double? letterSpacing,
+    FontWeight? fontWeight,
+    FontStyle? fontStyle,
+    double scaleFactor = 1.0,
+    required Color bgColor,
+    bool showCPI = false,
+    int removeAfterMs = 0,
+  }) => showToast(
+    gravity: gravity,
+    msg: msg,
+    bgColor: bgColor,
+    textColor: textColor,
+    showCPI: showCPI,
+    removeAfterMs: removeAfterMs,
+  );
+
+  // void showToastPurpleOnLightWhite({
+  //   required CalloutId cId,
+  //   required String msg,
+  //   int removeAfterMs = 0,
+  //   double? widthPC,
+  // }) {
+  //   var cc = CalloutConfigModel(
+  //     cId: cId,
+  //     gravity: AlignmentEnum.topCenter,
+  //     fillColor: ColorModel.white(),
+  //     initialCalloutW: widthPC == null
+  //         ? fca.scrW * .8
+  //         : fca.scrW * widthPC / 100,
+  //     initialCalloutH: 80,
+  //     scrollControllerName: null,
+  //   );
+  //
+  //   showToastOverlay(
+  //     calloutConfig: cc,
+  //     calloutContent: Center(
+  //       child: fca.coloredText(
+  //         msg,
+  //         fontSize: 16,
+  //         fontWeight: FontWeight.bold,
+  //         color: Colors.purple,
+  //       ),
+  //     ),
+  //     removeAfterMs: removeAfterMs,
+  //   );
+  // }
+
+  static Offset _initialOffsetFromGravity(
+    Alignment alignment,
+    double w,
+    double h,
+  ) {
     late Offset initialOffset;
     if (alignment == Alignment.topCenter) {
       initialOffset = Offset((fca.scrW - w) / 2, -h);
@@ -475,8 +512,10 @@ mixin CalloutMixin {
     return initialOffset;
   }
 
-  Future<void> _possiblyAnimateToastPos(CalloutConfigModel toastCC,
-      VoidCallback? onReadyF,) async {
+  Future<void> _possiblyAnimateToastPos(
+    CalloutConfigModel toastCC,
+    VoidCallback? onReadyF,
+  ) async {
     if (toastCC.left != null && toastCC.top != null) {
       Offset initialPos = Offset(toastCC.left!, toastCC.top!);
       Offset finalPos = _finalOffsetFromGravity(
@@ -507,7 +546,8 @@ mixin CalloutMixin {
     }
   }
 
-  void showCircularProgressIndicator(bool show, {
+  void showCircularProgressIndicator(
+    bool show, {
     ScrollControllerName? scName,
     required String reason,
   }) {
@@ -601,9 +641,11 @@ mixin CalloutMixin {
     return (renderObject as RenderBox).localToGlobal(Offset.zero);
   }
 
-  (double, double) ensureOnScreen(Rect calloutRect,
-      double minVisibleH,
-      double minVisibleV,) {
+  (double, double) ensureOnScreen(
+    Rect calloutRect,
+    double minVisibleH,
+    double minVisibleV,
+  ) {
     double resultLeft = calloutRect.left;
     double resultTop = calloutRect.top;
     // adjust s.t entirely visible
@@ -639,9 +681,11 @@ mixin CalloutMixin {
     return Rect.fromLTWH(left, top, width, height);
   }
 
-  Alignment calcTargetAlignmentWholeScreen(final Rect targetRect,
-      double calloutW,
-      double calloutH,) {
+  Alignment calcTargetAlignmentWholeScreen(
+    final Rect targetRect,
+    double calloutW,
+    double calloutH,
+  ) {
     Rect screenRect = Rect.fromLTWH(0, 0, fca.scrW, fca.scrH);
     double T = targetRect.top;
     double L = targetRect.left;
@@ -776,6 +820,10 @@ mixin CalloutMixin {
     }
   }
 
+  void dismissToast(AlignmentEnum gravity, {bool skipOnDismiss = false}) {
+    dismiss('toast-${gravity.name}', skipOnDismiss: skipOnDismiss);
+  }
+
   (int? i, OverlayEntry?) lowestEntry() {
     if (OE.list.isNotEmpty) {
       for (int i = 0; i < OE.list.length; i++) {
@@ -817,7 +865,8 @@ mixin CalloutMixin {
   }
 
   // unhide OpenPortal overlay
-  void unhideParentCallout(BuildContext context, {
+  void unhideParentCallout(
+    BuildContext context, {
     bool animateSeparation = false,
     int hideAfterMs = 0,
   }) {
@@ -859,7 +908,7 @@ mixin CalloutMixin {
 
   void hide(String cId) {
     OE? oeObj = findOE(cId);
-    if (oeObj != null /*  && !oeObj.isHidden*/) {
+    if (oeObj != null /*  && !oeObj.isHidden*/ ) {
       oeObj
         ..isHidden = true
         ..opC?.hide()
@@ -870,7 +919,7 @@ mixin CalloutMixin {
 
   void zeroHeight(String cId) {
     OE? oeObj = findOE(cId);
-    if (oeObj != null /*  && !oeObj.isHidden*/) {
+    if (oeObj != null /*  && !oeObj.isHidden*/ ) {
       oeObj.savedHeight = oeObj.calloutConfig.calloutH = 0;
       oeObj.entry?.markNeedsBuild();
     }
@@ -878,7 +927,7 @@ mixin CalloutMixin {
 
   void restoreHeight(String cId) {
     OE? oeObj = findOE(cId);
-    if (oeObj != null /*  && !oeObj.isHidden*/) {
+    if (oeObj != null /*  && !oeObj.isHidden*/ ) {
       oeObj.calloutConfig.calloutH = oeObj.savedHeight;
       oeObj.entry?.markNeedsBuild();
     }
@@ -886,7 +935,7 @@ mixin CalloutMixin {
 
   void unhide(String cId) {
     OE? oe = findOE(cId);
-    if (oe != null /*&& oe.isHidden*/) {
+    if (oe != null /*&& oe.isHidden*/ ) {
       oe
         ..isHidden = false
         ..opC?.show()

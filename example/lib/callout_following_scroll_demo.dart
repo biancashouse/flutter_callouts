@@ -36,8 +36,16 @@ class _ScrollingDemoState extends State<ScrollingDemo> {
       // showOverlay requires a callout config + callout content + optionally, a target widget globalKey
       fca.showOverlay(
         calloutConfig: _cc = _createFabCalloutConfig(),
-        calloutContent: _createFabCalloutContent(),
+        calloutContent: _createCalloutContent(),
         targetGkF: () => _gk,
+      );
+      fca.showToastColor1OnColor2(
+        gravity: AlignmentEnum.bottomCenter,
+        msg: 'demonstrating dragging, resizing,\nand scrolling with callouts',
+        textColor: Colors.white,
+        fontSize: 16,
+        fontStyle: FontStyle.italic,
+        bgColor: Colors.black,
       );
     });
   }
@@ -48,14 +56,19 @@ class _ScrollingDemoState extends State<ScrollingDemo> {
     super.dispose();
   }
 
+  double get fontSize {
+    double result = fca.scrW < 600 ? 12.0 : 24.0;
+    return result;
+  }
+
   /// CalloutConfig objects are where you configure callouts and the way they point at their target.
   /// All params are shown, and many are commented out for this example callout.
   /// NOTE - a callout can be updated after it is created by updating properties and rebuilding it.
   CalloutConfigModel _createFabCalloutConfig() => CalloutConfigModel(
     cId: 'some-callout-id',
     // -- initial pos and animation ---------------------------------
-    initialCalloutAlignment: AlignmentEnum.centerLeft,
-    initialTargetAlignment: AlignmentEnum.centerRight,
+    initialCalloutAlignment: fca.isAndroid? AlignmentEnum.topCenter : AlignmentEnum.centerLeft,
+    initialTargetAlignment: fca.isAndroid? AlignmentEnum.bottomCenter : AlignmentEnum.centerRight,
     // initialCalloutPos:
     finalSeparation: 60,
     // fromDelta: 0.0,
@@ -69,7 +82,7 @@ class _ScrollingDemoState extends State<ScrollingDemo> {
     //   },
     // ),
     // -- callout appearance ----------------------------------------
-    initialCalloutW: 200,
+    initialCalloutW: 240,
     // if not supplied, callout content widget gets measured
     initialCalloutH: 120,
     // if not supplied, callout content widget gets measured
@@ -108,32 +121,34 @@ class _ScrollingDemoState extends State<ScrollingDemo> {
     followScroll: false,
   );
 
-  Widget _createFabCalloutContent() => Padding(
-    padding: const EdgeInsets.all(8.0),
-    child: Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Text('Pointing out the icon widget.\n'),
-        SizedBox(
-          width: double.infinity,
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text('followScroll?'),
-              StatefulBuilder(
-                builder: (context, setState) => Checkbox(
-                  value: _cc.followScroll,
-                  onChanged: (_) {
-                    setState(() => toggleFollowScroll());
-                  },
+  Widget _createCalloutContent() => IntrinsicHeight(
+    child: Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text('Pointing out the icon widget.\n'),
+          SizedBox(
+            width: double.infinity,
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text('followScroll?'),
+                StatefulBuilder(
+                  builder: (context, setState) => Checkbox(
+                    value: _cc.followScroll,
+                    onChanged: (_) {
+                      setState(() => toggleFollowScroll());
+                    },
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     ),
   );
 
@@ -152,45 +167,64 @@ class _ScrollingDemoState extends State<ScrollingDemo> {
       onPopInvokedWithResult: (_, _) {
         fca.dismissAll();
       },
-      child: Scaffold(
-        appBar: AppBar(title: Text('flutter_callouts scrolling demo')),
-        // give it extra height to show how scrolling can work with callouts
-        // also notice we pass in the named scroll controller
-        body: SingleChildScrollView(
-          controller: _namedSC,
-          child: Column(
-            children: [
-              SizedBox(height: 50),
-              Text(
-                'The yellow callout points to the blue icon widget.\n\n'
-                'The callout has been configured to be draggable, resizeable,\n'
-                'with the pointer animated.\n\n'
-                'When scrolling your UI, you can have the callout stay in place\n'
-                'of follow the scroll.\n\n'
-                'The configuration can be updated in real time. E.g. when you change the\n'
-                '"followScroll?" checkbox, the scroll behaviour changes.\n\n'
-                'Try dragging the yellow callout and scrolling the screen...',
-                style: TextStyle(
-                  color: Colors.green[900],
-                  fontStyle: FontStyle.italic,
-                  fontSize: 24,
-                ),
-              ),
-              SizedBox(height: 200),
-              Center(
-                child: Icon(key: _gk, Icons.adb_rounded, color: Colors.blue),
-              ),
-              SizedBox(height: fca.scrH),
-            ],
+      child: SafeArea(
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(
+              'flutter_callouts scrolling demo',
+              style: TextStyle(fontWeight: FontWeight.bold),
+              textScaler: TextScaler.linear(1.4),
+            ),
           ),
-        ),
-        bottomSheet: Container(
-          color: Colors.black,
-          padding: EdgeInsets.all(8),
-          child: Text(
-            'demonstrating dragging, resizing, and scrolling with callouts',
-            style: TextStyle(color: Colors.white),
+          // give it extra height to show how scrolling can work with callouts
+          // also notice we pass in the named scroll controller
+          body: SingleChildScrollView(
+            controller: _namedSC,
+            child: IntrinsicHeight(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(28.0),
+                    child: Text(
+                      'The yellow callout points to the blue icon widget.\n\n'
+                      'The callout has been configured to be draggable, resizeable,\n'
+                      'with the pointer animated.\n\n'
+                      'When scrolling your UI, you can have the callout stay in place\n'
+                      'of follow the scroll.\n\n'
+                      'The configuration can be updated in real time. E.g. when you change the\n'
+                      '"followScroll?" checkbox, the scroll behaviour changes.\n\n'
+                      'Try dragging the yellow callout and scrolling the screen...',
+                      style: TextStyle(
+                        color: Colors.green[900],
+                        fontStyle: FontStyle.italic,
+                        fontSize: fontSize,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 200.0),
+                  Center(
+                    child: Icon(
+                      key: _gk,
+                      Icons.adb_rounded,
+                      color: Colors.blue,
+                    ),
+                  ),
+                  SizedBox(height: fca.scrH),
+                ],
+              ),
+            ),
           ),
+          // bottomSheet: Container(
+          //   width: double.infinity,
+          //   height: 70.0,
+          //   color: Colors.black,
+          //   padding: EdgeInsets.all(8),
+          //   child: Text(
+          //     'demonstrating dragging, resizing,\nand scrolling with callouts',
+          //     style: TextStyle(color: Colors.white),
+          //     textAlign: TextAlign.center,
+          //   ),
+          // ),
         ),
       ),
     );

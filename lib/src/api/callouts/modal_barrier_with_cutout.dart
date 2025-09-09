@@ -28,10 +28,7 @@ class _SemanticsClipper extends SingleChildRenderObjectWidget {
   /// creates a [_SemanticsClipper] that updates the size of the
   /// [SemanticsNode.rect] of its child based on the value inside the provided
   /// [ValueNotifier], or a default value of [EdgeInsets.zero].
-  const _SemanticsClipper({
-    super.child,
-    required this.clipDetailsNotifier,
-  });
+  const _SemanticsClipper({super.child, required this.clipDetailsNotifier});
 
   /// The [ValueNotifier] whose value determines how the child's
   /// [SemanticsNode.rect] should be clipped in four directions.
@@ -39,14 +36,14 @@ class _SemanticsClipper extends SingleChildRenderObjectWidget {
 
   @override
   _RenderSemanticsClipper createRenderObject(BuildContext context) {
-    return _RenderSemanticsClipper(
-      clipDetailsNotifier: clipDetailsNotifier,
-    );
+    return _RenderSemanticsClipper(clipDetailsNotifier: clipDetailsNotifier);
   }
 
   @override
-  void updateRenderObject(BuildContext context,
-      _RenderSemanticsClipper renderObject) {
+  void updateRenderObject(
+    BuildContext context,
+    _RenderSemanticsClipper renderObject,
+  ) {
     renderObject.clipDetailsNotifier = clipDetailsNotifier;
   }
 }
@@ -59,9 +56,8 @@ class _RenderSemanticsClipper extends RenderProxyBox {
   _RenderSemanticsClipper({
     required ValueNotifier<EdgeInsets> clipDetailsNotifier,
     RenderBox? child,
-  })
-      : _clipDetailsNotifier = clipDetailsNotifier,
-        super(child);
+  }) : _clipDetailsNotifier = clipDetailsNotifier,
+       super(child);
 
   ValueNotifier<EdgeInsets> _clipDetailsNotifier;
 
@@ -215,9 +211,11 @@ class ModalBarrierWithCutout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // print('ModalBarrierWithCutout._targetRect: ${calloutConfig.barrier?.cutoutRect.width}');
-    assert(!dismissible ||
-        semanticsLabel == null ||
-        debugCheckHasDirectionality(context));
+    assert(
+      !dismissible ||
+          semanticsLabel == null ||
+          debugCheckHasDirectionality(context),
+    );
     final bool platformSupportsDismissingBarrier;
     switch (defaultTargetPlatform) {
       case TargetPlatform.fuchsia:
@@ -248,10 +246,12 @@ class ModalBarrierWithCutout extends StatelessWidget {
 
     Widget barrier = Semantics(
       onTapHint: semanticsOnTapHint,
-      onTap:
-      semanticsDismissible && semanticsLabel != null ? handleDismiss : null,
-      onDismiss:
-      semanticsDismissible && semanticsLabel != null ? handleDismiss : null,
+      onTap: semanticsDismissible && semanticsLabel != null
+          ? handleDismiss
+          : null,
+      onDismiss: semanticsDismissible && semanticsLabel != null
+          ? handleDismiss
+          : null,
       label: semanticsDismissible ? semanticsLabel : null,
       textDirection: semanticsDismissible && semanticsLabel != null
           ? Directionality.of(context)
@@ -264,15 +264,15 @@ class ModalBarrierWithCutout extends StatelessWidget {
             opacity: opacity,
             child: !round
                 ? CustomPaint(
-              painter: BarrierWithRectangularCutoutPainter(
-                barrierColor: color,
-                target: cutoutRect,
-              ),
-            )
+                    painter: BarrierWithRectangularCutoutPainter(
+                      barrierColor: color,
+                      target: cutoutRect,
+                    ),
+                  )
                 : _barrierWithCircularHole(
-              barrierColor: color,
-              target: cutoutRect,
-            ),
+                    barrierColor: color,
+                    target: cutoutRect,
+                  ),
           ),
         ),
       ),
@@ -309,7 +309,7 @@ class ModalBarrierWithCutout extends StatelessWidget {
     required Rect target,
     double padding = 0,
   }) {
-    if (fca.isMac || fca.isWindows) {
+    if (fca.isMac || fca.isWindows || fca.isIOS || fca.isAndroid) {
       return CircularCutoutBarrier(
         barrierColor: barrierColor,
         circleCenter: target.center,
@@ -324,9 +324,7 @@ class ModalBarrierWithCutout extends StatelessWidget {
         children: [
           Positioned(
             child: Container(
-              decoration: BoxDecoration(
-                color: Colors.transparent,
-              ),
+              decoration: BoxDecoration(color: Colors.transparent),
               child: Stack(
                 children: [
                   Positioned(
@@ -340,7 +338,8 @@ class ModalBarrierWithCutout extends StatelessWidget {
                         color: Colors.black,
                         // Color does not matter but should not be transparent
                         borderRadius: BorderRadius.circular(
-                            max(target.width, target.height)),
+                          max(target.width, target.height),
+                        ),
                       ),
                     ),
                   ),
@@ -405,8 +404,11 @@ class _AnyTapGestureRecognizer extends BaseTapGestureRecognizer {
 
   @protected
   @override
-  void handleTapCancel(
-      {PointerDownEvent? down, PointerCancelEvent? cancel, String? reason}) {
+  void handleTapCancel({
+    PointerDownEvent? down,
+    PointerCancelEvent? cancel,
+    String? reason,
+  }) {
     // Do nothing.
   }
 
@@ -448,10 +450,11 @@ class _ModalBarrierGestureDetector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Map<Type, GestureRecognizerFactory> gestures =
-    <Type, GestureRecognizerFactory>{
-      _AnyTapGestureRecognizer:
-      _AnyTapGestureRecognizerFactory(onAnyTapUp: onDismiss),
-    };
+        <Type, GestureRecognizerFactory>{
+          _AnyTapGestureRecognizer: _AnyTapGestureRecognizerFactory(
+            onAnyTapUp: onDismiss,
+          ),
+        };
 
     return RawGestureDetector(
       gestures: gestures,
@@ -475,6 +478,7 @@ class BarrierWithRectangularCutoutPainter extends CustomPainter {
     Paint backgroundPaint = Paint();
     backgroundPaint.blendMode = BlendMode.multiply;
     backgroundPaint.color = barrierColor;
+
     // // Step 1: Draw the background:
     // canvas.drawRect(Rect.fromLTWH(0, 0, size.width, target.top), backgroundPaint);
     // canvas.drawRect(Rect.fromLTWH(0, 0, target.left, size.height), backgroundPaint);
@@ -486,82 +490,78 @@ class BarrierWithRectangularCutoutPainter extends CustomPainter {
     // 1
     if (target.left > 0 && target.top > 0)
       canvas.drawRect(
-        Rect.fromLTWH(
-          0,
-          0,
-          target.left,
-          target.top,
-        ),
+        Rect.fromLTWH(0, 0, target.left, target.top),
         backgroundPaint,
       );
     // 2
     if (target.top > 0)
       canvas.drawRect(
-          Rect.fromLTWH(
-            target.left,
-            0,
-            target.width,
-            target.top,
-          ),
-          backgroundPaint);
+        Rect.fromLTWH(target.left, 0, target.width, target.top),
+        backgroundPaint,
+      );
     // 3
     if (size.width > target.left + target.width && target.top > 0)
       canvas.drawRect(
-          Rect.fromLTWH(
-            target.left + target.width,
-            0,
-            size.width - target.left - target.width,
-            target.top,
-          ),
-          backgroundPaint);
+        Rect.fromLTWH(
+          target.left + target.width,
+          0,
+          size.width - target.left - target.width,
+          target.top,
+        ),
+        backgroundPaint,
+      );
     // 4
     if (target.left > 0)
       canvas.drawRect(
-          Rect.fromLTWH(
-            0,
-            target.top,
-            target.left,
-            target.height,
-          ),
-          backgroundPaint);
+        Rect.fromLTWH(0, target.top, target.left, target.height),
+        backgroundPaint,
+      );
     // 5 is the cutout
     // 6
     if (size.width > target.left + target.width)
       canvas.drawRect(
-          Rect.fromLTWH(target.left + target.width, target.top,
-              size.width - target.left - target.width, target.height),
-          backgroundPaint);
+        Rect.fromLTWH(
+          target.left + target.width,
+          target.top,
+          size.width - target.left - target.width,
+          target.height,
+        ),
+        backgroundPaint,
+      );
     // 7
     if (target.left > 0 && size.height > target.top + target.height)
       canvas.drawRect(
-          Rect.fromLTWH(
-            0,
-            target.top + target.height,
-            target.left,
-            size.width - target.top - target.height,
-          ),
-          backgroundPaint);
+        Rect.fromLTWH(
+          0,
+          target.top + target.height,
+          target.left,
+          size.height - target.top - target.height,
+        ),
+        backgroundPaint,
+      );
     // 8
     if (size.height > target.top + target.height)
       canvas.drawRect(
-          Rect.fromLTWH(
-            target.left,
-            target.top + target.height,
-            target.width,
-            size.height - target.top - target.height,
-          ),
-          backgroundPaint);
+        Rect.fromLTWH(
+          target.left,
+          target.top + target.height,
+          target.width,
+          size.height - target.top - target.height,
+        ),
+        backgroundPaint,
+      );
     // 9
     if (size.width > target.left + target.width &&
         size.height > target.top + target.height)
       canvas.drawRect(
-          Rect.fromLTWH(
-            target.left + target.width,
-            target.top + target.height,
-            size.width - target.left - target.width,
-            size.height - target.top - target.height,
-          ),
-          backgroundPaint);
+        Rect.fromLTWH(
+          target.left + target.width,
+          target.top + target.height,
+          size.width - target.left - target.width,
+          size.height - target.top - target.height,
+        ),
+        backgroundPaint,
+      );
   }
 
   @override
