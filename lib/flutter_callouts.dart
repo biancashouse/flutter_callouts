@@ -3,6 +3,7 @@
 // ignore_for_file: constant_identifier_names
 
 // import 'flutter_callouts.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:logger/logger.dart';
 
 import 'package:flutter_callouts/src/kbd_mixin.dart';
@@ -15,6 +16,7 @@ import 'src/gotits_mixin.dart';
 import 'src/root_context_mixin.dart';
 import 'src/system_mixin.dart';
 import 'src/widget/widget_helper_mixin.dart';
+import 'src/api/callouts/globalkey_extn.dart';
 
 export 'src/api/callouts/callout_config.dart';
 
@@ -100,6 +102,8 @@ class FlutterCalloutMixins
 
   Logger get logger => _logger;
   Logger get loggerNs => _loggerNs;
+
+  GlobalKey? findNamedGK(String gkName) => namedGKs[gkName];
 
   // static FlutterCalloutMixins get instance {
   //   return FlutterCalloutMixins._internal();

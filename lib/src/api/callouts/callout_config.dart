@@ -32,7 +32,7 @@ class CalloutConfigModel
 
   // if moved or resized, will bump every time
   @JsonKey(includeFromJson: false, includeToJson: false)
-  final ValueNotifier<int>? movedOrResizedNotifier;
+  final ValueNotifier<int>? movedOrResizedNotifier = ValueNotifier(0);
 
   // will bump every time callout overlay moved or resized
 
@@ -297,7 +297,6 @@ class CalloutConfigModel
     // required this.refreshOPParent,
     required this.cId,
     // this.callerGK,
-    this.movedOrResizedNotifier,
     this.gravity,
     // this.scale = 1.0,
     required this.scrollControllerName, // force developer to consider scrolling
@@ -987,7 +986,7 @@ class CalloutConfigModel
   Stack _calloutStack(content, wrapWithPointerInterceptor) => Stack(
     children: [
       if (notToast && barrier != null && barrier!.opacity > 0.0)
-        _createBarrier(),
+        PointerInterceptor(child: _createBarrier()),
       if (notToast && frameTarget) _createTargetBorder(),
       if (resizeableH && resizeableV)
         topLeftCorner = DraggableCorner_OP(
@@ -1119,7 +1118,7 @@ class CalloutConfigModel
 
   void finishedAnimatingSeparation() {
     _finishedAnimatingSeparation = true;
-    //movedOrResizedNotifier?.value++;
+    movedOrResizedNotifier?.value++;
   }
 
   void startedAnimatingTopLeft() => _animatingTopLeft = true;
@@ -1417,15 +1416,15 @@ class CalloutConfigModel
     });
   }
 
-  void moveBy(double hDelta, double vDelta) {
-    rebuild(() {
-      if (top == null) return;
-      moveTo(
-        left! + hDelta - dragCalloutOffset.dx,
-        top! + vDelta - dragCalloutOffset.dy,
-      );
-    });
-  }
+  // void moveBy(double hDelta, double vDelta) {
+  //   rebuild(() {
+  //     if (top == null) return;
+  //     moveTo(
+  //       left! + hDelta - dragCalloutOffset.dx,
+  //       top! + vDelta - dragCalloutOffset.dy,
+  //     );
+  //   });
+  // }
 
   // void moveBy(double hDelta, double vDelta) {
   //   rebuild(() {
@@ -1451,125 +1450,125 @@ class CalloutConfigModel
   //   });
   // }
   //
-  void moveTo(double newLeft, double newTop) {
-    rebuild(() {
-      top = newTop;
-      left = newLeft;
-      var definitelyOnScreen = fca.ensureOnScreen(
-        Rect.fromLTWH(left!, top!, _calloutW!, dragHandleHeight ?? _calloutH!),
-        _calloutW!,
-        _calloutH!,
-      );
-      left = definitelyOnScreen.$1;
-      top = definitelyOnScreen.$2;
+  // void moveTo(double newLeft, double newTop) {
+  //   rebuild(() {
+  //     top = newTop;
+  //     left = newLeft;
+  //     var definitelyOnScreen = fca.ensureOnScreen(
+  //       Rect.fromLTWH(left!, top!, _calloutW!, dragHandleHeight ?? _calloutH!),
+  //       _calloutW!,
+  //       _calloutH!,
+  //     );
+  //     left = definitelyOnScreen.$1;
+  //     top = definitelyOnScreen.$2;
+  //
+  //     onDragF?.call(Offset(left!, top!));
+  //     movedOrResizedNotifier?.value++;
+  //     // fca.logger.i('top: $top, left: $left');
+  //   });
+  // }
 
-      onDragF?.call(Offset(left!, top!));
-      movedOrResizedNotifier?.value++;
-      // fca.logger.i('top: $top, left: $left');
-    });
-  }
+  // Future<void> animateResizeByCornerMove(
+  //   Alignment alignment,
+  //   double hDelta,
+  //   double vDelta, {
+  //   required Duration duration,
+  //   VoidCallback? afterAnimationF,
+  // }) async {
+  //   if (left == null || top == null) return;
+  //   AnimationController animationController = AnimationController(
+  //     duration: duration,
+  //     vsync: this,
+  //   );
+  //   Tween<Offset> tween = Tween<Offset>(
+  //     begin: Offset.zero,
+  //     end: Offset(hDelta, vDelta),
+  //   );
+  //   Animation<Offset>? animation = tween.animate(animationController);
+  //   Offset prevValue = Offset.zero;
+  //   int i = 0;
+  //   animation.addListener(
+  //     () => rebuild(() {
+  //       Offset delta = Offset(
+  //         animation.value.dx - prevValue.dx,
+  //         animation.value.dy - prevValue.dy,
+  //       );
+  //       prevValue = animation.value;
+  //       fca.logger.i(
+  //         '${i++} av ${animation.value} delta ${delta.toString()}, prevDelta ${prevValue.toString()}',
+  //       );
+  //       if (alignment == Alignment.topLeft) {
+  //         if (delta.dx < 0 || _calloutW! + delta.dx >= (minWidth ?? 30)) {
+  //           left = left! + delta.dx;
+  //           _calloutW = _calloutW! - delta.dx;
+  //         }
+  //         if (delta.dy < 0 || _calloutH! + delta.dy >= (minHeight ?? 30)) {
+  //           top = top! + delta.dy;
+  //           _calloutH = _calloutH! - delta.dy;
+  //         }
+  //       } else if (alignment == Alignment.topRight) {
+  //         if (_calloutW! + delta.dx < (minWidth ?? 30)) {
+  //           _calloutW = minWidth ?? 30;
+  //         } else {
+  //           _calloutW = _calloutW! + delta.dx;
+  //         }
+  //         if (delta.dy < 0 || _calloutH! + delta.dy >= (minHeight ?? 30)) {
+  //           top = top! + delta.dy;
+  //           _calloutH = _calloutH! - delta.dy;
+  //         }
+  //       } else if (alignment == Alignment.bottomLeft) {
+  //         if (delta.dx < 0 || _calloutW! + delta.dx >= (minWidth ?? 30)) {
+  //           left = left! + delta.dx;
+  //           _calloutW = _calloutW! - delta.dx;
+  //         }
+  //         if (_calloutH! + delta.dy < (minHeight ?? 30)) {
+  //           _calloutH = minHeight ?? 30;
+  //         } else {
+  //           _calloutH = _calloutH! + delta.dy;
+  //         }
+  //       } else if (alignment == Alignment.bottomRight) {
+  //         if (_calloutW! + delta.dx < (minWidth ?? 30)) {
+  //           _calloutW = minWidth ?? 30;
+  //         } else {
+  //           _calloutW = _calloutW! + delta.dx;
+  //         }
+  //         if (_calloutH! + delta.dy < (minHeight ?? 30)) {
+  //           _calloutH = minHeight ?? 30;
+  //         } else {
+  //           _calloutH = _calloutH! + delta.dy;
+  //         }
+  //       }
+  //     }),
+  //   );
+  //   await animationController.forward();
+  //   afterAnimationF?.call();
+  //   animationController.dispose();
+  // }
 
-  Future<void> animateResizeByCornerMove(
-    Alignment alignment,
-    double hDelta,
-    double vDelta, {
-    required Duration duration,
-    VoidCallback? afterAnimationF,
-  }) async {
-    if (left == null || top == null) return;
-    AnimationController animationController = AnimationController(
-      duration: duration,
-      vsync: this,
-    );
-    Tween<Offset> tween = Tween<Offset>(
-      begin: Offset.zero,
-      end: Offset(hDelta, vDelta),
-    );
-    Animation<Offset>? animation = tween.animate(animationController);
-    Offset prevValue = Offset.zero;
-    int i = 0;
-    animation.addListener(
-      () => rebuild(() {
-        Offset delta = Offset(
-          animation.value.dx - prevValue.dx,
-          animation.value.dy - prevValue.dy,
-        );
-        prevValue = animation.value;
-        fca.logger.i(
-          '${i++} av ${animation.value} delta ${delta.toString()}, prevDelta ${prevValue.toString()}',
-        );
-        if (alignment == Alignment.topLeft) {
-          if (delta.dx < 0 || _calloutW! + delta.dx >= (minWidth ?? 30)) {
-            left = left! + delta.dx;
-            _calloutW = _calloutW! - delta.dx;
-          }
-          if (delta.dy < 0 || _calloutH! + delta.dy >= (minHeight ?? 30)) {
-            top = top! + delta.dy;
-            _calloutH = _calloutH! - delta.dy;
-          }
-        } else if (alignment == Alignment.topRight) {
-          if (_calloutW! + delta.dx < (minWidth ?? 30)) {
-            _calloutW = minWidth ?? 30;
-          } else {
-            _calloutW = _calloutW! + delta.dx;
-          }
-          if (delta.dy < 0 || _calloutH! + delta.dy >= (minHeight ?? 30)) {
-            top = top! + delta.dy;
-            _calloutH = _calloutH! - delta.dy;
-          }
-        } else if (alignment == Alignment.bottomLeft) {
-          if (delta.dx < 0 || _calloutW! + delta.dx >= (minWidth ?? 30)) {
-            left = left! + delta.dx;
-            _calloutW = _calloutW! - delta.dx;
-          }
-          if (_calloutH! + delta.dy < (minHeight ?? 30)) {
-            _calloutH = minHeight ?? 30;
-          } else {
-            _calloutH = _calloutH! + delta.dy;
-          }
-        } else if (alignment == Alignment.bottomRight) {
-          if (_calloutW! + delta.dx < (minWidth ?? 30)) {
-            _calloutW = minWidth ?? 30;
-          } else {
-            _calloutW = _calloutW! + delta.dx;
-          }
-          if (_calloutH! + delta.dy < (minHeight ?? 30)) {
-            _calloutH = minHeight ?? 30;
-          } else {
-            _calloutH = _calloutH! + delta.dy;
-          }
-        }
-      }),
-    );
-    await animationController.forward();
-    afterAnimationF?.call();
-    animationController.dispose();
-  }
-
-  Future<void> animateCalloutBy(
-    double hDelta,
-    double vDelta, {
-    required Duration durationMs,
-    VoidCallback? afterAnimationF,
-  }) async {
-    if (left == null || top == null) return;
-    AnimationController animationController = AnimationController(
-      duration: durationMs,
-      vsync: this,
-    );
-    Tween<Offset> tween = Tween<Offset>(
-      begin: Offset(left!, top!),
-      end: Offset(left! + hDelta, top! + vDelta),
-    );
-    Animation<Offset> animation = tween.animate(animationController);
-    animation.addListener(() {
-      moveTo(animation.value.dx, animation.value.dy);
-    });
-    movedOrResizedNotifier?.value++;
-    await animationController.forward();
-    afterAnimationF?.call();
-    animationController.dispose();
-  }
+  // Future<void> animateCalloutBy(
+  //   double hDelta,
+  //   double vDelta, {
+  //   required Duration durationMs,
+  //   VoidCallback? afterAnimationF,
+  // }) async {
+  //   if (left == null || top == null) return;
+  //   AnimationController animationController = AnimationController(
+  //     duration: durationMs,
+  //     vsync: this,
+  //   );
+  //   Tween<Offset> tween = Tween<Offset>(
+  //     begin: Offset(left!, top!),
+  //     end: Offset(left! + hDelta, top! + vDelta),
+  //   );
+  //   Animation<Offset> animation = tween.animate(animationController);
+  //   animation.addListener(() {
+  //     moveTo(animation.value.dx, animation.value.dy);
+  //   });
+  //   movedOrResizedNotifier?.value++;
+  //   await animationController.forward();
+  //   afterAnimationF?.call();
+  //   animationController.dispose();
+  // }
 
   void _onDragEnd(DragEndDetails event) {
     //if (preventDrag || !isDraggable || event.localPosition.dy >= (dragHandleHeight ?? 9999)) return;
@@ -1637,7 +1636,9 @@ class CalloutConfigModel
     Widget contents,
     wrapWithPointerInterceptor,
   ) {
-    var child = wrapWithPointerInterceptor
+    bool renderingABarrier = notToast && barrier != null && barrier!.opacity > 0.0;
+
+    var child = wrapWithPointerInterceptor && !renderingABarrier
         ? PointerInterceptor(debug:true, child: contents)
         : contents;
     return SizedBox(

@@ -4,7 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
 import 'package:window_manager/window_manager.dart';
 
-import 'callouts_intro.dart';
+// conditional import for webview ------------------
+import 'register_ios_or_android_webview.dart'
+if (dart.library.html) 'register_web_webview.dart';
+
+import 'intro_page.dart';
 
 void main() {
   runZonedGuarded<Future<void>>(
@@ -32,6 +36,9 @@ void main() {
           await windowManager.focus();
         });
       }
+
+      // see conditional imports for web or mobile
+      registerWebViewImplementation();
 
       runApp(
         const FlutterCalloutsApp(

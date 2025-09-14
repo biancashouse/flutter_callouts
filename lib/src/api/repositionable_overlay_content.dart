@@ -19,7 +19,7 @@ class RepositionableOverlayContent extends StatefulWidget {
 class _RepositionableOverlayContentState
     extends State<RepositionableOverlayContent>
     with WidgetsBindingObserver {
-  late DebounceTimer _debounceTimer;
+  late Debouncer _debounceTimer;
   late double savedW;
  late  double savedH;
 
@@ -28,7 +28,7 @@ class _RepositionableOverlayContentState
     super.initState();
     savedW = fca.scrW;
     savedH = fca.scrH;
-    _debounceTimer = DebounceTimer(delayMs: 500);
+    _debounceTimer = Debouncer(delayMs: 500);
     WidgetsBinding.instance.addObserver(this);
     // Calculate initial position after the first frame
     // WidgetsBinding.instance.addPostFrameCallback((_) {

@@ -5,7 +5,7 @@ import 'package:flutter_callouts/src/debouncer/debouncer.dart'; // Assuming Debo
 void main() {
   group('DebounceTimer', () {
     test('action executes after specified delay', () {
-      final debouncer = DebounceTimer(delayMs: 100);
+      final debouncer = Debouncer(delayMs: 100);
       bool actionExecuted = false;
 
       // Use FakeAsync to control time
@@ -23,7 +23,7 @@ void main() {
     });
 
     test('debounces rapid calls, only executing the last action', () {
-      final debouncer = DebounceTimer(delayMs: 100);
+      final debouncer = Debouncer(delayMs: 100);
       int executionCount = 0;
       int lastActionId = 0;
 
@@ -59,7 +59,7 @@ void main() {
     });
 
     test('cancel prevents action execution', () {
-      final debouncer = DebounceTimer(delayMs: 100);
+      final debouncer = Debouncer(delayMs: 100);
       bool actionExecuted = false;
 
       fakeAsync((async) {
@@ -79,7 +79,7 @@ void main() {
     });
 
     test('calling run after cancel executes the new action', () {
-      final debouncer = DebounceTimer(delayMs: 100);
+      final debouncer = Debouncer(delayMs: 100);
       int executedAction = 0; // 0: none, 1: first, 2: second
 
       fakeAsync((async) {
@@ -101,8 +101,8 @@ void main() {
     });
 
     test('multiple DebounceTimer instances operate independently', () {
-      final debouncer1 = DebounceTimer(delayMs: 100);
-      final debouncer2 = DebounceTimer(delayMs: 150);
+      final debouncer1 = Debouncer(delayMs: 100);
+      final debouncer2 = Debouncer(delayMs: 150);
       bool action1Executed = false;
       bool action2Executed = false;
 

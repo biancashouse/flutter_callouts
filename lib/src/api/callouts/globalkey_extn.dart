@@ -3,9 +3,12 @@ import 'package:flutter_callouts/flutter_callouts.dart';
 
 bool _alreadyGaveGlobalPosAndSizeWarning = false;
 
-// Map<GlobalKey, Rect> _measuredKeys = {};
+Map<String, GlobalKey> namedGKs = {};
 
 extension GlobalKeyExtension on GlobalKey {
+
+  void register(String gkName) => namedGKs[gkName] = this;
+  void dispose() => namedGKs.remove(this);
 
   (Offset?, Size?) globalPosAndSize() {
     Rect? r = globalPaintBounds();

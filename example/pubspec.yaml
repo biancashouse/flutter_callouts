@@ -10,6 +10,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  webview_flutter: ^4.13.0
+  webview_flutter_wkwebview: ^3.22.0
+  webview_flutter_web: ^0.2.3+4
+  webview_flutter_android: ^4.7.0
+  webview_flutter_platform_interface: ^2.13.1
 
   window_manager: ^0.5.1
   flutter_callouts:

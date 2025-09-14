@@ -5,8 +5,8 @@ Whether you want simple popup windows, or callouts that point to a target widget
 Being able have your callout point to a **target** widget is a very potent tool for helping your the users understand and navigate your app. A callout overlay’s pointing line can follow its target widget  (by assigning the target a **GlobalKey**). 
 
 | Web | Android | iOS | macOS | Windows | Linux   |
-|-----|-------|-----|-----|---------|---------|
-| ✔️  | ️✔️ | ✔️  | ✔️  | to test | to test |
+|-----|------|----|----|---------|---------|
+| ✔  | ️✔ | ✔  | ✔  | ✔ | to test |
 
 * pop up a callout widget that points to a target widget  
   (positioning using 2 values: **initialCalloutAlignment** & **initialTargetAlignment**)

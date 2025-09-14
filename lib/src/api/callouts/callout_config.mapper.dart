@@ -28,14 +28,6 @@ class CalloutConfigModelMapper extends ClassMapperBase<CalloutConfigModel> {
 
   static String _$cId(CalloutConfigModel v) => v.cId;
   static const Field<CalloutConfigModel, String> _f$cId = Field('cId', _$cId);
-  static ValueNotifier<int>? _$movedOrResizedNotifier(CalloutConfigModel v) =>
-      v.movedOrResizedNotifier;
-  static const Field<CalloutConfigModel, ValueNotifier<int>>
-  _f$movedOrResizedNotifier = Field(
-    'movedOrResizedNotifier',
-    _$movedOrResizedNotifier,
-    opt: true,
-  );
   static AlignmentEnum? _$gravity(CalloutConfigModel v) => v.gravity;
   static const Field<CalloutConfigModel, AlignmentEnum> _f$gravity = Field(
     'gravity',
@@ -468,6 +460,14 @@ class CalloutConfigModelMapper extends ClassMapperBase<CalloutConfigModel> {
         opt: true,
         def: false,
       );
+  static ValueNotifier<int>? _$movedOrResizedNotifier(CalloutConfigModel v) =>
+      v.movedOrResizedNotifier;
+  static const Field<CalloutConfigModel, ValueNotifier<int>>
+  _f$movedOrResizedNotifier = Field(
+    'movedOrResizedNotifier',
+    _$movedOrResizedNotifier,
+    mode: FieldMode.member,
+  );
   static Alignment? _$targetAlignment(CalloutConfigModel v) =>
       v.targetAlignment;
   static const Field<CalloutConfigModel, Alignment> _f$targetAlignment = Field(
@@ -680,7 +680,6 @@ class CalloutConfigModelMapper extends ClassMapperBase<CalloutConfigModel> {
   @override
   final MappableFields<CalloutConfigModel> fields = const {
     #cId: _f$cId,
-    #movedOrResizedNotifier: _f$movedOrResizedNotifier,
     #gravity: _f$gravity,
     #scrollControllerName: _f$scrollControllerName,
     #followScroll: _f$followScroll,
@@ -743,6 +742,7 @@ class CalloutConfigModelMapper extends ClassMapperBase<CalloutConfigModel> {
     #onHiddenF: _f$onHiddenF,
     #onAcceptedF: _f$onAcceptedF,
     #notUsingHydratedStorage: _f$notUsingHydratedStorage,
+    #movedOrResizedNotifier: _f$movedOrResizedNotifier,
     #targetAlignment: _f$targetAlignment,
     #calloutAlignment: _f$calloutAlignment,
     #draggableEdgeThickness: _f$draggableEdgeThickness,
@@ -782,7 +782,6 @@ class CalloutConfigModelMapper extends ClassMapperBase<CalloutConfigModel> {
   static CalloutConfigModel _instantiate(DecodingData data) {
     return CalloutConfigModel(
       cId: data.dec(_f$cId),
-      movedOrResizedNotifier: data.dec(_f$movedOrResizedNotifier),
       gravity: data.dec(_f$gravity),
       scrollControllerName: data.dec(_f$scrollControllerName),
       followScroll: data.dec(_f$followScroll),
@@ -925,7 +924,6 @@ abstract class CalloutConfigModelCopyWith<
   OffsetModelCopyWith<$R, OffsetModel, OffsetModel>? get initialCalloutPos;
   $R call({
     String? cId,
-    ValueNotifier<int>? movedOrResizedNotifier,
     AlignmentEnum? gravity,
     String? scrollControllerName,
     bool? followScroll,
@@ -1019,7 +1017,6 @@ class _CalloutConfigModelCopyWithImpl<$R, $Out>
   @override
   $R call({
     String? cId,
-    Object? movedOrResizedNotifier = $none,
     Object? gravity = $none,
     Object? scrollControllerName = $none,
     bool? followScroll,
@@ -1085,8 +1082,6 @@ class _CalloutConfigModelCopyWithImpl<$R, $Out>
   }) => $apply(
     FieldCopyWithData({
       if (cId != null) #cId: cId,
-      if (movedOrResizedNotifier != $none)
-        #movedOrResizedNotifier: movedOrResizedNotifier,
       if (gravity != $none) #gravity: gravity,
       if (scrollControllerName != $none)
         #scrollControllerName: scrollControllerName,
@@ -1160,10 +1155,6 @@ class _CalloutConfigModelCopyWithImpl<$R, $Out>
   @override
   CalloutConfigModel $make(CopyWithData data) => CalloutConfigModel(
     cId: data.get(#cId, or: $value.cId),
-    movedOrResizedNotifier: data.get(
-      #movedOrResizedNotifier,
-      or: $value.movedOrResizedNotifier,
-    ),
     gravity: data.get(#gravity, or: $value.gravity),
     scrollControllerName: data.get(
       #scrollControllerName,

@@ -1,48 +1,44 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_callouts/flutter_callouts.dart';
 
 typedef ScrollControllerName = String;
 
 class NamedScrollController extends ScrollController {
   final ScrollControllerName name;
   final Axis axis; // need axis for bubble pos translate
-  final ValueNotifier<int>? targetNotifier;
+  // final ValueNotifier<int> scrollNotifier = ValueNotifier<int>(0);
 
   static final Map<ScrollControllerName, NamedScrollController> namedScrollControllers = {};
 
   // Find the nearest ancestor
   static NamedScrollController? maybeOf(context) => context.findAncestorWidgetOfExactType<NamedScrollController>();
 
-  NamedScrollController(this.name, this.axis, {super.initialScrollOffset, debugLabel, this.targetNotifier}) {
+  NamedScrollController(this.name, this.axis, {super.initialScrollOffset, debugLabel}) {
     namedScrollControllers.putIfAbsent(name, () => this);
     // namedScrollControllers[name] = this;
     // onAttach() {
     //   fca.logger.i('********************************** onAttach() - ${positions.length} positions' );
     // }
-    addListener(() {
-      _listener.call();
-    });
+    // addListener(_listener);
     // fca.logger.i("new NamedScrollController($name)\n"
     //     "listening for refreshing callouts and targets");
     // }
   }
 
+  // ValueNotifier<int> get notifier => scrollNotifier;
+
   @override
   void dispose() {
-    removeListener(_listener);
+    // removeListener(_listener);
     namedScrollControllers.remove(name);
     // fca.logger.i("- - - - - dispose NamedScrollController($name) - - - - - ");
     super.dispose();
   }
 
-  void _listener() {
-    if (hasClients) {
-      // _scrollOffsetMap[name] = offset;
-      // fca.logger.i('NamedScrollController.listenToOffset: $name, $offset)');
-      fca.refreshAll();
-      // fca.logger.i('NamedScrollController.listenToOffset: calling refreshAll');
-    }
-  }
+  // void _listener() {
+  //  if (hasClients) {
+  //    scrollNotifier.value++;
+  //  }
+  // }
 
   static List<ScrollController> allControllers() => namedScrollControllers.values.toList();
 

@@ -8,6 +8,7 @@ import 'package:flutter_callouts/flutter_callouts.dart';
 // import 'package:flutter_callouts/src/api/callouts/mq_aware_overlay.dart';
 import 'package:flutter_callouts/src/api/callouts/overlay_entry_list.dart';
 import 'package:flutter_callouts/src/api/repositionable_overlay_content.dart';
+import 'package:flutter_callouts/src/debouncer/throttler.dart';
 
 mixin CalloutMixin {
   static const int separationAnimationMs = 500;
@@ -26,6 +27,8 @@ mixin CalloutMixin {
     bool skipWidthConstraintWarning = false,
     bool skipHeightConstraintWarning = false,
     bool wrapInPointerInterceptor = false,
+    CalloutConfigModel? callout2Follow,
+    NamedScrollController? namedSC,
   }) async
   // #end
   {
@@ -91,6 +94,8 @@ mixin CalloutMixin {
               ensureLowestOverlay,
               onReadyF,
               wrapInPointerInterceptor,
+              callout2Follow,
+              namedSC,
             );
           });
     } else {
@@ -105,6 +110,8 @@ mixin CalloutMixin {
         ensureLowestOverlay,
         onReadyF,
         wrapInPointerInterceptor,
+        callout2Follow,
+        namedSC,
       );
     }
 
@@ -120,6 +127,8 @@ mixin CalloutMixin {
     bool ensureLowestOverlay,
     VoidCallback? onReadyF,
     bool wrapInPointerInterceptor,
+    CalloutConfigModel? callout2Follow,
+    NamedScrollController? namedSC,
   ) {
     OverlayEntry oEntry = _createOverlay(
       // zoomer,
@@ -134,6 +143,25 @@ mixin CalloutMixin {
       print("\n\ntime to update the target\n\n");
       fca.afterNextBuildDo(() => oEntry.markNeedsBuild());
     });
+    // allow to follow scroll - using throttler is optional
+    final throttler = Throttler(delayMs: 100);
+    final throttleScroll = false;
+    namedSC?.addListener(() {
+      if (throttleScroll) {
+        throttler.run(
+          action: () {
+            oEntry.markNeedsBuild();
+          },
+        );
+      } else {
+        oEntry.markNeedsBuild();
+      }
+    });
+    // possibly follow another callout (our target inside another callout)
+      callout2Follow?.movedOrResizedNotifier?.addListener(() {
+        refresh(calloutConfig.cId);
+      });
+    // animating appearance of callout
     Future.delayed(const Duration(milliseconds: 300), () {
       if (calloutConfig.notToast) {
         // fca.logger.i('_possiblyAnimateSeparation');
