@@ -3,12 +3,12 @@
 // import 'package:flutter_callouts/flutter_callouts.dart';
 //
 // class ColorValues {
-//   ColorModel? color1Value;
-//   ColorModel? color2Value;
-//   ColorModel? color3Value;
-//   ColorModel? color4Value;
-//   ColorModel? color5Value;
-//   ColorModel? color6Value;
+//   Color? color1Value;
+//   Color? color2Value;
+//   Color? color3Value;
+//   Color? color4Value;
+//   Color? color5Value;
+//   Color? color6Value;
 //
 //   ColorValues({
 //     this.color1Value,

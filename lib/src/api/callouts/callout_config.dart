@@ -1,6 +1,5 @@
 import 'dart:async' show Timer;
 
-import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
@@ -8,23 +7,18 @@ import 'package:flutter_callouts/src/api/callouts/bubble_shape.dart';
 import 'package:flutter_callouts/src/api/callouts/draggable_corner.dart';
 import 'package:flutter_callouts/src/api/callouts/draggable_edge.dart';
 import 'package:flutter_callouts/src/api/callouts/modal_barrier_with_cutout.dart';
-import 'package:flutter_callouts/src/api/callouts/model/upto6colors.dart';
 import 'package:flutter_callouts/src/api/callouts/pointing_line.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart'
     show PointerInterceptor;
-// import 'package:pointer_interceptor/pointer_interceptor.dart';
 
-part 'callout_config.mapper.dart';
+// import 'package:pointer_interceptor/pointer_interceptor.dart';
 
 // import 'package:transparent_pointer/transparent_pointer.dart';
 
 // import 'callout_config_toolbar.dart';
 
-@MappableClass()
-class CalloutConfigModel
-    with CalloutConfigModelMappable
-    implements TickerProvider {
+class CalloutConfig implements TickerProvider {
   // final VoidCallback refreshOPParent;
 
   // ignore: constant_identifier_names
@@ -42,7 +36,7 @@ class CalloutConfigModel
   @JsonKey(includeFromJson: false, includeToJson: false)
   late Rect _targetRect;
 
-  final AlignmentEnum? gravity; // not null indictates Toast
+  final Alignment? gravity; // not null indictates Toast
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   final bool showGotitButton;
@@ -67,12 +61,15 @@ class CalloutConfigModel
 
   // extend line in the from direction by delta
   double? toDelta;
-  ArrowTypeEnum arrowType;
 
-  ColorModel? arrowColor;
-  final AlignmentEnum? initialTargetAlignment;
-  final AlignmentEnum? initialCalloutAlignment;
-  OffsetModel? initialCalloutPos;
+  TargetPointerTypeEnum targetPointerType;
+  Color? targetPointerColor; // arrow or bubble
+  bool animatePointer;
+  Widget? lineLabel;
+
+  final Alignment? initialTargetAlignment;
+  final Alignment? initialCalloutAlignment;
+  Offset? initialCalloutPos;
 
   Alignment? targetAlignment;
   Alignment? calloutAlignment;
@@ -100,19 +97,21 @@ class CalloutConfigModel
 
   final double? minWidth;
   final double? minHeight;
-  ColorModel? fillColor;
-  final ColorModel? borderColor;
-  DecorationShapeEnum decorationShape;
-  final double borderRadius;
-  final double borderThickness;
-  final int? starPoints;
+
+  // decoration
+  DecorationShape? decorationShape;
+  UpTo6Colors? decorationUpTo6FillColors;
+  UpTo6Colors? decorationUpTo6BorderColors;
+  double? decorationBorderThickness;
+  double? decorationBorderRadius;
+  int? decorationStarPoints;
+  bool? decorationGradientIsLinear;
+
   final double lengthDeltaPc;
   final double? contentTranslateX;
   final double? contentTranslateY;
   final double? targetTranslateX;
   final double? targetTranslateY;
-  bool animate;
-  Widget? lineLabel;
   final bool frameTarget;
   final double scaleTarget;
 
@@ -129,7 +128,6 @@ class CalloutConfigModel
   @JsonKey(includeFromJson: false, includeToJson: false)
   final ValueChanged<Offset>? onDragEndedF;
 
-  final bool noBorder;
   final double elevation;
   final bool circleShape;
   final bool skipOnScreenCheck;
@@ -287,13 +285,13 @@ class CalloutConfigModel
   @JsonKey(includeFromJson: false, includeToJson: false)
   Timer? removalTimer;
 
-  // TargetModel? _configurableTarget;
+  // Target? _configurableTarget;
 
   // bool get isConfigurable => _configurableTarget != null;
 
-  // TargetModel? get tc => _configurableTarget;
+  // Target? get tc => _configurableTarget;
 
-  CalloutConfigModel({
+  CalloutConfig({
     // required this.refreshOPParent,
     required this.cId,
     // this.callerGK,
@@ -306,19 +304,22 @@ class CalloutConfigModel
     this.initialCalloutH,
     this.minWidth,
     this.minHeight,
-    this.fillColor,
-    this.decorationShape = DecorationShapeEnum.rectangle,
-    this.borderColor,
-    this.borderRadius = 0,
-    this.borderThickness = 0,
-    this.starPoints,
+
+    this.decorationShape,
+    this.decorationBorderRadius = 0,
+    this.decorationBorderThickness = 0,
+    this.decorationStarPoints,
+    this.decorationUpTo6FillColors,
+    this.decorationUpTo6BorderColors,
+    this.decorationGradientIsLinear, // otherwise radial,
+
     this.lengthDeltaPc = 0.95,
     this.contentTranslateX,
     this.contentTranslateY,
     this.targetTranslateX,
     this.targetTranslateY,
-    this.arrowType = ArrowTypeEnum.THIN,
-    this.arrowColor,
+    this.targetPointerType = TargetPointerTypeEnum.THIN_LINE,
+    this.targetPointerColor,
     this.barrier,
     // this.modal = false,
     this.showCloseButton = false,
@@ -329,13 +330,12 @@ class CalloutConfigModel
     this.initialCalloutAlignment,
     this.initialCalloutPos,
     // this.onScreenAlignment,
-    this.animate = false,
+    this.animatePointer = false,
     this.toDelta,
     this.fromDelta,
     this.lineLabel,
     this.frameTarget = false,
     this.scaleTarget = 1.0,
-    this.noBorder = false,
     this.elevation = 0,
     this.circleShape = false,
     // this.dragHandle,
@@ -368,12 +368,15 @@ class CalloutConfigModel
   }) {
     // fca.logger.i(
     //     'Feature: ${feature} CalloutConfig.decoration: ${decorationShape.toString()}');
-    if (decorationShape == DecorationShapeEnum.rectangle && borderRadius > 0) {
-      decorationShape = DecorationShapeEnum.rounded_rectangle;
+    if (decorationShape?.name == DecorationShape.rectangle &&
+        (decorationBorderRadius ?? 0.0) > 0.0) {
+      decorationShape = DecorationShape.rounded_rectangle();
     }
-    // fillColor = ColorModel.fromColor(
+    // fillColor = Color.fromColor(
     //     Colors.white); //FCallouts().FUCHSIA_X.withValues(alpha:.9);
-    arrowColor ??= fillColor;
+    if (!(decorationUpTo6FillColors?.isAGradient() ?? false)) {
+      targetPointerColor ??= decorationUpTo6FillColors!.color1;
+    }
     // assert((dragHandle != null) && (dragHandleHeight != null), 'if using a drag handle, it must have height > 0.0 !');
     // assert((widthF != null && heightF != null) || context != null, 'if either widthF or heightF null, must provide a context for measuring !');
     // if ((widthF == null || heightF == null) && context == null) {
@@ -388,8 +391,8 @@ class CalloutConfigModel
     _calloutW ??= initialCalloutW;
     _calloutH ??= initialCalloutH;
 
-    targetAlignment = initialTargetAlignment?.flutterValue;
-    calloutAlignment = initialCalloutAlignment?.flutterValue;
+    targetAlignment = initialTargetAlignment;
+    calloutAlignment = initialCalloutAlignment;
 
     // if (initialCalloutPos != null) {
     //   calloutAlignment = targetAlignment = null;
@@ -420,10 +423,10 @@ class CalloutConfigModel
   }
 
   /// copy constructor
-  CalloutConfigModel cloneWith({
+  CalloutConfig cloneWith({
     required String cId,
     ValueNotifier<int>? movedOrResizedNotifier,
-    AlignmentEnum? gravity,
+    Alignment? gravity,
     double? scale,
     ScrollControllerName? scrollControllerName,
     bool? forceMeasure,
@@ -431,28 +434,30 @@ class CalloutConfigModel
     double? suppliedCalloutH,
     double? minWidth,
     double? minHeight,
-    ColorModel? fillColor,
-    required DecorationShapeEnum decorationShape,
-    int? starPoints,
-    ColorModel? borderColor,
-    double? borderRadius,
-    double? borderThickness,
+
+    DecorationShape? decorationShape,
+    UpTo6Colors? decorationUpTo6FillColors,
+    UpTo6Colors? decorationUpTo6BorderColors,
+    double? decorationBorderThickness,
+    double? decorationBorderRadius,
+    int? decorationStarPoints,
+
     double? lengthDeltaPc,
     double? contentTranslateX,
     double? contentTranslateY,
     double? targetTranslateX,
     double? targetTranslateY,
-    ArrowTypeEnum? arrowType,
-    ColorModel? arrowColor,
+    TargetPointerTypeEnum? targetPointerType,
+    Color? targetPointerColor,
     CalloutBarrierConfig? barrier,
     // bool? modal,
     bool? showCloseButton,
     Offset? closeButtonPos,
     VoidCallback? onCloseButtonPressF,
     Color? closeButtonColor,
-    AlignmentEnum? initialTargetAlignment,
-    AlignmentEnum? initialCalloutAlignment,
-    OffsetModel? initialCalloutPos,
+    Alignment? initialTargetAlignment,
+    Alignment? initialCalloutAlignment,
+    Offset? initialCalloutPos,
     bool? animate,
     double? toDelta,
     double? fromDelta,
@@ -490,7 +495,7 @@ class CalloutConfigModel
     bool? notUsingHydratedStorage,
     required bool allowScrolling,
   }) {
-    return CalloutConfigModel(
+    return CalloutConfig(
       cId: cId,
       scrollControllerName: scrollControllerName,
       gravity: gravity ?? this.gravity,
@@ -503,10 +508,18 @@ class CalloutConfigModel
       barrier: barrier ?? this.barrier,
       initialCalloutW: suppliedCalloutW ?? initialCalloutW,
       initialCalloutH: suppliedCalloutH ?? initialCalloutH,
-      borderRadius: borderRadius ?? this.borderRadius,
-      borderColor: borderColor ?? this.borderColor,
-      borderThickness: borderThickness ?? this.borderThickness,
-      fillColor: fillColor ?? this.fillColor,
+      // decoration
+      decorationShape: decorationShape ?? this.decorationShape,
+      decorationUpTo6FillColors:
+          decorationUpTo6FillColors ?? this.decorationUpTo6FillColors,
+      decorationUpTo6BorderColors:
+          decorationUpTo6BorderColors ?? this.decorationUpTo6BorderColors,
+      decorationBorderThickness:
+          decorationBorderThickness ?? this.decorationBorderThickness,
+      decorationBorderRadius:
+          decorationBorderRadius ?? this.decorationBorderRadius,
+      decorationStarPoints: decorationStarPoints ?? this.decorationStarPoints,
+
       elevation: elevation ?? this.elevation,
       frameTarget: frameTarget ?? this.frameTarget,
       showCloseButton: showCloseButton ?? this.showCloseButton,
@@ -514,9 +527,9 @@ class CalloutConfigModel
       closeButtonColor: closeButtonColor ?? this.closeButtonColor,
       closeButtonPos: closeButtonPos ?? this.closeButtonPos,
       gotitAxis: gotitAxis ?? this.gotitAxis,
-      arrowColor: arrowColor ?? this.arrowColor,
-      arrowType: arrowType ?? this.arrowType,
-      animate: animate ?? this.animate,
+      targetPointerColor: targetPointerColor ?? this.targetPointerColor,
+      targetPointerType: targetPointerType ?? this.targetPointerType,
+      animatePointer: animate ?? this.animatePointer,
       lineLabel: lineLabel ?? this.lineLabel,
       fromDelta: fromDelta ?? this.fromDelta,
       toDelta: toDelta ?? this.toDelta,
@@ -535,8 +548,6 @@ class CalloutConfigModel
       onDismissedF: onDismissedF ?? this.onDismissedF,
       onTickedF: onTickedF ?? this.onTickedF,
       followScroll: allowScrolling,
-      decorationShape: decorationShape,
-      starPoints: starPoints,
     );
   }
 
@@ -571,7 +582,7 @@ class CalloutConfigModel
   // Widget calloutOverlayEntryAlreadyMeasured({
   //   required BuildContext context,
   //   required Widget boxContent,
-  //   TargetModel? configurableTarget,
+  //   Target? configurableTarget,
   // }) {
   //   if (!initialised || _targetRect == null || calloutSize == Size.zero) return const Icon(Icons.error, color: Colors.deepOrange);
   //
@@ -680,7 +691,7 @@ class CalloutConfigModel
   //   required BuildContext context,
   //   required Widget boxContent,
   //   required GlobalKey? gk,
-  //   TargetModel? configurableTarget,
+  //   Target? configurableTarget,
   // }) {
   //   var state = fca.of(context);
   //
@@ -799,7 +810,7 @@ class CalloutConfigModel
     required Rect targetRect,
     required WidgetBuilder calloutContentF,
     required VoidCallback rebuildF,
-    // TargetModel? configurableTarget,
+    // Target? configurableTarget,
     bool wrapInPointerInterceptor = false,
   }) {
     // print('isAnimating: ${isAnimating().toString()}');
@@ -859,7 +870,7 @@ class CalloutConfigModel
   //   Rect targetRect,
   //   WidgetBuilder calloutContent,
   //   VoidCallback rebuildF,
-  //   // TargetModel? configurableTarget,
+  //   // Target? configurableTarget,
   // ) async {
   //   // measure offstage widget
   //   // await Future.delayed(const Duration(milliseconds: 500));
@@ -878,7 +889,7 @@ class CalloutConfigModel
     Rect targetRect,
     WidgetBuilder calloutContent,
     VoidCallback rebuildF,
-    // TargetModel? configurableTarget,
+    // Target? configurableTarget,
     bool wrapInPointerInterceptor,
   ) {
     _targetRect = targetRect;
@@ -994,6 +1005,7 @@ class CalloutConfigModel
           thickness: draggableEdgeThickness,
           color: draggableColor!,
           parent: this,
+          wrapInPointerInterceptor: wrapWithPointerInterceptor,
         ),
       if (resizeableH && resizeableV)
         topRightCorner = DraggableCorner_OP(
@@ -1001,6 +1013,7 @@ class CalloutConfigModel
           thickness: draggableEdgeThickness,
           color: draggableColor!,
           parent: this,
+          wrapInPointerInterceptor: wrapWithPointerInterceptor,
         ),
       if (resizeableH && resizeableV)
         bottomLeftCorner = DraggableCorner_OP(
@@ -1008,6 +1021,7 @@ class CalloutConfigModel
           thickness: draggableEdgeThickness,
           color: draggableColor!,
           parent: this,
+          wrapInPointerInterceptor: wrapWithPointerInterceptor,
         ),
       if (resizeableH && resizeableV)
         bottomRightCorner = DraggableCorner_OP(
@@ -1015,6 +1029,7 @@ class CalloutConfigModel
           thickness: draggableEdgeThickness,
           color: draggableColor!,
           parent: this,
+          wrapInPointerInterceptor: wrapWithPointerInterceptor,
         ),
       if (resizeableH && resizeableV)
         leftEdge = DraggableEdge_OP(
@@ -1022,6 +1037,7 @@ class CalloutConfigModel
           thickness: draggableEdgeThickness,
           color: draggableColor!,
           parent: this,
+          wrapInPointerInterceptor: wrapWithPointerInterceptor,
         ),
       if (resizeableH && resizeableV)
         topEdge = DraggableEdge_OP(
@@ -1029,6 +1045,7 @@ class CalloutConfigModel
           thickness: draggableEdgeThickness,
           color: draggableColor!,
           parent: this,
+          wrapInPointerInterceptor: wrapWithPointerInterceptor,
         ),
       if (resizeableH && resizeableV)
         rightEdge = DraggableEdge_OP(
@@ -1036,6 +1053,7 @@ class CalloutConfigModel
           thickness: draggableEdgeThickness,
           color: draggableColor!,
           parent: this,
+          wrapInPointerInterceptor: wrapWithPointerInterceptor,
         ),
       if (resizeableH && resizeableV)
         bottomEdge = DraggableEdge_OP(
@@ -1043,6 +1061,7 @@ class CalloutConfigModel
           thickness: draggableEdgeThickness,
           color: draggableColor!,
           parent: this,
+          wrapInPointerInterceptor: wrapWithPointerInterceptor,
         ),
       if (resizeableH && !resizeableV)
         leftEdge = DraggableEdge_OP(
@@ -1050,6 +1069,7 @@ class CalloutConfigModel
           thickness: draggableEdgeThickness,
           color: draggableColor!,
           parent: this,
+          wrapInPointerInterceptor: wrapWithPointerInterceptor,
         ),
       if (resizeableH && !resizeableV)
         rightEdge = DraggableEdge_OP(
@@ -1057,6 +1077,7 @@ class CalloutConfigModel
           thickness: draggableEdgeThickness,
           color: draggableColor!,
           parent: this,
+          wrapInPointerInterceptor: wrapWithPointerInterceptor,
         ),
       if (resizeableV && !resizeableH)
         topEdge = DraggableEdge_OP(
@@ -1064,6 +1085,7 @@ class CalloutConfigModel
           thickness: draggableEdgeThickness,
           color: draggableColor!,
           parent: this,
+          wrapInPointerInterceptor: wrapWithPointerInterceptor,
         ),
       if (resizeableV && !resizeableH)
         bottomEdge = DraggableEdge_OP(
@@ -1071,8 +1093,10 @@ class CalloutConfigModel
           thickness: draggableEdgeThickness,
           color: draggableColor!,
           parent: this,
+          wrapInPointerInterceptor: wrapWithPointerInterceptor,
         ),
-      if (notToast && arrowType == ArrowTypeEnum.POINTY) _positionedBubbleBg(),
+      if (notToast && targetPointerType == TargetPointerTypeEnum.BUBBLE)
+        _positionedBubbleBg(),
       PositionedBoxContent(
         this,
         content,
@@ -1080,12 +1104,12 @@ class CalloutConfigModel
         key: ValueKey(cId),
       ),
       if (notToast &&
-          arrowType != ArrowTypeEnum.NONE &&
-          arrowType != ArrowTypeEnum.POINTY)
+          targetPointerType != TargetPointerTypeEnum.NONE &&
+          targetPointerType != TargetPointerTypeEnum.BUBBLE)
         _createPointingLine(),
       if (notToast &&
-          arrowType != ArrowTypeEnum.NONE &&
-          arrowType != ArrowTypeEnum.POINTY &&
+          targetPointerType != TargetPointerTypeEnum.NONE &&
+          targetPointerType != TargetPointerTypeEnum.BUBBLE &&
           lineLabel != null)
         _createLineLabel(),
       // if (isConfigurable && _zoomer != null) _createConfigToolbar(Side.TOP),
@@ -1360,10 +1384,7 @@ class CalloutConfigModel
       top: 0,
       left: 0,
       child: CustomPaint(
-        painter: BubbleShape_OP(
-          calloutConfig: this,
-          fillColor: fillColor?.flutterValue,
-        ),
+        painter: BubbleShape_OP(calloutConfig: this),
         willChange: true,
       ),
     );
@@ -1629,17 +1650,18 @@ class CalloutConfigModel
 
   Widget _cpi() => Padding(
     padding: const EdgeInsets.all(8.0),
-    child: CircularProgressIndicator(backgroundColor: fillColor?.flutterValue),
+    child: CircularProgressIndicator(backgroundColor: Colors.white),
   );
 
   Widget _possiblyScrollableContents(
     Widget contents,
     wrapWithPointerInterceptor,
   ) {
-    bool renderingABarrier = notToast && barrier != null && barrier!.opacity > 0.0;
+    bool renderingABarrier =
+        notToast && barrier != null && barrier!.opacity > 0.0;
 
     var child = wrapWithPointerInterceptor && !renderingABarrier
-        ? PointerInterceptor(debug:true, child: contents)
+        ? PointerInterceptor(debug: true, child: contents)
         : contents;
     return SizedBox(
       width: _calloutW!,
@@ -1713,12 +1735,12 @@ class CalloutConfigModel
 
       Widget pointingLine = IgnorePointer(
         child: PointingLine(
-          arrowType.reverse ? to : from,
-          arrowType.reverse ? from : to,
-          arrowType,
-          arrowColor?.flutterValue ?? Colors.white,
+          targetPointerType.reverse ? to : from,
+          targetPointerType.reverse ? from : to,
+          targetPointerType,
+          targetPointerColor ?? Colors.white,
           lengthDeltaPc: lengthDeltaPc,
-          animate: animate,
+          animate: animatePointer,
         ),
       );
 
@@ -1998,7 +2020,7 @@ class CalloutBarrierConfig {
 }
 
 class PositionedBoxContent extends StatelessWidget {
-  final CalloutConfigModel cc;
+  final CalloutConfig cc;
   final Widget child;
   final bool wrapWithPointerInterceptor;
 
@@ -2037,8 +2059,7 @@ class PositionedBoxContent extends StatelessWidget {
     //   final ob = decoration;
     //   sb = ob.shape;
     // }
-
-    return Positioned(
+       return Positioned(
       top:
           (cc.followScroll ? -cc.scrollOffsetY() : 0.0) +
           (cc.top ?? 0) +
@@ -2059,61 +2080,52 @@ class PositionedBoxContent extends StatelessWidget {
           cc._onDragEnd(DragEndDetails());
         },
         // child: TransparentPointer(
-        child: Container(
-          decoration: cc.decorationShape.toDecoration(
-            upTo6FillColors: UpTo6Colors(color1: cc.fillColor),
-            upTo6BorderColors: UpTo6Colors(color1: cc.borderColor),
-            borderRadius: cc.borderRadius,
-            thickness: cc.borderThickness,
-            starPoints: cc.starPoints,
-          ),
-
-          // decoration: ShapeDecoration(
-          //   shape: outlinedBorderGroup!.outlinedBorderType!.toFlutterWidget(nodeSide: outlinedBorderGroup?.side, nodeRadius: borderRadius),
-          //   color: fillColor1Value != null ? Color(fillColor1Value!) : null,
-          // ),
-          //width: cc._calloutW,
-          //height: cc._calloutH,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(cc.decorationBorderRadius??0.0),
           child: Material(
-            type: cc.elevation > 0
-                ? MaterialType.canvas
-                : MaterialType.transparency,
-            color: cc.fillColor?.flutterValue,
+            type: MaterialType.canvas,
+            color: Colors.transparent,
             elevation: cc.elevation,
-            shape: RoundedRectangleBorder(
-              // Optional: customize border shape
-              borderRadius: BorderRadius.circular(cc.borderRadius),
-            ),
-            // cc.elevation,
-            child: FocusableActionDetector(
-              focusNode: cc.focusNode,
-              autofocus: true,
-              child: Stack(
-                children: <Widget>[
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: cc.showGotitButton
-                        ? Flex(
-                            direction: cc.gotitAxis ?? Axis.horizontal,
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: calloutContent(
-                                  cc,
-                                  wrapWithPointerInterceptor,
+            child: Container(
+              decoration: (cc.decorationShape ?? DecorationShape.rectangle()).toDecoration(
+                upTo6FillColors: cc.decorationUpTo6FillColors,
+                upTo6BorderColors: cc.decorationUpTo6BorderColors,
+                borderRadius: cc.decorationBorderRadius,
+                borderThickness: cc.decorationBorderThickness,
+                starPoints: cc.decorationStarPoints,
+                gradientIsLinear: cc.decorationGradientIsLinear,
+              ),
+              // color: cc.decorationShape == null ? cc.decorationUpTo6FillColors?.onlyColor : null,
+              child: FocusableActionDetector(
+                focusNode: cc.focusNode,
+                autofocus: true,
+                child: Stack(
+                  children: <Widget>[
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: cc.showGotitButton
+                          ? Flex(
+                              direction: cc.gotitAxis ?? Axis.horizontal,
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: calloutContent(
+                                    cc,
+                                    wrapWithPointerInterceptor,
+                                  ),
                                 ),
-                              ),
-                              if (cc.gotitAxis != null && !cc.showcpi)
-                                cc._gotitButton(),
-                              if (cc.showcpi) cc._cpi(),
-                            ],
-                          )
-                        : calloutContent(cc, wrapWithPointerInterceptor),
-                  ),
-                  if (cc.showCloseButton) cc._closeButton(),
-                ],
+                                if (cc.gotitAxis != null && !cc.showcpi)
+                                  cc._gotitButton(),
+                                if (cc.showcpi) cc._cpi(),
+                              ],
+                            )
+                          : calloutContent(cc, wrapWithPointerInterceptor),
+                    ),
+                    if (cc.showCloseButton) cc._closeButton(),
+                  ],
+                ),
               ),
             ),
           ),
@@ -2122,7 +2134,7 @@ class PositionedBoxContent extends StatelessWidget {
     );
   }
 
-  Widget calloutContent(CalloutConfigModel cc, wrapWithPointerInterceptor) =>
+  Widget calloutContent(CalloutConfig cc, wrapWithPointerInterceptor) =>
       cc.draggable
       ? MouseRegion(
           cursor: SystemMouseCursors.grab,

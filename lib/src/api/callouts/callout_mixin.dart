@@ -10,6 +10,7 @@ import 'package:flutter_callouts/src/api/callouts/overlay_entry_list.dart';
 import 'package:flutter_callouts/src/api/repositionable_overlay_content.dart';
 import 'package:flutter_callouts/src/debouncer/throttler.dart';
 
+
 mixin CalloutMixin {
   static const int separationAnimationMs = 500;
 
@@ -17,17 +18,17 @@ mixin CalloutMixin {
   // #begin
   Future<void> showOverlay({
     // ZoomerState? zoomer, // if callout needs access to the zoomer
-    required CalloutConfigModel calloutConfig,
+    required CalloutConfig calloutConfig,
     required Widget calloutContent,
     TargetKeyFunc? targetGkF,
     bool ensureLowestOverlay = false,
     int? removeAfterMs,
     VoidCallback? onReadyF,
-    // TargetModel? configurableTarget,
+    // Target? configurableTarget,
     bool skipWidthConstraintWarning = false,
     bool skipHeightConstraintWarning = false,
     bool wrapInPointerInterceptor = false,
-    CalloutConfigModel? callout2Follow,
+    CalloutConfig? callout2Follow,
     NamedScrollController? namedSC,
   }) async
   // #end
@@ -119,7 +120,7 @@ mixin CalloutMixin {
   }
 
   void _createOverlayDefinitelyHasSize(
-    CalloutConfigModel calloutConfig,
+    CalloutConfig calloutConfig,
     Widget calloutContent,
     // ZoomerState? zoomer,
     TargetKeyFunc? targetGkF,
@@ -127,7 +128,7 @@ mixin CalloutMixin {
     bool ensureLowestOverlay,
     VoidCallback? onReadyF,
     bool wrapInPointerInterceptor,
-    CalloutConfigModel? callout2Follow,
+    CalloutConfig? callout2Follow,
     NamedScrollController? namedSC,
   ) {
     OverlayEntry oEntry = _createOverlay(
@@ -174,7 +175,7 @@ mixin CalloutMixin {
 
   OverlayEntry _createOverlay(
     // ZoomerState? zoomer,
-    CalloutConfigModel calloutConfig,
+    CalloutConfig calloutConfig,
     Widget boxContent,
     TargetKeyFunc? targetGkF,
     bool ensureLowestOverlay,
@@ -215,7 +216,7 @@ mixin CalloutMixin {
 
         if (r == null) {
           // for toast targetgk will be null, and we have to use the gravity to get a rect
-          calloutConfig.initialCalloutPos ??= OffsetModel(
+          calloutConfig.initialCalloutPos ??= Offset(
             fca.scrW / 2 - calloutConfig.initialCalloutW! / 2,
             fca.scrH / 2 - calloutConfig.initialCalloutH! / 2,
           );
@@ -304,7 +305,7 @@ mixin CalloutMixin {
   }
 
   Future<void> _possiblyAnimateSeparation(
-    CalloutConfigModel calloutConfig,
+    CalloutConfig calloutConfig,
     VoidCallback? onReadyF,
   ) async {
     // print('_possiblyAnimateSeparation finalSep: ${calloutConfig.finalSeparation}');
@@ -340,7 +341,7 @@ mixin CalloutMixin {
   bool _sameType<T1, T2>() => T1 == T2;
 
   void showToastOverlay({
-    required CalloutConfigModel calloutConfig,
+    required CalloutConfig calloutConfig,
     required Widget calloutContent,
     int removeAfterMs = 0,
   }) {
@@ -350,21 +351,19 @@ mixin CalloutMixin {
           calloutConfig.initialCalloutH != null,
     );
 
-    CalloutConfigModel toastCC = calloutConfig.cloneWith(
+    CalloutConfig toastCC = calloutConfig.cloneWith(
       cId: calloutConfig.cId,
       scrollControllerName: calloutConfig.scrollControllerName,
       initialTargetAlignment: null,
       initialCalloutAlignment: null,
       gravity: calloutConfig.gravity,
-      initialCalloutPos: OffsetModel.fromOffset(
+      initialCalloutPos:
         _initialOffsetFromGravity(
-          calloutConfig.gravity!.flutterValue,
+          calloutConfig.gravity!,
           calloutConfig.initialCalloutW!,
           calloutConfig.initialCalloutH!,
-        ),
       ),
-      arrowType: ArrowTypeEnum.NONE,
-      decorationShape: DecorationShapeEnum.rectangle,
+      targetPointerType: TargetPointerTypeEnum.NONE,
       // draggable: false,
       skipOnScreenCheck: true,
       allowScrolling: calloutConfig.followScroll,
@@ -387,17 +386,17 @@ mixin CalloutMixin {
     FontWeight? fontWeight,
     FontStyle? fontStyle,
     double scaleFactor = 1.0,
-    AlignmentEnum gravity = AlignmentEnum.topCenter,
+    Alignment gravity = Alignment.topCenter,
     bool showCPI = false,
     bool onlyOnce = false,
     int removeAfterMs = 0,
     double? width,
     double? height,
   }) {
-    var cc = CalloutConfigModel(
-      cId: 'toast-${gravity.name}',
+    var cc = CalloutConfig(
+      cId: 'toast-${gravity.runtimeType.toString()}',
       gravity: gravity,
-      fillColor: ColorModel.fromColor(bgColor ?? Colors.white),
+      decorationUpTo6FillColors: UpTo6Colors(color1: bgColor ?? Colors.white),
       initialCalloutW: width ?? fca.scrW * .8,
       initialCalloutH: height ?? 80,
       scrollControllerName: null,
@@ -426,7 +425,7 @@ mixin CalloutMixin {
   }
 
   void showToastColor1OnColor2({
-    AlignmentEnum gravity = AlignmentEnum.topCenter,
+    Alignment gravity = Alignment.topCenter,
     required String msg,
     required Color textColor,
     double? fontSize,
@@ -453,10 +452,10 @@ mixin CalloutMixin {
   //   int removeAfterMs = 0,
   //   double? widthPC,
   // }) {
-  //   var cc = CalloutConfigModel(
+  //   var cc = CalloutConfig(
   //     cId: cId,
-  //     gravity: AlignmentEnum.topCenter,
-  //     fillColor: ColorModel.white(),
+  //     gravity: Alignment.topCenter,
+  //     fillColor: Color.white(),
   //     initialCalloutW: widthPC == null
   //         ? fca.scrW * .8
   //         : fca.scrW * widthPC / 100,
@@ -541,13 +540,13 @@ mixin CalloutMixin {
   }
 
   Future<void> _possiblyAnimateToastPos(
-    CalloutConfigModel toastCC,
+    CalloutConfig toastCC,
     VoidCallback? onReadyF,
   ) async {
     if (toastCC.left != null && toastCC.top != null) {
       Offset initialPos = Offset(toastCC.left!, toastCC.top!);
       Offset finalPos = _finalOffsetFromGravity(
-        toastCC.gravity!.flutterValue,
+        toastCC.gravity!,
         toastCC.calloutW!,
         toastCC.calloutH!,
       );
@@ -583,17 +582,16 @@ mixin CalloutMixin {
     BuildContext? cachedContext = fca.rootContext;
     if (show && (cachedContext.mounted)) {
       showOverlay(
-        calloutConfig: CalloutConfigModel(
+        calloutConfig: CalloutConfig(
           cId: reason,
-          gravity: AlignmentEnum.topCenter,
+          gravity: Alignment.topCenter,
           // scale: 1.0,
           initialCalloutW: 600,
           initialCalloutH: 50,
-          fillColor: ColorModel.fromColor(Colors.white70),
           elevation: 5,
-          borderRadius: 10,
+          decorationBorderRadius: 10,
           alwaysReCalcSize: true,
-          arrowType: ArrowTypeEnum.NONE,
+          targetPointerType: TargetPointerTypeEnum.NONE,
           draggable: false,
           scrollControllerName: scName,
         ),
@@ -773,7 +771,7 @@ mixin CalloutMixin {
     return null;
   }
 
-  CalloutConfigModel? getCalloutConfig(CalloutId feature) {
+  CalloutConfig? getCalloutConfig(CalloutId feature) {
     OE? oe = findOE(feature);
     if (oe != null) return oe.calloutConfig;
     return null;
@@ -848,8 +846,8 @@ mixin CalloutMixin {
     }
   }
 
-  void dismissToast(AlignmentEnum gravity, {bool skipOnDismiss = false}) {
-    dismiss('toast-${gravity.name}', skipOnDismiss: skipOnDismiss);
+  void dismissToast(Alignment gravity, {bool skipOnDismiss = false}) {
+    dismiss('toast-${gravity.runtimeType.toString()}', skipOnDismiss: skipOnDismiss);
   }
 
   (int? i, OverlayEntry?) lowestEntry() {
@@ -886,7 +884,7 @@ mixin CalloutMixin {
     }
   }
 
-  CalloutConfigModel? findParentCalloutConfig(context) {
+  CalloutConfig? findParentCalloutConfig(context) {
     return context
         .findAncestorWidgetOfExactType<PositionedBoxContent>()
         ?.calloutConfig;
@@ -903,13 +901,13 @@ mixin CalloutMixin {
       // find its cc
       for (OE oe in OE.list) {
         if (oe.opC == op.controller) {
-          CalloutConfigModel cc = oe.calloutConfig;
+          CalloutConfig cc = oe.calloutConfig;
           unhide(cc.cId);
         }
       }
     }
 
-    CalloutConfigModel? config = findParentCalloutConfig(context);
+    CalloutConfig? config = findParentCalloutConfig(context);
     if (config != null) {
       unhide(config.cId);
     } else {
@@ -919,14 +917,14 @@ mixin CalloutMixin {
   }
 
   void hideParentCallout(context) {
-    CalloutConfigModel? config = findParentCalloutConfig(context);
+    CalloutConfig? config = findParentCalloutConfig(context);
     if (config != null) {
       hide(config.cId);
     }
   }
 
   void removeParentCallout(context) {
-    CalloutConfigModel? config = findParentCalloutConfig(context);
+    CalloutConfig? config = findParentCalloutConfig(context);
     if (config != null) {
       dismiss(config.cId);
     }

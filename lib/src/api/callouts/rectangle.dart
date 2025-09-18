@@ -14,7 +14,7 @@ class Rectangle extends Rect {
   Rectangle.fromRect(Rect r) : super.fromPoints(r.topLeft, r.bottomRight);
 
   Rectangle.fromLTWH(double l, double t, double w, double h)
-      : super.fromLTWH(l, t, w, h);
+    : super.fromLTWH(l, t, w, h);
 
   /*
 	 * allow margin of error
@@ -75,7 +75,7 @@ class Rectangle extends Rect {
       case Side.TOP:
         return Coord.sameValue2(thePoint.y, t) &&
             roughlyWithin(thePoint.x, l, r);
-      }
+    }
   }
 
   bool outside(Coord thePos) {
@@ -120,7 +120,15 @@ class Rectangle extends Rect {
   }
 
   static bool rectanglesIntersect(
-      int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h2) {
+    int x1,
+    int y1,
+    int w1,
+    int h1,
+    int x2,
+    int y2,
+    int w2,
+    int h2,
+  ) {
     if (x2 < x1 || y1 < y2) {
       int t1, t2, t3, t4;
       t1 = x1;
@@ -144,8 +152,9 @@ class Rectangle extends Rect {
 	 * be right on a corner, so in that case just return that corner point. if
 	 * inside the rect, return (-999,-999)
 	 */
-  static Coord NO_INTERSECTION_FOUND =
-      Coord.fromOffset(const Offset(-999, -999));
+  static Coord NO_INTERSECTION_FOUND = Coord.fromOffset(
+    const Offset(-999, -999),
+  );
 
   static Coord getBubbleIntersectionPoint(Line theLine, Rectangle theRect) {
     Coord result = Coord();
@@ -222,7 +231,7 @@ class Rectangle extends Rect {
 		 */
     if (numPoints == 2) {
       Coord rectCentre = Coord.fromOffset(theRect.center);
-//			TrainingProgramDemo.consoleinfo("more than one line intersects a corner");
+      //			TrainingProgramDemo.consoleinfo("more than one line intersects a corner");
       // top left
       if (topSideIP != null && leftSideIP != null) {
         return rectCentre.deltaX(topSideIP) > rectCentre.deltaX(leftSideIP) &&
@@ -286,41 +295,53 @@ class Rectangle extends Rect {
     List<Coord> ips = [];
 
     // Top line
-    Coord? topLineIP = line.getIntersectionPoint(Line.fromPoints(
-      targetRectangle.left,
-      targetRectangle.top,
-      targetRectangle.left + targetRectangle.width,
-      targetRectangle.top,
-    ));
+    Coord? topLineIP = line.getIntersectionPoint(
+      Line.fromPoints(
+        targetRectangle.left,
+        targetRectangle.top,
+        targetRectangle.left + targetRectangle.width,
+        targetRectangle.top,
+      ),
+    );
     if (topLineIP != null &&
-        targetRectangle.hasPointOnSide(topLineIP, Side.TOP)) ips.add(topLineIP);
+        targetRectangle.hasPointOnSide(topLineIP, Side.TOP))
+      ips.add(topLineIP);
 
     // Bottom line
-    Coord? bottomLineIP = line.getIntersectionPoint(Line.fromPoints(
+    Coord? bottomLineIP = line.getIntersectionPoint(
+      Line.fromPoints(
         targetRectangle.left,
         targetRectangle.top + targetRectangle.height,
         targetRectangle.left + targetRectangle.width,
-        targetRectangle.top + targetRectangle.height));
+        targetRectangle.top + targetRectangle.height,
+      ),
+    );
     if (bottomLineIP != null &&
         targetRectangle.hasPointOnSide(bottomLineIP, Side.BOTTOM))
       ips.add(bottomLineIP);
 
     // Right side
-    Coord? rightLineIP = line.getIntersectionPoint(Line.fromPoints(
+    Coord? rightLineIP = line.getIntersectionPoint(
+      Line.fromPoints(
         targetRectangle.left + targetRectangle.width,
         targetRectangle.top,
         targetRectangle.left + targetRectangle.width,
-        targetRectangle.top + targetRectangle.height));
+        targetRectangle.top + targetRectangle.height,
+      ),
+    );
     if (rightLineIP != null &&
         targetRectangle.hasPointOnSide(rightLineIP, Side.RIGHT))
       ips.add(rightLineIP);
 
     // Left side...
-    Coord? leftLineIP = line.getIntersectionPoint(Line.fromPoints(
+    Coord? leftLineIP = line.getIntersectionPoint(
+      Line.fromPoints(
         targetRectangle.left,
         targetRectangle.top,
         targetRectangle.left,
-        targetRectangle.top + targetRectangle.height));
+        targetRectangle.top + targetRectangle.height,
+      ),
+    );
     if (leftLineIP != null &&
         targetRectangle.hasPointOnSide(leftLineIP, Side.LEFT))
       ips.add(leftLineIP);
@@ -394,14 +415,22 @@ class Rectangle extends Rect {
   //   return null;
   // }
 
-  static bool linesIntersect(double x1, double y1, double x2, double y2,
-      double x3, double y3, double x4, double y4) {
+  static bool linesIntersect(
+    double x1,
+    double y1,
+    double x2,
+    double y2,
+    double x3,
+    double y3,
+    double x4,
+    double y4,
+  ) {
     double x =
         ((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)) /
-            ((x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4));
+        ((x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4));
     double y =
         ((x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4)) /
-            ((x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4));
+        ((x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4));
     if (x1 >= x2) {
       if (!(x2 <= x && x <= x1)) {
         return false;
@@ -479,22 +508,22 @@ class Rectangle extends Rect {
 
   bool atTopLeft(Coord p) {
     bool result = onTop(p) && onLeft(p);
-//		if (result)
-//			TrainingProgramDemo.consoleinfo("Reached CORNER");
+    //		if (result)
+    //			TrainingProgramDemo.consoleinfo("Reached CORNER");
     return result;
   }
 
   bool atTopRight(Coord p) {
     bool result = onTop(p) && onRight(p);
-//		if (result)
-//			TrainingProgramDemo.consoleinfo("Reached CORNER");
+    //		if (result)
+    //			TrainingProgramDemo.consoleinfo("Reached CORNER");
     return result;
   }
 
   bool atBottomLeft(Coord p) {
     bool result = onBottom(p) && onLeft(p);
-//		if (result)
-//			TrainingProgramDemo.consoleinfo("Reached CORNER");
+    //		if (result)
+    //			TrainingProgramDemo.consoleinfo("Reached CORNER");
     return result;
   }
 
@@ -507,12 +536,8 @@ class Rectangle extends Rect {
 	 * move 1 point at a time until reached delta. moves clockwise assumption -
 	 * would only ever encounter 1 corner
 	 */
-  Coord cleverTraverseClockwise(Coord theP, int delta) {
+  Coord cleverTraverseClockwise(Coord theP, double delta) {
     Coord endPos = Coord.clone(theP);
-    // TrainingProgramDemo.consoleinfo("traverseClockwise around rect: ",
-    // topLeft.xCommaY() + "  " +
-    // width + " x " + height + "\n starting at " +
-    // endPos.xCommaY());
     bool turnedCorner = false;
     // bool onBottom = false;
     // bool onLeft = false;
@@ -549,7 +574,6 @@ class Rectangle extends Rect {
         }
       }
     }
-    // TrainingProgramDemo.consoleinfo("returning " + endPos.xCommaY());
     return endPos;
   }
 
@@ -557,7 +581,7 @@ class Rectangle extends Rect {
 	 * move 1 point at a time until reached delta. moves ANTI-clockwise
 	 * assumption - would only ever encounter 1 corner
 	 */
-  Coord cleverTraverseAntiClockwise(Coord theP, int delta) {
+  Coord cleverTraverseAntiClockwise(Coord theP, double delta) {
     Coord endPos = Coord.clone(theP);
     // TrainingProgramDemo.consoleinfo("traverseClockwise around rect: ",
     // topLeft.xCommaY() + "  " +
@@ -599,65 +623,65 @@ class Rectangle extends Rect {
     return endPos;
   }
 
-  Coord nextClockwiseCorner(Coord pos) {
-    switch (whichSide(pos)) {
-      case Side.BOTTOM:
-        return Coord.fromOffset(bottomLeft);
-      case Side.LEFT:
-        return Coord.fromOffset(topLeft);
-      case Side.RIGHT:
-        return Coord.fromOffset(bottomRight);
-      case Side.TOP:
-        return Coord.fromOffset(topRight);
-      default:
-        throw (Exception("nextClockwiseCorner - Not on a Side !"));
-    }
-  }
+  // Coord nextClockwiseCorner(Coord pos) {
+  //   switch (whichSide(pos)) {
+  //     case Side.BOTTOM:
+  //       return Coord.fromOffset(bottomLeft);
+  //     case Side.LEFT:
+  //       return Coord.fromOffset(topLeft);
+  //     case Side.RIGHT:
+  //       return Coord.fromOffset(bottomRight);
+  //     case Side.TOP:
+  //       return Coord.fromOffset(topRight);
+  //     default:
+  //       throw (Exception("nextClockwiseCorner - Not on a Side !"));
+  //   }
+  // }
 
-  Coord previousClockwiseCorner(Coord pos) {
-    switch (whichSide(pos)) {
-      case Side.BOTTOM:
-        return Coord.fromOffset(bottomRight);
-      case Side.LEFT:
-        return Coord.fromOffset(bottomLeft);
-      case Side.RIGHT:
-        return Coord.fromOffset(topRight);
-      case Side.TOP:
-        return Coord.fromOffset(topLeft);
-      default:
-        throw (Exception("prevClockwiseCorner - Not on a Side !"));
-    }
-  }
+  // Coord previousClockwiseCorner(Coord pos) {
+  //   switch (whichSide(pos)) {
+  //     case Side.BOTTOM:
+  //       return Coord.fromOffset(bottomRight);
+  //     case Side.LEFT:
+  //       return Coord.fromOffset(bottomLeft);
+  //     case Side.RIGHT:
+  //       return Coord.fromOffset(topRight);
+  //     case Side.TOP:
+  //       return Coord.fromOffset(topLeft);
+  //     default:
+  //       throw (Exception("prevClockwiseCorner - Not on a Side !"));
+  //   }
+  // }
 
-  double distanceToNextCorner(Coord pos) {
-    switch (whichSide(pos)) {
-      case Side.TOP:
-        return right - pos.x;
-      case Side.LEFT:
-        return pos.y - top;
-      case Side.RIGHT:
-        return bottom - pos.y;
-      case Side.BOTTOM:
-        return pos.x - left;
-      default:
-        throw (Exception("distanceToNextCorner - Not on a Side !"));
-    }
-  }
+  // double distanceToNextCorner(Coord pos) {
+  //   switch (whichSide(pos)) {
+  //     case Side.TOP:
+  //       return right - pos.x;
+  //     case Side.LEFT:
+  //       return pos.y - top;
+  //     case Side.RIGHT:
+  //       return bottom - pos.y;
+  //     case Side.BOTTOM:
+  //       return pos.x - left;
+  //     default:
+  //       throw (Exception("distanceToNextCorner - Not on a Side !"));
+  //   }
+  // }
 
-  double distanceToPreviousCorner(Coord pos) {
-    switch (whichSide(pos)) {
-      case Side.TOP:
-        return pos.x - left;
-      case Side.LEFT:
-        return bottom - pos.y;
-      case Side.RIGHT:
-        return pos.y - top;
-      case Side.BOTTOM:
-        return right - pos.x;
-      default:
-        throw (Exception("distanceToPreviousCorner - Not on a Side !"));
-    }
-  }
+  // double distanceToPreviousCorner(Coord pos) {
+  //   switch (whichSide(pos)) {
+  //     case Side.TOP:
+  //       return pos.x - left;
+  //     case Side.LEFT:
+  //       return bottom - pos.y;
+  //     case Side.RIGHT:
+  //       return pos.y - top;
+  //     case Side.BOTTOM:
+  //       return right - pos.x;
+  //     default:
+  //       throw (Exception("distanceToPreviousCorner - Not on a Side !"));
+  //   }
+  // }
 
   /*
 	 * allowing for a moe of 2, is theValue between a and b

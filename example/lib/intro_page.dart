@@ -5,6 +5,7 @@ import 'package:flutter_callouts_example/toast_demo.dart';
 import 'callout_following_scroll_demo.dart';
 import 'callout_with_barrier_demo.dart';
 import 'callout_with_pointer_demo.dart';
+import 'decoration_demo.dart';
 import 'iframe_page.dart';
 
 class IntroPage extends StatefulWidget {
@@ -92,6 +93,11 @@ class IntroPageState extends State<IntroPage> {
                         FilledButton(
                           onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const IFramePage())),
                           child: Text('Iframe demo'),
+                        ),
+                        SizedBox(height: 20),
+                        FilledButton(
+                          onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const DecorationDemoPage())),
+                          child: Text('Decoration Shape demo'),
                         ),
                       ],
                     ),

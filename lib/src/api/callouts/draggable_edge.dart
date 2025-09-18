@@ -2,17 +2,19 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
+import 'package:pointer_interceptor/pointer_interceptor.dart';
 
 Timer? _debounce;
 
 class DraggableEdge_OP extends StatelessWidget {
   final Side side;
   final double thickness;
-  final CalloutConfigModel parent;
+  final CalloutConfig parent;
   final Color color;
+  final bool wrapInPointerInterceptor;
 
   const DraggableEdge_OP(
-      {required this.side, required this.thickness, required this.parent, required this.color, super.key});
+      {required this.side, required this.thickness, required this.parent, required this.color, required this.wrapInPointerInterceptor, super.key});
 
   Axis axis() {
     switch (side) {
@@ -91,10 +93,13 @@ class DraggableEdge_OP extends StatelessWidget {
             });
           });
         },
-        child: Container(
-          color: color,
-          width: _width(),
-          height: _height(),
+        child: PointerInterceptor(
+          intercepting: wrapInPointerInterceptor,
+          child: Container(
+            color: color,
+            width: _width(),
+            height: _height(),
+          ),
         ),
       ),
     );

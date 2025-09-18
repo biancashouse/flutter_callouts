@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
 
+
 class PlayCalloutButton extends StatefulWidget {
   final CalloutId feature;
   final Widget? calloutContents;
   final double? contentsWidth;
   final double? contentsHeight;
   final bool shouldAutoSetGotit;
-  final AlignmentEnum calloutAlignment;
-  final AlignmentEnum targetAlignment;
+  final Alignment calloutAlignment;
+  final Alignment targetAlignment;
   final Color? arrowColor;
   final Axis axis;
   final double? separation;
@@ -22,8 +23,8 @@ class PlayCalloutButton extends StatefulWidget {
     this.contentsWidth,
     this.contentsHeight,
     this.shouldAutoSetGotit = false,
-    this.calloutAlignment = AlignmentEnum.topRight,
-    this.targetAlignment = AlignmentEnum.bottomRight,
+    this.calloutAlignment = Alignment.topRight,
+    this.targetAlignment = Alignment.bottomRight,
     this.axis = Axis.vertical,
     this.separation = 40.0,
     this.gotitAxis,
@@ -65,7 +66,7 @@ class PlayCalloutButtonState extends State<PlayCalloutButton> {
                 }
 
                 fca.showOverlay(
-                  calloutConfig: CalloutConfigModel(
+                  calloutConfig: CalloutConfig(
                     cId: widget.feature,
                     initialCalloutW: widget.contentsWidth,
                     initialCalloutH: widget.contentsHeight,
@@ -74,12 +75,11 @@ class PlayCalloutButtonState extends State<PlayCalloutButton> {
                     initialCalloutAlignment: widget.calloutAlignment,
                     initialTargetAlignment: widget.targetAlignment,
                     finalSeparation: widget.separation ?? 30,
-                    arrowColor: ColorModel.fromColor(widget.arrowColor != null
+                    targetPointerColor: widget.arrowColor != null
                         ? widget.arrowColor!
-                        : Colors.white),
-                    arrowType: ArrowTypeEnum.MEDIUM_REVERSED,
-                    fillColor: ColorModel.black(),
-                    borderRadius: 10,
+                        : Colors.white,
+                    targetPointerType: TargetPointerTypeEnum.MEDIUM_REVERSED_LINE,
+                    decorationBorderRadius: 10,
                     barrier:
                         CalloutBarrierConfig(excludeTargetFromBarrier: true),
                     scrollControllerName: widget.scName,

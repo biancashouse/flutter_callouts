@@ -3,10 +3,11 @@ import 'dart:math' as Math;
 import 'package:flutter/material.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
 
+
 class PointingLine extends StatefulWidget {
   final Offset from;
   final Offset to;
-  final ArrowTypeEnum arrowThickness;
+  final TargetPointerTypeEnum arrowThickness;
   final Color arrowColor;
   final double lengthDeltaPc; // between 0 and 1.0
   final bool animate;
@@ -60,7 +61,7 @@ class PointingLinePainter extends CustomPainter {
   final Offset from;
   final Offset to;
   final double lengthDeltaPc;
-  final ArrowTypeEnum arrowThickness;
+  final TargetPointerTypeEnum arrowThickness;
   final Color arrowColor;
   final Animation<double>? animation;
 
@@ -134,49 +135,49 @@ class PointingLinePainter extends CustomPainter {
     canvas.drawPath(path, fca.bgPaint(arrowColor));
   }
 
-  double arrowTypeToHeadRadius(ArrowTypeEnum size) {
+  double arrowTypeToHeadRadius(TargetPointerTypeEnum size) {
     switch (size) {
-      case ArrowTypeEnum.VERY_THIN:
-      case ArrowTypeEnum.VERY_THIN_REVERSED:
+      case TargetPointerTypeEnum.VERY_THIN_LINE:
+      case TargetPointerTypeEnum.VERY_THIN_REVERSED_LINE:
         return 6;
-      case ArrowTypeEnum.THIN:
-      case ArrowTypeEnum.THIN_REVERSED:
+      case TargetPointerTypeEnum.THIN_LINE:
+      case TargetPointerTypeEnum.THIN_REVERSED_LINE:
         return 10;
-      case ArrowTypeEnum.MEDIUM:
-      case ArrowTypeEnum.MEDIUM_REVERSED:
+      case TargetPointerTypeEnum.MEDIUM_LINE:
+      case TargetPointerTypeEnum.MEDIUM_REVERSED_LINE:
         return 20;
-      case ArrowTypeEnum.LARGE:
-      case ArrowTypeEnum.LARGE_REVERSED:
+      case TargetPointerTypeEnum.LARGE_LINE:
+      case TargetPointerTypeEnum.LARGE_REVERSED_LINE:
         return 30;
       // case ArrowType.HUGE:
       // case ArrowType.HUGE_REVERSED:
       //   return 40;
-      case ArrowTypeEnum.NONE:
+      case TargetPointerTypeEnum.NONE:
         return 0;
-      case ArrowTypeEnum.POINTY:
+      case TargetPointerTypeEnum.BUBBLE:
         return 0;
     }
   }
 
-  double arrowTypeToLineThickness(ArrowTypeEnum size) {
+  double arrowTypeToLineThickness(TargetPointerTypeEnum size) {
     switch (size) {
-      case ArrowTypeEnum.VERY_THIN:
-      case ArrowTypeEnum.VERY_THIN_REVERSED:
+      case TargetPointerTypeEnum.VERY_THIN_LINE:
+      case TargetPointerTypeEnum.VERY_THIN_REVERSED_LINE:
         return 1;
-      case ArrowTypeEnum.THIN:
-      case ArrowTypeEnum.THIN_REVERSED:
+      case TargetPointerTypeEnum.THIN_LINE:
+      case TargetPointerTypeEnum.THIN_REVERSED_LINE:
         return 3;
-      case ArrowTypeEnum.MEDIUM:
-      case ArrowTypeEnum.MEDIUM_REVERSED:
+      case TargetPointerTypeEnum.MEDIUM_LINE:
+      case TargetPointerTypeEnum.MEDIUM_REVERSED_LINE:
         return 10;
-      case ArrowTypeEnum.LARGE:
-      case ArrowTypeEnum.LARGE_REVERSED:
+      case TargetPointerTypeEnum.LARGE_LINE:
+      case TargetPointerTypeEnum.LARGE_REVERSED_LINE:
         return 15;
       // case ArrowType.HUGE:
       // case ArrowType.HUGE_REVERSED:
       //   return 20;
-      case ArrowTypeEnum.NONE:
-      case ArrowTypeEnum.POINTY:
+      case TargetPointerTypeEnum.NONE:
+      case TargetPointerTypeEnum.BUBBLE:
       return 1;
     }
   }

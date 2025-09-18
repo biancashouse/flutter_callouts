@@ -27,7 +27,7 @@ typedef TargetKeyFunc = GlobalKey? Function();
 
 typedef KeystrokeHandler = bool Function(KeyEvent event);
 
-// typedef CalloutConfigChangedF = void Function(AlignmentEnum newTA, ArrowTypeEnum newAT);
+// typedef CalloutConfigChangedF = void Function(Alignment newTA, ArrowTypeEnum newAT);
 
 // typedef HandlerName = String;
 

@@ -6,6 +6,7 @@ import 'package:flutter_callouts/flutter_callouts.dart';
 import 'package:flutter_callouts/src/api/callouts/pointing_line.dart';
 
 
+
 class ConnectingLine {
   final CalloutId feature;
 
@@ -19,7 +20,7 @@ class ConnectingLine {
   final double? toDelta;
 
   final Function? onExpiredF;
-  final ArrowTypeEnum arrowThickness;
+  final TargetPointerTypeEnum arrowThickness;
   final Color arrowColor;
 
   final bool animate;
@@ -48,7 +49,7 @@ class ConnectingLine {
     required this.fromGKF,
     this.fromDelta,
     this.onExpiredF,
-    this.arrowThickness = ArrowTypeEnum.THIN,
+    this.arrowThickness = TargetPointerTypeEnum.THIN_LINE,
     this.arrowColor = Colors.grey,
     this.animate = false,
   });

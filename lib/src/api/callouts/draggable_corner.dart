@@ -2,19 +2,21 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_callouts/src/api/callouts/callout_config.dart';
+import 'package:pointer_interceptor/pointer_interceptor.dart';
 
 Timer? _debounce;
 
 class DraggableCorner_OP extends StatelessWidget {
   final Alignment alignment;
   final double thickness;
-  final CalloutConfigModel parent;
+  final CalloutConfig parent;
   final Color color;
+  final bool wrapInPointerInterceptor;
 
   const DraggableCorner_OP({required this.alignment,
     required this.thickness,
     required this.parent,
-    required this.color,
+    required this.color, required this.wrapInPointerInterceptor,
     super.key});
 
   BorderRadius getBorderRadius(Alignment alignment) {
@@ -111,12 +113,15 @@ class DraggableCorner_OP extends StatelessWidget {
             });
           });
         },
-        child: Container(
-          width: thickness,
-          height: thickness,
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: getBorderRadius(alignment),
+        child: PointerInterceptor(
+          intercepting: wrapInPointerInterceptor,
+          child: Container(
+            width: thickness,
+            height: thickness,
+            decoration: BoxDecoration(
+              color: color,
+              borderRadius: getBorderRadius(alignment),
+            ),
           ),
         ),
       ),

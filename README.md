@@ -67,17 +67,17 @@ You create a callout at runtime by calling the following method:
 ```
 
 * **Serializable property classes and enums** used to configure callouts:
-  * AlignmentEnum
+  * Alignment
   * ArrowTypeEnum
-  * ColorModel
+  * Color
   * DecorationShapeEnum
-  * OffsetModel
+  * Offset
   * UpTo6Colors \- models a gradient
 
-* **CalloutConfigModel** \- the serializable callout configuration object. Its constructor takes many args, most of which, hopefully, are aptly named to not require explanation:
+* **CalloutConfig** \- the serializable callout configuration object. Its constructor takes many args, most of which, hopefully, are aptly named to not require explanation:
 
 ```dart 
-CalloutConfigModel({
+CalloutConfig({
   required this.cId,		// each callout has a unique id  
   this.callerGK,
   this.movedOrResizedNotifier,

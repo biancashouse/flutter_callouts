@@ -11,14 +11,14 @@ class PointerDemo extends StatefulWidget {
 
 class _PointerDemoState extends State<PointerDemo> {
   final GlobalKey _gk = GlobalKey();
-  late CalloutConfigModel _cc;
+  late CalloutConfig _cc;
   late CalloutBarrierConfig _bc;
 
   // user can change callout properties even when a callout is already shown
   bool _showBarrier = false;
   // final bool _animateArrow = false;
   bool _showLineLabel = false;
-  final ArrowTypeEnum _pointerType = ArrowTypeEnum.THIN;
+  final TargetPointerTypeEnum _pointerType = TargetPointerTypeEnum.THIN_LINE;
 
   @override
   void initState() {
@@ -38,9 +38,8 @@ class _PointerDemoState extends State<PointerDemo> {
 
   void _onTappedBarrier() {
     fca.showOverlay(
-      calloutConfig: CalloutConfigModel(
+      calloutConfig: CalloutConfig(
         cId: 'tapped-barrier',
-        fillColor: ColorModel.transparent(),
         scrollControllerName: null,
         elevation: 6,
       ),
@@ -73,7 +72,7 @@ class _PointerDemoState extends State<PointerDemo> {
   /// CalloutConfig objects are where you configure callouts and the way they point at their target.
   /// All params are shown, and many are commented out for this example callout.
   /// NOTE - a callout can be updated after it is created by updating properties and rebuilding it.
-  CalloutConfigModel _createCalloutConfig() {
+  CalloutConfig _createCalloutConfig() {
     _bc = CalloutBarrierConfig(
       cutoutPadding: fca.isWeb ? 20 : 10,
       excludeTargetFromBarrier: false,
@@ -84,11 +83,11 @@ class _PointerDemoState extends State<PointerDemo> {
       opacity: .9,
     );
 
-    return CalloutConfigModel(
+    return CalloutConfig(
       cId: 'some-callout-id',
       // -- initial pos and animation ---------------------------------
-      initialTargetAlignment: fca.isAndroid? AlignmentEnum.topCenter : AlignmentEnum.centerLeft,
-      initialCalloutAlignment: fca.isAndroid? AlignmentEnum.bottomCenter : AlignmentEnum.centerRight,
+      initialTargetAlignment: fca.isAndroid? Alignment.topCenter : Alignment.centerLeft,
+      initialCalloutAlignment: fca.isAndroid? Alignment.bottomCenter : Alignment.centerRight,
       // initialCalloutPos:
       finalSeparation: 100,
       // fromDelta: 0.0,
@@ -107,8 +106,8 @@ class _PointerDemoState extends State<PointerDemo> {
       initialCalloutH: 400,
       // if not supplied, callout content widget gets measured
       // borderRadius: 12,
-      borderThickness: 3,
-      fillColor: ColorModel.fromColor(Colors.yellow[700]!),
+      decorationBorderThickness: 3,
+      decorationUpTo6FillColors: UpTo6Colors(color1: Colors.yellow[700]!),
       elevation: 10,
       // frameTarget: true,
       // -- optional close button and got it button -------------------
@@ -118,9 +117,9 @@ class _PointerDemoState extends State<PointerDemo> {
       // closeButtonPos:
       // gotitAxis:
       // -- pointer -------------------------------------------------
-      // arrowColor: ColorModel.yellow(),
-      arrowType: _pointerType,
-      animate: false,
+      // arrowColor: Color.yellow(),
+      targetPointerType: _pointerType,
+      animatePointer: false,
       lineLabel: _showLineLabel ? Text('line label') : null,
       // frameTarget: true,
       // fromDelta: -20,
@@ -207,20 +206,20 @@ class _PointerDemoState extends State<PointerDemo> {
         ),
         Padding(
           padding: const EdgeInsets.all(10.0),
-          child: DropdownMenu<ArrowTypeEnum>(
-            initialSelection: _cc.arrowType,
+          child: DropdownMenu<TargetPointerTypeEnum>(
+            initialSelection: _cc.targetPointerType,
             controller: TextEditingController(),
             requestFocusOnTap: true,
             inputDecorationTheme: const InputDecorationTheme(filled: true, contentPadding: EdgeInsets.all(20.0)),
             label: const Text('Pointer Type', style: TextStyle(color: Colors.blueGrey)),
-            onSelected: (ArrowTypeEnum? newType) {
+            onSelected: (TargetPointerTypeEnum? newType) {
               if (newType == null) return;
               _changePointerType(newType);
             },
-            dropdownMenuEntries: ArrowTypeEnum.entries,
+            dropdownMenuEntries: TargetPointerTypeEnum.entries,
           ),
         ),
-        if (_cc.arrowType != ArrowTypeEnum.NONE && _cc.arrowType != ArrowTypeEnum.POINTY)
+        if (_cc.targetPointerType != TargetPointerTypeEnum.NONE && _cc.targetPointerType != TargetPointerTypeEnum.BUBBLE)
           SizedBox(
             width: double.infinity,
             child: Row(
@@ -230,7 +229,7 @@ class _PointerDemoState extends State<PointerDemo> {
                 const Text('animate arrow ?'),
                 StatefulBuilder(
                   builder: (context, setState) => Checkbox(
-                    value: _cc.animate,
+                    value: _cc.animatePointer,
                     onChanged: (_) {
                       toggleAnimatedArrow();
                     },
@@ -239,7 +238,7 @@ class _PointerDemoState extends State<PointerDemo> {
               ],
             ),
           ),
-        if (_cc.arrowType != ArrowTypeEnum.NONE && _cc.arrowType != ArrowTypeEnum.POINTY)
+        if (_cc.targetPointerType != TargetPointerTypeEnum.NONE && _cc.targetPointerType != TargetPointerTypeEnum.BUBBLE)
           SizedBox(
             width: double.infinity,
             child: Row(
@@ -287,9 +286,9 @@ class _PointerDemoState extends State<PointerDemo> {
     });
   }
 
-  void _changePointerType(ArrowTypeEnum newType) {
+  void _changePointerType(TargetPointerTypeEnum newType) {
     setState(() {
-      _cc.arrowType = newType;
+      _cc.targetPointerType = newType;
       fca.dismiss('some-callout-id');
       fca.showOverlay(calloutConfig: _cc, calloutContent: _createCalloutContent(), targetGkF: () => _gk);
     });
@@ -297,7 +296,7 @@ class _PointerDemoState extends State<PointerDemo> {
 
   void toggleAnimatedArrow() {
     setState(() {
-      _cc.animate = !_cc.animate;
+      _cc.animatePointer = !_cc.animatePointer;
       // because animate requires a controller created in its intState, we simply recreate the callout rather just rebuild
       // TODO may refine later
       fca.dismiss('some-callout-id');

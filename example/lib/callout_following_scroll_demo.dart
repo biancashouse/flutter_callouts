@@ -16,7 +16,7 @@ class _ScrollingDemoState extends State<ScrollingDemo> {
   final GlobalKey _gk1 = GlobalKey();
   final GlobalKey _gk2 = GlobalKey();
   final GlobalKey _gk3 = GlobalKey();
-  late CalloutConfigModel _cc1, _cc2;
+  late CalloutConfig _cc1, _cc2;
 
   // user can change callout properties even when a callout is already shown
   bool followScroll1 = false;
@@ -56,10 +56,11 @@ class _ScrollingDemoState extends State<ScrollingDemo> {
             targetGkF: () => _gk3,
             namedSC: _namedSC,
             callout2Follow: _cc2,
-          );        },
+          );
+        },
       );
       fca.showToastColor1OnColor2(
-        gravity: AlignmentEnum.bottomCenter,
+        gravity: Alignment.bottomCenter,
         msg: 'demonstrating dragging, resizing,\nand scrolling with callouts',
         textColor: Colors.white,
         fontSize: 16,
@@ -70,7 +71,7 @@ class _ScrollingDemoState extends State<ScrollingDemo> {
       Timer(Duration(seconds: 5), () {
         if (!didScroll) {
           fca.showToastColor1OnColor2(
-            gravity: AlignmentEnum.center,
+            gravity: Alignment.center,
             msg: 'scroll to see the callout pointer follow the target',
             textColor: Colors.yellow,
             bgColor: Colors.blue,
@@ -95,15 +96,11 @@ class _ScrollingDemoState extends State<ScrollingDemo> {
   /// CalloutConfig objects are where you configure callouts and the way they point at their target.
   /// All params are shown, and many are commented out for this example callout.
   /// NOTE - a callout can be updated after it is created by updating properties and rebuilding it.
-  CalloutConfigModel _createCalloutConfig1() => CalloutConfigModel(
+  CalloutConfig _createCalloutConfig1() => CalloutConfig(
     cId: 'some-callout-id-1',
     // -- initial pos and animation ---------------------------------
-    initialCalloutAlignment: fca.isAndroid
-        ? AlignmentEnum.topCenter
-        : AlignmentEnum.centerLeft,
-    initialTargetAlignment: fca.isAndroid
-        ? AlignmentEnum.bottomCenter
-        : AlignmentEnum.centerRight,
+    initialTargetAlignment: Alignment.topRight,
+    initialCalloutAlignment: Alignment.bottomLeft,
     // initialCalloutPos:
     finalSeparation: 60,
     // fromDelta: 0.0,
@@ -121,9 +118,10 @@ class _ScrollingDemoState extends State<ScrollingDemo> {
     // if not supplied, callout content widget gets measured
     initialCalloutH: 120,
     // if not supplied, callout content widget gets measured
-    // borderRadius: 12,
-    borderThickness: 3,
-    fillColor: ColorModel.fromColor(Colors.yellow[700]!),
+    decorationBorderRadius: 24,
+    decorationBorderThickness: 3,
+    decorationUpTo6FillColors: UpTo6Colors(color1: Colors.green[400]),
+    decorationGradientIsLinear: false,
     elevation: 10,
     // frameTarget: true,
     // -- optional close button and got it button -------------------
@@ -133,9 +131,10 @@ class _ScrollingDemoState extends State<ScrollingDemo> {
     // closeButtonPos:
     // gotitAxis:
     // -- pointer -------------------------------------------------
-    // arrowColor: ColorModel.yellow(),
-    arrowType: ArrowTypeEnum.POINTY,
-    animate: true,
+    // arrowColor: Color.yellow(),
+    targetPointerType: TargetPointerTypeEnum.BUBBLE,
+    // targetPointerColor: Colors.yellow[700]!,
+    // animatePointer: true,
     // lineLabel: Text('line label'),
     // fromDelta: -20,
     // toDelta: -20,
@@ -146,8 +145,8 @@ class _ScrollingDemoState extends State<ScrollingDemo> {
     // targetTranslateY:
     // scaleTarget: 1.0,
     // -- resizing -------------------------------------------------
-    resizeableH: true,
-    resizeableV: true,
+    // resizeableH: true,
+    // resizeableV: true,
     // -- dragging -------------------------------------------------
     // draggable: false,
     // draggableColor: Colors.green,
@@ -156,47 +155,49 @@ class _ScrollingDemoState extends State<ScrollingDemo> {
     followScroll: false,
   );
 
-  CalloutConfigModel _createCalloutConfig2() => CalloutConfigModel(
+  CalloutConfig _createCalloutConfig2() => CalloutConfig(
     cId: 'some-callout-id-2',
     // -- initial pos and animation ---------------------------------
     initialCalloutAlignment: fca.isAndroid
-        ? AlignmentEnum.bottomCenter
-        : AlignmentEnum.centerRight,
+        ? Alignment.bottomCenter
+        : Alignment.centerRight,
     initialTargetAlignment: fca.isAndroid
-        ? AlignmentEnum.topCenter
-        : AlignmentEnum.centerLeft,
+        ? Alignment.topCenter
+        : Alignment.centerLeft,
     // initialCalloutPos:
     finalSeparation: 60,
     initialCalloutW: 240,
     initialCalloutH: 120,
-    borderThickness: 3,
-    fillColor: ColorModel.fromColor(Colors.yellow[600]!),
+    decorationBorderThickness: 3,
+    decorationUpTo6FillColors: UpTo6Colors(color1: Colors.yellow[600]!),
     elevation: 10,
-    arrowType: ArrowTypeEnum.THIN,
-    animate: true,
+    targetPointerType: TargetPointerTypeEnum.THIN_LINE,
+    animatePointer: true,
     scrollControllerName: _namedSC.name,
     followScroll: false,
+    resizeableH: true,
+    resizeableV: true,
   );
 
-  CalloutConfigModel _createCalloutConfig3() => CalloutConfigModel(
+  CalloutConfig _createCalloutConfig3() => CalloutConfig(
     cId: 'some-callout-id-3',
-    initialCalloutAlignment: AlignmentEnum.bottomCenter,
-    initialTargetAlignment: AlignmentEnum.centerLeft,
+    initialCalloutAlignment: Alignment.bottomCenter,
+    initialTargetAlignment: Alignment.centerLeft,
     // initialCalloutPos:
-    finalSeparation: 100,
+    finalSeparation: 150,
     initialCalloutW: 240,
-    initialCalloutH: 50,
-    borderThickness: 3,
-    fillColor: ColorModel.fromColor(Colors.orange[600]!),
+    initialCalloutH: 70,
+    decorationBorderThickness: 3,
+    decorationUpTo6FillColors: UpTo6Colors(color1: Colors.orange[600]!),
     elevation: 3,
-    arrowType: ArrowTypeEnum.THIN,
+    targetPointerType: TargetPointerTypeEnum.THIN_LINE,
     scrollControllerName: _namedSC.name,
     followScroll: false,
   );
 
   Widget _createCalloutContent1() => IntrinsicHeight(
     child: Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(18.0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -265,7 +266,10 @@ class _ScrollingDemoState extends State<ScrollingDemo> {
   );
 
   Widget _createCalloutContent3() => IntrinsicHeight(
-    child: Text('Pointing out the purple icon\ninside another callout.\n'),
+    child: Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Text('Pointing out the purple icon\ninside another callout.\n'),
+    ),
   );
 
   void toggleFollowScroll1() {
@@ -310,14 +314,13 @@ class _ScrollingDemoState extends State<ScrollingDemo> {
                   Padding(
                     padding: const EdgeInsets.all(28.0),
                     child: Text(
-                      'The yellow callout points to the blue icon widget.\n\n'
-                      'The callout has been configured to be draggable, resizeable,\n'
-                      'with the pointer animated.\n\n'
+                      'All these callouts have been configured to be draggable.\n\n'
+                      'The yellow callout is also resizable, and its arrow animated.\n\n'
                       'When scrolling your UI, you can have the callout stay in place\n'
                       'of follow the scroll.\n\n'
                       'The configuration can be updated in real time. E.g. when you change the\n'
                       '"followScroll?" checkbox, the scroll behaviour changes.\n\n'
-                      'Try dragging the yellow callouts and scrolling the screen...',
+                      'Try dragging the yellow callout and scrolling the screen...',
                       style: TextStyle(
                         color: Colors.green[900],
                         fontStyle: FontStyle.italic,
@@ -325,7 +328,7 @@ class _ScrollingDemoState extends State<ScrollingDemo> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 200.0),
+                  SizedBox(height: 100.0),
                   Center(
                     child: Icon(
                       key: _gk2,

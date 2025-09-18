@@ -33,7 +33,7 @@ class _IFramePageState extends State<IFramePage> {
         wrapInPointerInterceptor: true, // THIS IS THE MOST IMPORTANT LINE
       );
       fca.showToastColor1OnColor2(
-        gravity: AlignmentEnum.bottomCenter,
+        gravity: Alignment.bottomCenter,
         msg: 'demonstrating that a callout is still draggable even when over an Iframe',
         textColor: Colors.white,
         fontSize: 16,
@@ -57,11 +57,11 @@ class _IFramePageState extends State<IFramePage> {
   /// CalloutConfig objects are where you configure callouts and the way they point at their target.
   /// All params are shown, and many are commented out for this example callout.
   /// NOTE - a callout can be updated after it is created by updating properties and rebuilding it.
-  CalloutConfigModel _createCalloutConfig1() => CalloutConfigModel(
+  CalloutConfig _createCalloutConfig1() => CalloutConfig(
     cId: 'some-callout-id',
     // -- initial pos and animation ---------------------------------
-    initialCalloutAlignment: AlignmentEnum.topRight,
-    initialTargetAlignment: AlignmentEnum.bottomLeft,
+    initialCalloutAlignment: Alignment.topRight,
+    initialTargetAlignment: Alignment.bottomLeft,
     // initialCalloutPos:
     finalSeparation: 60,
     // fromDelta: 0.0,
@@ -80,8 +80,8 @@ class _IFramePageState extends State<IFramePage> {
     initialCalloutH: 150,
     // if not supplied, callout content widget gets measured
     // borderRadius: 12,
-    borderThickness: 3,
-    fillColor: ColorModel.fromColor(Colors.yellow[700]!),
+    decorationBorderThickness: 3,
+    decorationUpTo6FillColors: UpTo6Colors(color1: Colors.yellow[700]!),
     elevation: 10,
     // frameTarget: true,
     // -- optional close button and got it button -------------------
@@ -91,9 +91,9 @@ class _IFramePageState extends State<IFramePage> {
     // closeButtonPos:
     // gotitAxis:
     // -- pointer -------------------------------------------------
-    // arrowColor: ColorModel.yellow(),
-    arrowType: ArrowTypeEnum.POINTY,
-    animate: true,
+    // arrowColor: Color.yellow(),
+    targetPointerType: TargetPointerTypeEnum.BUBBLE,
+    animatePointer: true,
     // lineLabel: Text('line label'),
     // fromDelta: -20,
     // toDelta: -20,

@@ -11,7 +11,7 @@ class BarrierDemo extends StatefulWidget {
 
 class _BarrierDemoState extends State<BarrierDemo> {
   final GlobalKey _gk = GlobalKey();
-  late CalloutConfigModel _cc;
+  late CalloutConfig _cc;
   late CalloutBarrierConfig _bc;
 
   // user can change callout properties even when a callout is already shown
@@ -41,7 +41,7 @@ class _BarrierDemoState extends State<BarrierDemo> {
   /// CalloutConfig objects are where you configure callouts and the way they point at their target.
   /// All params are shown, and many are commented out for this example callout.
   /// NOTE - a callout can be updated after it is created by updating properties and rebuilding it.
-  CalloutConfigModel _createFabCalloutConfig() {
+  CalloutConfig _createFabCalloutConfig() {
     _bc = CalloutBarrierConfig(
       cutoutPadding: fca.isWeb ? 20 : 10,
       excludeTargetFromBarrier: false,
@@ -51,11 +51,11 @@ class _BarrierDemoState extends State<BarrierDemo> {
       opacity: .9,
     );
 
-    return CalloutConfigModel(
+    return CalloutConfig(
       cId: 'some-callout-id',
       // -- initial pos and animation ---------------------------------
-      initialCalloutAlignment: AlignmentEnum.centerLeft,
-      initialTargetAlignment: AlignmentEnum.centerRight,
+      initialCalloutAlignment: Alignment.centerLeft,
+      initialTargetAlignment: Alignment.centerRight,
       // initialCalloutPos:
       finalSeparation: 60,
       // fromDelta: 0.0,
@@ -74,8 +74,8 @@ class _BarrierDemoState extends State<BarrierDemo> {
       initialCalloutH: 200,
       // if not supplied, callout content widget gets measured
       // borderRadius: 12,
-      borderThickness: 3,
-      fillColor: ColorModel.fromColor(Colors.yellow[700]!),
+      decorationBorderThickness: 3,
+      decorationUpTo6FillColors: UpTo6Colors(color1: Colors.yellow[700]!),
       elevation: 10,
       // frameTarget: true,
       // -- optional close button and got it button -------------------
@@ -85,9 +85,9 @@ class _BarrierDemoState extends State<BarrierDemo> {
       // closeButtonPos:
       // gotitAxis:
       // -- pointer -------------------------------------------------
-      // arrowColor: ColorModel.yellow(),
-      arrowType: ArrowTypeEnum.THIN,
-      animate: true,
+      // arrowColor: Color.yellow(),
+      targetPointerType: TargetPointerTypeEnum.THIN_LINE,
+      animatePointer: true,
       // lineLabel: Text('line label'),
       // fromDelta: -20,
       // toDelta: -20,

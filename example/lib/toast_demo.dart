@@ -8,10 +8,9 @@ class ToastDemoPage extends StatefulWidget {
   State<ToastDemoPage> createState() => ToastDemoPageState();
 }
 
-/// it's important to add the mixin, because callouts are animated
-class ToastDemoPageState extends State<ToastDemoPage> with TickerProviderStateMixin {
+class ToastDemoPageState extends State<ToastDemoPage> {
   final TextEditingController gravityController = TextEditingController();
-  AlignmentEnum? selectedGravity;
+  Alignment? selectedGravity;
   late List<Alignment> alignments;
   bool justShowNextDemoButton = false;
 
@@ -19,41 +18,41 @@ class ToastDemoPageState extends State<ToastDemoPage> with TickerProviderStateMi
   void initState() {
     super.initState();
 
-    fca.afterNextBuildDo(() => _showToast(AlignmentEnum.topCenter));
+    fca.afterNextBuildDo(() => _showToast(Alignment.topCenter));
   }
 
-   void _showToast(AlignmentEnum gravity, {int showForMs = 0}) {
+  void _showToast(Alignment gravity, {int showForMs = 0}) {
     // keep away from the edge of screen by 50
     double? contentTranslateX;
     double? contentTranslateY;
     switch (gravity) {
-      case AlignmentEnum.topLeft:
+      case Alignment.topLeft:
         contentTranslateX = 50;
         contentTranslateY = 50;
         break;
-      case AlignmentEnum.topRight:
+      case Alignment.topRight:
         contentTranslateX = -50;
         contentTranslateY = 50;
         break;
-      case AlignmentEnum.topCenter:
+      case Alignment.topCenter:
         contentTranslateY = 50;
         break;
-      case AlignmentEnum.centerLeft:
+      case Alignment.centerLeft:
         contentTranslateX = 50;
         break;
-      case AlignmentEnum.centerRight:
+      case Alignment.centerRight:
         contentTranslateX = -50;
         break;
-      case AlignmentEnum.center:
+      case Alignment.center:
         break;
-      case AlignmentEnum.bottomLeft:
+      case Alignment.bottomLeft:
         contentTranslateX = 50;
         contentTranslateY = -50;
         break;
-      case AlignmentEnum.bottomCenter:
+      case Alignment.bottomCenter:
         contentTranslateY = -50;
         break;
-      case AlignmentEnum.bottomRight:
+      case Alignment.bottomRight:
         contentTranslateX = -50;
         contentTranslateY = -50;
         break;
@@ -61,16 +60,16 @@ class ToastDemoPageState extends State<ToastDemoPage> with TickerProviderStateMi
 
     fca.showToastOverlay(
       removeAfterMs: showForMs,
-      calloutConfig: CalloutConfigModel(
-        cId: 'toast-${gravity.name}',
+      calloutConfig: CalloutConfig(
+        cId: 'toast-${gravity.runtimeType.toString()}',
         gravity: gravity,
         initialCalloutW: fca.isAndroid ? 200 : 500,
         initialCalloutH: 240,
-        fillColor: ColorModel.black26(),
+        decorationUpTo6FillColors: UpTo6Colors(color1: Colors.black),
         showCloseButton: true,
-        borderThickness: 5,
-        borderRadius: 16,
-        borderColor: ColorModel.yellow(),
+        decorationBorderThickness: 5,
+        decorationBorderRadius: 16,
+        decorationUpTo6BorderColors: UpTo6Colors(color1: Colors.yellow),
         elevation: 10,
         scrollControllerName: null,
         contentTranslateX: contentTranslateX,
@@ -82,21 +81,69 @@ class ToastDemoPageState extends State<ToastDemoPage> with TickerProviderStateMi
           children: [
             Padding(
               padding: const EdgeInsets.all(18.0),
-              child: Text('this is a Toast callout, positioned according to the gravity:', style: TextStyle(color: Colors.white)),
+              child: Text(
+                'this is a Toast callout, positioned according to the gravity:',
+                style: TextStyle(color: Colors.white),
+              ),
             ),
             Padding(
               padding: const EdgeInsets.all(28.0),
-              child: DropdownMenu<AlignmentEnum>(
+              child: DropdownMenu<Alignment>(
                 initialSelection: gravity,
                 controller: gravityController,
                 requestFocusOnTap: true,
-                inputDecorationTheme: const InputDecorationTheme(filled: true, contentPadding: EdgeInsets.all(20.0)),
-                label: const Text('Gravity', style: TextStyle(color: Colors.blueGrey)),
-                onSelected: (AlignmentEnum? newGravity) {
+                inputDecorationTheme: const InputDecorationTheme(
+                  filled: true,
+                  contentPadding: EdgeInsets.all(20.0),
+                ),
+                label: const Text(
+                  'Gravity',
+                  style: TextStyle(color: Colors.blueGrey),
+                ),
+                onSelected: (Alignment? newGravity) {
                   fca.dismissToast(gravity);
-                  _showToast(selectedGravity = newGravity ?? AlignmentEnum.topCenter);
+                  _showToast(
+                    selectedGravity = newGravity ?? Alignment.topCenter,
+                  );
                 },
-                dropdownMenuEntries: AlignmentEnum.entries,
+                dropdownMenuEntries: [
+                  DropdownMenuEntry<Alignment>(
+                    value: Alignment.topLeft,
+                    label: "Alignment.topLeft",
+                  ),
+                  DropdownMenuEntry<Alignment>(
+                    value: Alignment.topCenter,
+                    label: "Alignment.topCenter",
+                  ),
+                  DropdownMenuEntry<Alignment>(
+                    value: Alignment.topRight,
+                    label: "Alignment.topRight",
+                  ),
+                  DropdownMenuEntry<Alignment>(
+                    value: Alignment.centerLeft,
+                    label: "Alignment.centerLeft",
+                  ),
+                  DropdownMenuEntry<Alignment>(
+                    value: Alignment.center,
+                    label: "Alignment.center",
+                  ),
+                  DropdownMenuEntry<Alignment>(
+                    value: Alignment.centerRight,
+                    label: "Alignment.centerRight",
+                  ),
+                  DropdownMenuEntry<Alignment>(
+                    value: Alignment.bottomLeft,
+                    label: "Alignment.bottomLeft",
+                  ),
+                  DropdownMenuEntry<Alignment>(
+                    value: Alignment.bottomCenter,
+                    label: "Alignment.bottomCenter",
+                  ),
+                  DropdownMenuEntry<Alignment>(
+                    value: Alignment.bottomRight,
+                    label: "Alignment.bottomRight",
+                  ),
+                ],
               ),
             ),
           ],
@@ -129,10 +176,13 @@ class ToastDemoPageState extends State<ToastDemoPage> with TickerProviderStateMi
           ),
         ),
         bottomSheet: Container(
-        color: Colors.black,
-        padding: EdgeInsets.all(8),
-        child: Text('demonstrating callouts as Toasts', style: TextStyle(color: Colors.white)),
-      ),
+          color: Colors.black,
+          padding: EdgeInsets.all(8),
+          child: Text(
+            'demonstrating callouts as Toasts',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
       ),
     ),
   );
