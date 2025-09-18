@@ -20,7 +20,7 @@ class ConnectingLine {
   final double? toDelta;
 
   final Function? onExpiredF;
-  final TargetPointerTypeEnum arrowThickness;
+  final TargetPointerType? arrowType;
   final Color arrowColor;
 
   final bool animate;
@@ -49,7 +49,7 @@ class ConnectingLine {
     required this.fromGKF,
     this.fromDelta,
     this.onExpiredF,
-    this.arrowThickness = TargetPointerTypeEnum.THIN_LINE,
+    this.arrowType,
     this.arrowColor = Colors.grey,
     this.animate = false,
   });
@@ -109,7 +109,7 @@ class ConnectingLine {
             child: PointingLine(
               from,
               to,
-              arrowThickness,
+              arrowType ?? TargetPointerType.thin_line(),
               arrowColor,
               animate: animate,
             ),

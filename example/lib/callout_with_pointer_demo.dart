@@ -18,7 +18,7 @@ class _PointerDemoState extends State<PointerDemo> {
   bool _showBarrier = false;
   // final bool _animateArrow = false;
   bool _showLineLabel = false;
-  final TargetPointerTypeEnum _pointerType = TargetPointerTypeEnum.THIN_LINE;
+  final TargetPointerType _pointerType = TargetPointerType.thin_line();
 
   @override
   void initState() {
@@ -206,20 +206,20 @@ class _PointerDemoState extends State<PointerDemo> {
         ),
         Padding(
           padding: const EdgeInsets.all(10.0),
-          child: DropdownMenu<TargetPointerTypeEnum>(
+          child: DropdownMenu<TargetPointerType>(
             initialSelection: _cc.targetPointerType,
             controller: TextEditingController(),
             requestFocusOnTap: true,
             inputDecorationTheme: const InputDecorationTheme(filled: true, contentPadding: EdgeInsets.all(20.0)),
             label: const Text('Pointer Type', style: TextStyle(color: Colors.blueGrey)),
-            onSelected: (TargetPointerTypeEnum? newType) {
+            onSelected: (TargetPointerType? newType) {
               if (newType == null) return;
               _changePointerType(newType);
             },
-            dropdownMenuEntries: TargetPointerTypeEnum.entries,
+            dropdownMenuEntries: TargetPointerType.entries,
           ),
         ),
-        if (_cc.targetPointerType != TargetPointerTypeEnum.NONE && _cc.targetPointerType != TargetPointerTypeEnum.BUBBLE)
+        if (_cc.targetPointerType != TargetPointerType.none && _cc.targetPointerType != TargetPointerType.bubble)
           SizedBox(
             width: double.infinity,
             child: Row(
@@ -238,7 +238,7 @@ class _PointerDemoState extends State<PointerDemo> {
               ],
             ),
           ),
-        if (_cc.targetPointerType != TargetPointerTypeEnum.NONE && _cc.targetPointerType != TargetPointerTypeEnum.BUBBLE)
+        if (_cc.targetPointerType != TargetPointerType.none && _cc.targetPointerType != TargetPointerType.bubble)
           SizedBox(
             width: double.infinity,
             child: Row(
@@ -286,7 +286,7 @@ class _PointerDemoState extends State<PointerDemo> {
     });
   }
 
-  void _changePointerType(TargetPointerTypeEnum newType) {
+  void _changePointerType(TargetPointerType newType) {
     setState(() {
       _cc.targetPointerType = newType;
       fca.dismiss('some-callout-id');

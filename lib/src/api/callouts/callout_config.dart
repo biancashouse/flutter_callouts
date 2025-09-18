@@ -62,7 +62,7 @@ class CalloutConfig implements TickerProvider {
   // extend line in the from direction by delta
   double? toDelta;
 
-  TargetPointerTypeEnum targetPointerType;
+  TargetPointerType? targetPointerType;
   Color? targetPointerColor; // arrow or bubble
   bool animatePointer;
   Widget? lineLabel;
@@ -318,7 +318,7 @@ class CalloutConfig implements TickerProvider {
     this.contentTranslateY,
     this.targetTranslateX,
     this.targetTranslateY,
-    this.targetPointerType = TargetPointerTypeEnum.THIN_LINE,
+    this.targetPointerType,
     this.targetPointerColor,
     this.barrier,
     // this.modal = false,
@@ -447,7 +447,7 @@ class CalloutConfig implements TickerProvider {
     double? contentTranslateY,
     double? targetTranslateX,
     double? targetTranslateY,
-    TargetPointerTypeEnum? targetPointerType,
+    TargetPointerType? targetPointerType,
     Color? targetPointerColor,
     CalloutBarrierConfig? barrier,
     // bool? modal,
@@ -1095,7 +1095,7 @@ class CalloutConfig implements TickerProvider {
           parent: this,
           wrapInPointerInterceptor: wrapWithPointerInterceptor,
         ),
-      if (notToast && targetPointerType == TargetPointerTypeEnum.BUBBLE)
+      if (notToast && targetPointerType == TargetPointerType.bubble)
         _positionedBubbleBg(),
       PositionedBoxContent(
         this,
@@ -1104,12 +1104,12 @@ class CalloutConfig implements TickerProvider {
         key: ValueKey(cId),
       ),
       if (notToast &&
-          targetPointerType != TargetPointerTypeEnum.NONE &&
-          targetPointerType != TargetPointerTypeEnum.BUBBLE)
+          targetPointerType != TargetPointerType.none &&
+          targetPointerType != TargetPointerType.bubble)
         _createPointingLine(),
       if (notToast &&
-          targetPointerType != TargetPointerTypeEnum.NONE &&
-          targetPointerType != TargetPointerTypeEnum.BUBBLE &&
+          targetPointerType != TargetPointerType.none &&
+          targetPointerType != TargetPointerType.bubble &&
           lineLabel != null)
         _createLineLabel(),
       // if (isConfigurable && _zoomer != null) _createConfigToolbar(Side.TOP),
@@ -1735,9 +1735,9 @@ class CalloutConfig implements TickerProvider {
 
       Widget pointingLine = IgnorePointer(
         child: PointingLine(
-          targetPointerType.reverse ? to : from,
-          targetPointerType.reverse ? from : to,
-          targetPointerType,
+          targetPointerType?.reverse??false ? to : from,
+          targetPointerType?.reverse??false ? from : to,
+          targetPointerType!,
           targetPointerColor ?? Colors.white,
           lengthDeltaPc: lengthDeltaPc,
           animate: animatePointer,

@@ -86,7 +86,7 @@ class _BarrierDemoState extends State<BarrierDemo> {
       // gotitAxis:
       // -- pointer -------------------------------------------------
       // arrowColor: Color.yellow(),
-      targetPointerType: TargetPointerTypeEnum.THIN_LINE,
+      targetPointerType: TargetPointerType.thin_line(),
       animatePointer: true,
       // lineLabel: Text('line label'),
       // fromDelta: -20,

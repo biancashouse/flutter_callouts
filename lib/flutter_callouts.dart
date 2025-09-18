@@ -52,7 +52,7 @@ export 'src/widget/blink.dart';
 export 'src/widget/constant_scroll_behavior.dart';
 export 'src/widget/error.dart';
 export 'src/widget/widget_helper_mixin.dart';
-export 'src/api/callouts/arrow_type_enum.dart';
+export 'src/api/callouts/target_pointer_type.dart';
 export 'src/api/callouts/decoration_shape.dart';
 
 export 'src/api/callouts/upto6colors.dart';

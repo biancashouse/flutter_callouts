@@ -78,7 +78,7 @@ class PlayCalloutButtonState extends State<PlayCalloutButton> {
                     targetPointerColor: widget.arrowColor != null
                         ? widget.arrowColor!
                         : Colors.white,
-                    targetPointerType: TargetPointerTypeEnum.MEDIUM_REVERSED_LINE,
+                    targetPointerType: TargetPointerType.medium_reversed_line(),
                     decorationBorderRadius: 10,
                     barrier:
                         CalloutBarrierConfig(excludeTargetFromBarrier: true),

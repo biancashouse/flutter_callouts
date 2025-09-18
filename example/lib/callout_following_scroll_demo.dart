@@ -132,7 +132,7 @@ class _ScrollingDemoState extends State<ScrollingDemo> {
     // gotitAxis:
     // -- pointer -------------------------------------------------
     // arrowColor: Color.yellow(),
-    targetPointerType: TargetPointerTypeEnum.BUBBLE,
+    targetPointerType: TargetPointerType.bubble(),
     // targetPointerColor: Colors.yellow[700]!,
     // animatePointer: true,
     // lineLabel: Text('line label'),
@@ -171,7 +171,7 @@ class _ScrollingDemoState extends State<ScrollingDemo> {
     decorationBorderThickness: 3,
     decorationUpTo6FillColors: UpTo6Colors(color1: Colors.yellow[600]!),
     elevation: 10,
-    targetPointerType: TargetPointerTypeEnum.THIN_LINE,
+    targetPointerType: TargetPointerType.thin_line(),
     animatePointer: true,
     scrollControllerName: _namedSC.name,
     followScroll: false,
@@ -190,7 +190,7 @@ class _ScrollingDemoState extends State<ScrollingDemo> {
     decorationBorderThickness: 3,
     decorationUpTo6FillColors: UpTo6Colors(color1: Colors.orange[600]!),
     elevation: 3,
-    targetPointerType: TargetPointerTypeEnum.THIN_LINE,
+    targetPointerType: TargetPointerType.thin_line(),
     scrollControllerName: _namedSC.name,
     followScroll: false,
   );

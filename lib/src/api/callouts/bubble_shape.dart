@@ -51,7 +51,7 @@ class BubbleShape_OP extends CustomPainter {
     // tE = tE.translate(callout.scrollOffsetX(), callout.scrollOffsetY());
     // print('drawBubble tE is ${tE} scrollOffset is (${callout.scrollOffsetX()},${callout.scrollOffsetY()})');
 
-    if (callout.targetPointerType == TargetPointerTypeEnum.NONE ||
+    if (callout.targetPointerType == TargetPointerType.none ||
         calloutR.contains(tE)) {
       /*
 			 * rectangle around calloutR
@@ -115,7 +115,7 @@ class BubbleShape_OP extends CustomPainter {
   //   // tE = tE.translate(callout.scrollOffsetX(), callout.scrollOffsetY());
   //   // print('drawBubble tE is ${tE} scrollOffset is (${callout.scrollOffsetX()},${callout.scrollOffsetY()})');
   //
-  //   if (callout.targetPointerType == TargetPointerTypeEnum.NONE ||
+  //   if (callout.targetPointerType == TargetPointerType.none ||
   //       calloutR.contains(tE)) {
   //     /*
   // 		 * rectangle around calloutR

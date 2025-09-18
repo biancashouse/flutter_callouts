@@ -92,7 +92,7 @@ class _IFramePageState extends State<IFramePage> {
     // gotitAxis:
     // -- pointer -------------------------------------------------
     // arrowColor: Color.yellow(),
-    targetPointerType: TargetPointerTypeEnum.BUBBLE,
+    targetPointerType: TargetPointerType.bubble(),
     animatePointer: true,
     // lineLabel: Text('line label'),
     // fromDelta: -20,
