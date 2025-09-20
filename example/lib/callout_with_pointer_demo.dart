@@ -107,7 +107,7 @@ class _PointerDemoState extends State<PointerDemo> {
       // if not supplied, callout content widget gets measured
       // borderRadius: 12,
       decorationBorderThickness: 3,
-      decorationUpTo6FillColors: UpTo6Colors(color1: Colors.yellow[700]!),
+      decorationFillColors: ColorOrGradient.color(Colors.yellow[700]!),
       elevation: 10,
       // frameTarget: true,
       // -- optional close button and got it button -------------------

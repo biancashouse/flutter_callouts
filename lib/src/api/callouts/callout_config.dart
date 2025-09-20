@@ -100,12 +100,11 @@ class CalloutConfig implements TickerProvider {
 
   // decoration
   DecorationShape? decorationShape;
-  UpTo6Colors? decorationUpTo6FillColors;
-  UpTo6Colors? decorationUpTo6BorderColors;
+  ColorOrGradient? decorationFillColors;
+  ColorOrGradient? decorationBorderColors;
   double? decorationBorderThickness;
   double? decorationBorderRadius;
   int? decorationStarPoints;
-  bool? decorationGradientIsLinear;
 
   final double lengthDeltaPc;
   final double? contentTranslateX;
@@ -309,9 +308,8 @@ class CalloutConfig implements TickerProvider {
     this.decorationBorderRadius = 0,
     this.decorationBorderThickness = 0,
     this.decorationStarPoints,
-    this.decorationUpTo6FillColors,
-    this.decorationUpTo6BorderColors,
-    this.decorationGradientIsLinear, // otherwise radial,
+    this.decorationFillColors,
+    this.decorationBorderColors,
 
     this.lengthDeltaPc = 0.95,
     this.contentTranslateX,
@@ -374,8 +372,8 @@ class CalloutConfig implements TickerProvider {
     }
     // fillColor = Color.fromColor(
     //     Colors.white); //FCallouts().FUCHSIA_X.withValues(alpha:.9);
-    if (!(decorationUpTo6FillColors?.isAGradient() ?? false)) {
-      targetPointerColor ??= decorationUpTo6FillColors!.color1;
+    if (!(decorationFillColors?.isAGradient() ?? false)) {
+      targetPointerColor ??= decorationFillColors!.color1;
     }
     // assert((dragHandle != null) && (dragHandleHeight != null), 'if using a drag handle, it must have height > 0.0 !');
     // assert((widthF != null && heightF != null) || context != null, 'if either widthF or heightF null, must provide a context for measuring !');
@@ -436,8 +434,8 @@ class CalloutConfig implements TickerProvider {
     double? minHeight,
 
     DecorationShape? decorationShape,
-    UpTo6Colors? decorationUpTo6FillColors,
-    UpTo6Colors? decorationUpTo6BorderColors,
+    ColorOrGradient? decorationFillColors,
+    ColorOrGradient? decorationBorderColors,
     double? decorationBorderThickness,
     double? decorationBorderRadius,
     int? decorationStarPoints,
@@ -510,10 +508,10 @@ class CalloutConfig implements TickerProvider {
       initialCalloutH: suppliedCalloutH ?? initialCalloutH,
       // decoration
       decorationShape: decorationShape ?? this.decorationShape,
-      decorationUpTo6FillColors:
-          decorationUpTo6FillColors ?? this.decorationUpTo6FillColors,
-      decorationUpTo6BorderColors:
-          decorationUpTo6BorderColors ?? this.decorationUpTo6BorderColors,
+      decorationFillColors:
+          decorationFillColors ?? this.decorationFillColors,
+      decorationBorderColors:
+          decorationBorderColors ?? this.decorationBorderColors,
       decorationBorderThickness:
           decorationBorderThickness ?? this.decorationBorderThickness,
       decorationBorderRadius:
@@ -1095,7 +1093,7 @@ class CalloutConfig implements TickerProvider {
           parent: this,
           wrapInPointerInterceptor: wrapWithPointerInterceptor,
         ),
-      if (notToast && targetPointerType == TargetPointerType.bubble)
+      if (notToast && targetPointerType?.name == "bubble")
         _positionedBubbleBg(),
       PositionedBoxContent(
         this,
@@ -1104,12 +1102,12 @@ class CalloutConfig implements TickerProvider {
         key: ValueKey(cId),
       ),
       if (notToast &&
-          targetPointerType != TargetPointerType.none &&
-          targetPointerType != TargetPointerType.bubble)
+          targetPointerType?.name != "none" &&
+          targetPointerType?.name != "bubble")
         _createPointingLine(),
       if (notToast &&
-          targetPointerType != TargetPointerType.none &&
-          targetPointerType != TargetPointerType.bubble &&
+          targetPointerType?.name != "none" &&
+          targetPointerType?.name != "bubble" &&
           lineLabel != null)
         _createLineLabel(),
       // if (isConfigurable && _zoomer != null) _createConfigToolbar(Side.TOP),
@@ -2088,12 +2086,11 @@ class PositionedBoxContent extends StatelessWidget {
             elevation: cc.elevation,
             child: Container(
               decoration: (cc.decorationShape ?? DecorationShape.rectangle()).toDecoration(
-                upTo6FillColors: cc.decorationUpTo6FillColors,
-                upTo6BorderColors: cc.decorationUpTo6BorderColors,
+                fillColorOrGradient: cc.decorationFillColors,
+                borderColorOrGradient: cc.decorationBorderColors,
                 borderRadius: cc.decorationBorderRadius,
                 borderThickness: cc.decorationBorderThickness,
                 starPoints: cc.decorationStarPoints,
-                gradientIsLinear: cc.decorationGradientIsLinear,
               ),
               // color: cc.decorationShape == null ? cc.decorationUpTo6FillColors?.onlyColor : null,
               child: FocusableActionDetector(

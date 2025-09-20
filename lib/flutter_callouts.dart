@@ -24,7 +24,6 @@ export 'src/api/callouts/callout_config.dart';
 export 'src/api/material_app_with_navigator_key.dart';
 export 'src/api/callouts/callout_mixin.dart';
 export 'src/api/callouts/callout_using_overlayportal.dart';
-export 'src/api/callouts/color_values.dart';
 export 'src/api/callouts/coord.dart';
 export 'src/api/callouts/dotted_decoration.dart';
 export 'src/api/callouts/globalkey_extn.dart';
@@ -55,7 +54,7 @@ export 'src/widget/widget_helper_mixin.dart';
 export 'src/api/callouts/target_pointer_type.dart';
 export 'src/api/callouts/decoration_shape.dart';
 
-export 'src/api/callouts/upto6colors.dart';
+export 'src/api/callouts/color_or_gradient.dart';
 
 // re-export
 export 'package:logger/src/logger.dart';

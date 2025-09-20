@@ -396,7 +396,7 @@ mixin CalloutMixin {
     var cc = CalloutConfig(
       cId: 'toast-${gravity.runtimeType.toString()}',
       gravity: gravity,
-      decorationUpTo6FillColors: UpTo6Colors(color1: bgColor ?? Colors.white),
+      decorationFillColors: ColorOrGradient.color(bgColor ?? Colors.white),
       initialCalloutW: width ?? fca.scrW * .8,
       initialCalloutH: height ?? 80,
       scrollControllerName: null,

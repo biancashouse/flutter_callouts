@@ -21,43 +21,80 @@ class DecorationDemoPageState extends State<DecorationDemoPage> {
   }
 
   void _show(DecorationShape shape) {
-    late UpTo6Colors fillColors;
-    bool? linearGradient;
+    ColorOrGradient? fillColors;
+    ColorOrGradient? borderColors;
     if (shape.name == "rectangle") {
-      fillColors = UpTo6Colors(color1: Colors.pink[50]);
+      fillColors = ColorOrGradient.color(Colors.pink[50]!);
     } else if (shape.name == "rectangle_dotted") {
-      fillColors = UpTo6Colors(color1: Colors.pink[50]);
+      fillColors = ColorOrGradient.color(Colors.pink[50]!);
     } else if (shape.name == "rounded_rectangle") {
-      fillColors = UpTo6Colors(color1: Colors.white, color2: Colors.red, color3: Colors.blue);
-      linearGradient = true;
+      fillColors = ColorOrGradient.gradient([
+        Colors.white,
+        Colors.red,
+        Colors.blue,
+      ]);
+      borderColors = ColorOrGradient.gradient([
+        Colors.yellowAccent,
+        Colors.white,
+        Colors.black,
+      ]);
     } else if (shape.name == "rounded_rectangle_dotted") {
-      fillColors = UpTo6Colors(color1: Colors.white, color2: Colors.red, color3: Colors.blue);
-      linearGradient = false;
+      fillColors = ColorOrGradient.gradient([
+        Colors.white,
+        Colors.red,
+        Colors.blue,
+      ], isLinear: false);
     } else if (shape.name == "circle") {
-      fillColors = UpTo6Colors(color1: Colors.white, color2: Colors.black, color3: Colors.white, color4: Colors.black,color5: Colors.white, color6: Colors.black);
-      linearGradient = false;
+      fillColors = ColorOrGradient.gradient([
+        Colors.white,
+        Colors.black,
+        Colors.white,
+        Colors.black,
+        Colors.white,
+        Colors.black,
+      ], isLinear: false);
+      borderColors = ColorOrGradient.gradient([
+        Colors.yellow,
+        Colors.black,
+        Colors.yellow,
+        Colors.black,
+        Colors.yellow,
+        Colors.black,
+      ]);
     } else if (shape.name == "bevelled") {
-      fillColors = UpTo6Colors(color1: Colors.lightBlue);
+      fillColors = ColorOrGradient.color(Colors.lightBlue);
+      borderColors = ColorOrGradient.gradient([Colors.orange]);
     } else if (shape.name == "stadium") {
-      fillColors = UpTo6Colors(color1: Colors.yellowAccent, color2: Colors.lightBlue, color3: Colors.lime);
-      linearGradient = false;
+      fillColors = ColorOrGradient.gradient([
+        Colors.yellowAccent,
+        Colors.lightBlue,
+        Colors.lime,
+      ], isLinear: false);
     } else if (shape.name == "star") {
-      fillColors = UpTo6Colors(color1: Colors.white, color2: Colors.blue, color3: Colors.yellow, color4: Colors.green,color5: Colors.black, color6: Colors.cyan);
-      linearGradient = false;
+      fillColors = ColorOrGradient.gradient([
+        Colors.white,
+        Colors.blue,
+        Colors.yellow,
+        Colors.green,
+        Colors.black,
+        Colors.cyan,
+      ], isLinear: false);
     }
     fca.showOverlay(
       calloutConfig: CalloutConfig(
         cId: 'some-callout-id',
-        decorationShape: shape, // ?? DecorationShape.rectangle(),
+        decorationShape: shape,
+        // ?? DecorationShape.rectangle(),
         initialCalloutW: 900,
         initialCalloutH: 600,
         decorationBorderThickness: 5,
         decorationBorderRadius:
-            shape.name == "rectangle" ||
-            shape.name == "rectangle_dotted" ? 0.0 : 16,
-        decorationUpTo6FillColors: fillColors,
-        decorationGradientIsLinear: linearGradient,
-        decorationUpTo6BorderColors: UpTo6Colors(color1: Colors.blue),
+            shape.name == "rectangle" || shape.name == "rectangle_dotted"
+            ? 0.0
+            : 16,
+        decorationFillColors: fillColors,
+        decorationBorderColors:
+            borderColors ?? ColorOrGradient.color(Colors.blue),
         // elevation: 10,
         onDismissedF: () => setState(() => justShowNextDemoButton = true),
         scrollControllerName: null,
@@ -79,8 +116,7 @@ class DecorationDemoPageState extends State<DecorationDemoPage> {
           onSelected: (DecorationShape? newShape) {
             fca.dismiss("some-callout-id");
             _show(
-              selectedDecorationShape =
-                  newShape ?? DecorationShape.rectangle(),
+              selectedDecorationShape = newShape ?? DecorationShape.rectangle(),
             );
           },
           dropdownMenuEntries: [
@@ -150,8 +186,11 @@ class DecorationDemoPageState extends State<DecorationDemoPage> {
           padding: EdgeInsets.all(8),
           child: Text(
             'This is a callout, centred on screen, i.e. no initialTargetAlignment, \n'
-                'initialCalloutAlignment, nor initialCalloutPos). It\'s still draggable.\n\n'
-                'Try setting its decoration...',
+            'initialCalloutAlignment, nor initialCalloutPos).\n\n'
+            'It has no target. It\'s still draggable.\n\n'
+            'Notice some of the fills are a single colour, and some are\n'
+            'linear or radial gradients.\n\n'
+            'Try changing the "DecorationShape" pulldown...',
             style: TextStyle(color: Colors.white),
           ),
         ),

@@ -120,8 +120,7 @@ class _ScrollingDemoState extends State<ScrollingDemo> {
     // if not supplied, callout content widget gets measured
     decorationBorderRadius: 24,
     decorationBorderThickness: 3,
-    decorationUpTo6FillColors: UpTo6Colors(color1: Colors.green[400]),
-    decorationGradientIsLinear: false,
+    decorationFillColors: ColorOrGradient.color(Colors.green[400]!),
     elevation: 10,
     // frameTarget: true,
     // -- optional close button and got it button -------------------
@@ -169,7 +168,7 @@ class _ScrollingDemoState extends State<ScrollingDemo> {
     initialCalloutW: 240,
     initialCalloutH: 120,
     decorationBorderThickness: 3,
-    decorationUpTo6FillColors: UpTo6Colors(color1: Colors.yellow[600]!),
+    decorationFillColors: ColorOrGradient.color(Colors.yellow[600]!),
     elevation: 10,
     targetPointerType: TargetPointerType.thin_line(),
     animatePointer: true,
@@ -188,7 +187,7 @@ class _ScrollingDemoState extends State<ScrollingDemo> {
     initialCalloutW: 240,
     initialCalloutH: 70,
     decorationBorderThickness: 3,
-    decorationUpTo6FillColors: UpTo6Colors(color1: Colors.orange[600]!),
+    decorationFillColors: ColorOrGradient.color(Colors.orange[600]!),
     elevation: 3,
     targetPointerType: TargetPointerType.thin_line(),
     scrollControllerName: _namedSC.name,

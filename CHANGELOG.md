@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Changed
 - removed dart\_mappable from pkg: flutter\_content has a UI for making callout configurations serialisable
+- simplified callout decoration api (breaking change)
 
 ## [8.3.1] - 2025-08-25
 ### Changed
