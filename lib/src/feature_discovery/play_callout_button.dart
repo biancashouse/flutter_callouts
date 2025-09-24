@@ -75,7 +75,7 @@ class PlayCalloutButtonState extends State<PlayCalloutButton> {
                     initialCalloutAlignment: widget.calloutAlignment,
                     initialTargetAlignment: widget.targetAlignment,
                     finalSeparation: widget.separation ?? 30,
-                    targetPointerColor: widget.arrowColor != null
+                    bubbleOrTargetPointerColor: widget.arrowColor != null
                         ? widget.arrowColor!
                         : Colors.white,
                     targetPointerType: TargetPointerType.medium_reversed_line(),

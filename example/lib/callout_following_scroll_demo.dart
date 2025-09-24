@@ -117,11 +117,6 @@ class _ScrollingDemoState extends State<ScrollingDemo> {
     initialCalloutW: 240,
     // if not supplied, callout content widget gets measured
     initialCalloutH: 120,
-    // if not supplied, callout content widget gets measured
-    decorationBorderRadius: 24,
-    decorationBorderThickness: 3,
-    decorationFillColors: ColorOrGradient.color(Colors.green[400]!),
-    elevation: 10,
     // frameTarget: true,
     // -- optional close button and got it button -------------------
     // showGotitButton: true,
@@ -132,6 +127,8 @@ class _ScrollingDemoState extends State<ScrollingDemo> {
     // -- pointer -------------------------------------------------
     // arrowColor: Color.yellow(),
     targetPointerType: TargetPointerType.bubble(),
+    bubbleOrTargetPointerColor: Colors.green[400],
+    bubbleBorderRadius: 30,
     // targetPointerColor: Colors.yellow[700]!,
     // animatePointer: true,
     // lineLabel: Text('line label'),
@@ -167,9 +164,10 @@ class _ScrollingDemoState extends State<ScrollingDemo> {
     finalSeparation: 60,
     initialCalloutW: 240,
     initialCalloutH: 120,
-    decorationBorderThickness: 3,
+    // decorationBorderThickness: 3,
     decorationFillColors: ColorOrGradient.color(Colors.yellow[600]!),
-    elevation: 10,
+    bubbleOrTargetPointerColor: Colors.yellow[600],
+    // elevation: 10,
     targetPointerType: TargetPointerType.thin_line(),
     animatePointer: true,
     scrollControllerName: _namedSC.name,
@@ -188,7 +186,8 @@ class _ScrollingDemoState extends State<ScrollingDemo> {
     initialCalloutH: 70,
     decorationBorderThickness: 3,
     decorationFillColors: ColorOrGradient.color(Colors.orange[600]!),
-    elevation: 3,
+    bubbleOrTargetPointerColor: Colors.orange[600],
+    // elevation: 3,
     targetPointerType: TargetPointerType.thin_line(),
     scrollControllerName: _namedSC.name,
     followScroll: false,

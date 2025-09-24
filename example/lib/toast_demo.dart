@@ -61,7 +61,7 @@ class ToastDemoPageState extends State<ToastDemoPage> {
     fca.showToastOverlay(
       removeAfterMs: showForMs,
       calloutConfig: CalloutConfig(
-        cId: 'toast-${gravity.runtimeType.toString()}',
+        cId: 'toast-${gravity.toString()}',
         gravity: gravity,
         initialCalloutW: fca.isAndroid ? 200 : 500,
         initialCalloutH: 240,

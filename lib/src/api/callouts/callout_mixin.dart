@@ -191,9 +191,9 @@ mixin CalloutMixin {
     entry = OverlayEntry(
       builder: (BuildContext ctx) {
         // FCA.initWithContext(ctx);
-        fca.logger.i('...');
-        fca.logger.i("${calloutConfig.cId} OverlayEntry.builder...");
-        fca.logger.i('...');
+        // fca.logger.i('...');
+        // fca.logger.i("${calloutConfig.cId} OverlayEntry.builder...");
+        // fca.logger.i('...');
         // if (calloutConfig.cId == 'root'){
         //   fca.logger.i('root');
         // }
@@ -394,7 +394,7 @@ mixin CalloutMixin {
     double? height,
   }) {
     var cc = CalloutConfig(
-      cId: 'toast-${gravity.runtimeType.toString()}',
+      cId: 'toast-${gravity.toString()}',
       gravity: gravity,
       decorationFillColors: ColorOrGradient.color(bgColor ?? Colors.white),
       initialCalloutW: width ?? fca.scrW * .8,
@@ -847,7 +847,7 @@ mixin CalloutMixin {
   }
 
   void dismissToast(Alignment gravity, {bool skipOnDismiss = false}) {
-    dismiss('toast-${gravity.runtimeType.toString()}', skipOnDismiss: skipOnDismiss);
+    dismiss('toast-${gravity.toString()}', skipOnDismiss: skipOnDismiss);
   }
 
   (int? i, OverlayEntry?) lowestEntry() {

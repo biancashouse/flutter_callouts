@@ -63,9 +63,19 @@ class CalloutConfig implements TickerProvider {
   double? toDelta;
 
   TargetPointerType? targetPointerType;
-  Color? targetPointerColor; // arrow or bubble
-  bool animatePointer;
+  // bubble
+  Color? bubbleOrTargetPointerColor;
+  double? bubbleBorderRadius;
+  // arrow
+  bool? animatePointer;
   Widget? lineLabel;
+  // optional decoration
+  DecorationShape? decorationShape;
+  ColorOrGradient? decorationFillColors;
+  ColorOrGradient? decorationBorderColors;
+  double? decorationBorderThickness;
+  double? decorationBorderRadius;
+  int? decorationStarPoints;
 
   final Alignment? initialTargetAlignment;
   final Alignment? initialCalloutAlignment;
@@ -97,14 +107,6 @@ class CalloutConfig implements TickerProvider {
 
   final double? minWidth;
   final double? minHeight;
-
-  // decoration
-  DecorationShape? decorationShape;
-  ColorOrGradient? decorationFillColors;
-  ColorOrGradient? decorationBorderColors;
-  double? decorationBorderThickness;
-  double? decorationBorderRadius;
-  int? decorationStarPoints;
 
   final double lengthDeltaPc;
   final double? contentTranslateX;
@@ -284,12 +286,6 @@ class CalloutConfig implements TickerProvider {
   @JsonKey(includeFromJson: false, includeToJson: false)
   Timer? removalTimer;
 
-  // Target? _configurableTarget;
-
-  // bool get isConfigurable => _configurableTarget != null;
-
-  // Target? get tc => _configurableTarget;
-
   CalloutConfig({
     // required this.refreshOPParent,
     required this.cId,
@@ -317,7 +313,8 @@ class CalloutConfig implements TickerProvider {
     this.targetTranslateX,
     this.targetTranslateY,
     this.targetPointerType,
-    this.targetPointerColor,
+    this.bubbleOrTargetPointerColor,
+    this.bubbleBorderRadius,
     this.barrier,
     // this.modal = false,
     this.showCloseButton = false,
@@ -372,9 +369,10 @@ class CalloutConfig implements TickerProvider {
     }
     // fillColor = Color.fromColor(
     //     Colors.white); //FCallouts().FUCHSIA_X.withValues(alpha:.9);
-    if (!(decorationFillColors?.isAGradient() ?? false)) {
-      targetPointerColor ??= decorationFillColors!.color1;
+    if (decorationFillColors != null && !(decorationFillColors!.isAGradient()) && decorationFillColors!.color1 == null) {
+      bubbleOrTargetPointerColor ??= decorationFillColors!.color1;
     }
+
     // assert((dragHandle != null) && (dragHandleHeight != null), 'if using a drag handle, it must have height > 0.0 !');
     // assert((widthF != null && heightF != null) || context != null, 'if either widthF or heightF null, must provide a context for measuring !');
     // if ((widthF == null || heightF == null) && context == null) {
@@ -525,7 +523,7 @@ class CalloutConfig implements TickerProvider {
       closeButtonColor: closeButtonColor ?? this.closeButtonColor,
       closeButtonPos: closeButtonPos ?? this.closeButtonPos,
       gotitAxis: gotitAxis ?? this.gotitAxis,
-      targetPointerColor: targetPointerColor ?? this.targetPointerColor,
+      bubbleOrTargetPointerColor: targetPointerColor ?? this.bubbleOrTargetPointerColor,
       targetPointerType: targetPointerType ?? this.targetPointerType,
       animatePointer: animate ?? this.animatePointer,
       lineLabel: lineLabel ?? this.lineLabel,
@@ -1101,12 +1099,10 @@ class CalloutConfig implements TickerProvider {
         wrapWithPointerInterceptor,
         key: ValueKey(cId),
       ),
-      if (notToast &&
-          targetPointerType?.name != "none" &&
+      if (notToast && targetPointerType != null && targetPointerType?.name != 'none' &&
           targetPointerType?.name != "bubble")
         _createPointingLine(),
-      if (notToast &&
-          targetPointerType?.name != "none" &&
+      if (notToast && targetPointerType != null && targetPointerType?.name != 'none' &&
           targetPointerType?.name != "bubble" &&
           lineLabel != null)
         _createLineLabel(),
@@ -1735,10 +1731,10 @@ class CalloutConfig implements TickerProvider {
         child: PointingLine(
           targetPointerType?.reverse??false ? to : from,
           targetPointerType?.reverse??false ? from : to,
-          targetPointerType!,
-          targetPointerColor ?? Colors.white,
+          targetPointerType??TargetPointerType.thin_line(),
+          bubbleOrTargetPointerColor ?? Colors.grey,
           lengthDeltaPc: lengthDeltaPc,
-          animate: animatePointer,
+          animate: animatePointer??false,
         ),
       );
 

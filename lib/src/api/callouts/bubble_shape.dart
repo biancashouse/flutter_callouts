@@ -13,12 +13,12 @@ class BubbleShape_OP extends CustomPainter {
     Path? pointerPath = _drawBubblePointer(calloutConfig);
     if (pointerPath != null) {
       Paint fillPaint = fca.bgPaint(
-        calloutConfig.targetPointerColor ??
-        calloutConfig.decorationFillColors?.color ?? Colors.red,
+        calloutConfig.bubbleOrTargetPointerColor ??
+        calloutConfig.decorationFillColors?.color ?? Colors.grey,
       );
       canvas.drawPath(pointerPath, fillPaint);
       // in order to completely fill in the rounded rectangle
-      if (false&&(calloutConfig.decorationBorderRadius ?? 0.0) > 0.0) {
+      if ((calloutConfig.bubbleOrTargetPointerColor != null || (calloutConfig.bubbleBorderRadius ?? 0.0) > 0.0)) {
         Rectangle calloutR = Rectangle.fromRect(calloutConfig.cR());
         Path rrPath = Path();
         PathUtil.roundedRect(
@@ -27,7 +27,7 @@ class BubbleShape_OP extends CustomPainter {
           calloutR.top,
           calloutR.width,
           calloutR.height,
-          calloutConfig.decorationBorderRadius ?? 0.0,
+          calloutConfig.bubbleBorderRadius??0.0,
         );
         canvas.drawPath(rrPath, fillPaint);
       }
@@ -255,15 +255,15 @@ class BubbleShape_OP extends CustomPainter {
         path,
         pos,
         theRect,
-        callout.decorationBorderRadius!,
+        callout.bubbleBorderRadius!,
         side: side,
       );
-      if (callout.decorationBorderRadius! > 0)
+      if (callout.bubbleBorderRadius! > 0)
         pos = PathUtil.turnCornerClockwise(
           path,
           pos,
           theRect,
-          callout.decorationBorderRadius!,
+          callout.bubbleBorderRadius!,
           skipArc,
           side: side,
         );

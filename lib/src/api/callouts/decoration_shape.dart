@@ -1,5 +1,8 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_callouts/flutter_callouts.dart';
+import 'package:gap/gap.dart' show Gap;
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 
 class DecorationShape {
@@ -23,6 +26,53 @@ class DecorationShape {
 
   const DecorationShape.star({this.name = "star"});
 
+  static DecorationShape fromName(String shapeName) {
+    switch (shapeName) {
+      case "rectangle":
+        return DecorationShape.rectangle();
+      case "rounded_rectangle":
+        return DecorationShape.rounded_rectangle();
+        case "rectangle_dotted":
+        return DecorationShape.rectangle_dotted();
+      case "rounded_rectangle_dotted":
+        return DecorationShape.rounded_rectangle_dotted();
+      case "circle":
+        return DecorationShape.circle();
+      case "bevelled":
+        return DecorationShape.bevelled();
+      case "stadium":
+        return DecorationShape.stadium();
+      case "star":
+        return DecorationShape.star();
+      default:
+        return DecorationShape.rectangle();
+    }
+  }
+
+  static List<DecorationShape> shapeList() => [
+      DecorationShape.rectangle(),
+      DecorationShape.rounded_rectangle(),
+      DecorationShape.rectangle_dotted(),
+      DecorationShape.rounded_rectangle_dotted(),
+      DecorationShape.circle(),
+      DecorationShape.bevelled(),
+      DecorationShape.stadium(),
+      DecorationShape.star(),
+    ];
+
+  Widget toMenuItem({bool skipLabel = true}) => Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      const Gap(8),
+      SizedBox(
+        width: 50,
+        height: 30,
+        child: Container(width: 10, height: 10, decoration: toDecoration()),
+      ),
+      const Gap(8),
+    ],
+  );
+
   Decoration toDecoration({
     ColorOrGradient? fillColorOrGradient,
     ColorOrGradient? borderColorOrGradient,
@@ -31,12 +81,12 @@ class DecorationShape {
     int? starPoints,
   }) {
     BoxBorder? border;
-    if (borderColorOrGradient?.isASingleColor()??false) {
+    if (borderColorOrGradient?.isASingleColor() ?? false) {
       border = Border.all(
         color: borderColorOrGradient!.color!,
         width: borderThickness ?? 0.0,
       );
-    } else if (borderColorOrGradient?.isAGradient()??false) {
+    } else if (borderColorOrGradient?.isAGradient() ?? false) {
       border = GradientBoxBorder(
         gradient: borderColorOrGradient!.gradient!,
         width: borderThickness ?? 3,
@@ -124,130 +174,29 @@ class DecorationShape {
     );
   }
 
-  // Decoration toDecoration2({
-  //   ColorOrGradient? fillColors,
-  //   ColorOrGradient? borderColors,
-  //   double? borderThickness,
-  //   double? borderRadius,
-  //   int? starPoints,
-  //   bool? gradientIsLinear,
-  // }) {
-  //   // fill
-  //   late Gradient? fillGradient;
-  //   // fill color or gradient,
-  //   if (fillColors == null) {
-  //     fillColors = GradientColors([Colors.white]);
-  //   } else if (fillColors.colors.isEmpty) {
-  //     fillColors.colors.add(Colors.white);
-  //   }
-  //   if (fillColors.colors.length > 1) {
-  //     fillGradient = (gradientIsLinear ?? true)
-  //         ? LinearGradient(colors: fillColors.colors)
-  //         : RadialGradient(colors: fillColors.colors.reversed.toList());
-  //   }
-  //   // border
-  //   late Gradient? borderGradient;
-  //   BoxBorder? border;
-  //   if (borderColors != null) {
-  //     if (borderColors.colors.length > 1) {
-  //       // const rainbowGradient = LinearGradient(colors: [Colors.blue, Colors.green, Colors.yellow, Colors.red, Colors.purpleAccent]);
-  //       borderGradient = LinearGradient(colors: borderColors.colors);
-  //       border = GradientBoxBorder(
-  //         gradient: borderGradient,
-  //         width: borderThickness ?? 3,
-  //       );
-  //     }
-  //   }
-  //   if (name == "rectangle")
-  //     return BoxDecoration(
-  //       shape: BoxShape.rectangle,
-  //       border: border,
-  //       gradient: fillGradient,
-  //       color: fillColors.colors.length == 1 ? fillColors.colors.first : null,
-  //     );
-  //   if (name == "rounded_rectangle")
-  //     return BoxDecoration(
-  //       shape: BoxShape.rectangle,
-  //       border: border,
-  //       borderRadius: BorderRadius.all(Radius.circular(borderRadius ?? 8)),
-  //       gradient: fillGradient,
-  //       color: fillColors.colors.length == 1 ? fillColors.colors.first : null,
-  //     );
-  //   if (name == "rectangle_dotted")
-  //     return DottedDecoration(
-  //       shape: Shape.box,
-  //       dash: const <int>[3, 3],
-  //       borderColor: borderColors?.colors.firstOrNull ?? Colors.grey,
-  //       borderGradient: borderGradient,
-  //       strokeWidth: 3,
-  //       fillGradient: fillGradient,
-  //       fillColor: fillColors.colors.length == 1
-  //           ? fillColors.colors.first
-  //           : Colors.white,
-  //     );
-  //   if (name == "rounded_rectangle_dotted")
-  //     return DottedDecoration(
-  //       shape: Shape.box,
-  //       dash: const <int>[3, 3],
-  //       strokeWidth: 3,
-  //       fillColor: fillColors.colors.length == 1
-  //           ? fillColors.colors.first
-  //           : Colors.white,
-  //       fillGradient: fillGradient,
-  //       borderGradient: borderGradient,
-  //       borderRadius: BorderRadius.all(Radius.circular(borderRadius ?? 8)),
-  //     );
-  //   if (name == "circle")
-  //     return BoxDecoration(
-  //       shape: BoxShape.circle,
-  //       border: border,
-  //       color: fillColors.colors.length == 1 ? fillColors.colors.first : null,
-  //       gradient: fillGradient,
-  //     );
-  //   if (name == "bevelled")
-  //     return ShapeDecoration(
-  //       shape: BeveledRectangleBorder(
-  //         side: BorderSide(
-  //           color: borderColors?.colors.length == 1
-  //               ? borderColors?.colors.firstOrNull ?? Colors.grey
-  //               : Colors.grey,
-  //           width: borderThickness ?? 0.0,
-  //         ),
-  //         borderRadius: BorderRadius.all(Radius.circular(borderRadius ?? 6)),
-  //       ),
-  //       color: fillColors.colors.length == 1 ? fillColors.colors.first : null,
-  //       gradient: fillGradient,
-  //     );
-  //   if (name == "stadium")
-  //     return ShapeDecoration(
-  //       shape: StadiumBorder(
-  //         side: BorderSide(
-  //           color: borderColors?.colors.length == 1
-  //               ? borderColors?.colors.firstOrNull ?? Colors.grey
-  //               : Colors.grey,
-  //           width: borderThickness ?? 0.0,
-  //         ),
-  //       ),
-  //       color: fillColors.colors.length == 1 ? fillColors.colors.first : null,
-  //       gradient: fillGradient,
-  //     );
-  //   // else its a star
-  //   return ShapeDecoration(
-  //     shape: StarBorder(
-  //       side: BorderSide(
-  //         color: borderColors?.colors.length == 1
-  //             ? borderColors?.colors.firstOrNull ?? Colors.grey
-  //             : Colors.grey,
-  //         width: borderThickness ?? 0.0,
-  //       ),
-  //       points: starPoints?.toDouble() ?? 7,
-  //       // innerRadiusRatio: _model.innerRadiusRatio,
-  //       // pointRounding: _model.pointRounding,
-  //       // valleyRounding: _model.valleyRounding,
-  //       // rotation: 0,
-  //     ),
-  //     color: fillColors.colors.length == 1 ? fillColors.colors.first : null,
-  //     gradient: fillGradient,
-  //   );
-  // }
+  // static final List<DecorationShapeEntry>
+  // entries = UnmodifiableListView<DecorationShapeEntry>([
+  //   DecorationShapeEntry(
+  //     value: DecorationShape.rectangle(),
+  //     label: 'rectangle',
+  //   ),
+  //   DecorationShapeEntry(
+  //     value: DecorationShape.rectangle_dotted(),
+  //     label: 'rectangle dotted',
+  //   ),
+  //   DecorationShapeEntry(
+  //     value: DecorationShape.rounded_rectangle(),
+  //     label: 'rounded rect',
+  //   ),
+  //   DecorationShapeEntry(
+  //     value: DecorationShape.rounded_rectangle_dotted(),
+  //     label: 'rounded rect, dotted',
+  //   ),
+  //   DecorationShapeEntry(value: DecorationShape.circle(), label: 'circle'),
+  //   DecorationShapeEntry(value: DecorationShape.stadium(), label: 'stadium'),
+  //   DecorationShapeEntry(value: DecorationShape.bevelled(), label: 'bevelled'),
+  //   DecorationShapeEntry(value: DecorationShape.star(), label: 'star'),
+  // ]);
 }
+
+// typedef DecorationShapeEntry = DropdownMenuEntry<DecorationShape>;
