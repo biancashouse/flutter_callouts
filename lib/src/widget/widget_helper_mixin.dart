@@ -824,7 +824,7 @@ mixin WidgetHelperMixin {
     FontStyle? fontStyle,
     double scaleFactor = 1.0,
     int? maxLines,
-    TextOverflow? overflow = TextOverflow.ellipsis,
+    TextOverflow? overflow,
   }) => Text(
     s,
     textScaler: TextScaler.linear(scaleFactor),

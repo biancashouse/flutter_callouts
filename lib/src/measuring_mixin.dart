@@ -28,13 +28,13 @@ mixin MeasuringMixin {
   }
 
   Future<Rect> measureWidgetRect({
-    required BuildContext context,
+    // required BuildContext context,
     required Widget widget,
   }) {
     final Completer<Rect> completer = Completer<Rect>();
     OverlayEntry? entry;
     entry = OverlayEntry(builder: (BuildContext ctx) {
-      fca.logger.i(Theme.of(context).platform.toString());
+      // fca.logger.i(Theme.of(context).platform.toString());
       return Material(
         child: _OffstageWidgetWrapper(
           onMeasuredRect: (Rect? rect) {
@@ -46,7 +46,7 @@ mixin MeasuringMixin {
       );
     });
 
-    Overlay.of(context).insert(entry);
+    fca.overlayState?.insert(entry);
     return completer.future;
   }
 
@@ -134,6 +134,7 @@ class _OffstageWidgetWrapperState extends State<_OffstageWidgetWrapper> {
 
   @override
   void initState() {
+    print('inity state ****************');
     super.initState();
     fca.afterNextBuildDo(() {
       final Rect? rect = fca.findGlobalRect(key);

@@ -81,10 +81,10 @@ mixin CalloutMixin {
     if (calloutConfig.initialCalloutW == null ||
         calloutConfig.initialCalloutH == null) {
       fca
-          .measureWidgetRect(context: fca.rootContext, widget: calloutContent)
+          .measureWidgetRect(widget: calloutContent)
           .then((rect) {
-            calloutConfig.calloutW = rect.width;
-            calloutConfig.calloutH = rect.height;
+            calloutConfig.initialCalloutW = calloutConfig.calloutW = rect.width;
+            calloutConfig.initialCalloutH = calloutConfig.calloutH  = rect.height;
             fca.logger.i('measured content size: ${rect.toString()}');
             _createOverlayDefinitelyHasSize(
               calloutConfig,

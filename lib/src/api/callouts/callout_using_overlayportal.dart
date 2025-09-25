@@ -208,7 +208,7 @@ class WrappedCalloutState extends State<WrappedCallout>
     if (_config.initialCalloutW == null || _config.initialCalloutH == null) {
       fca
           .measureWidgetRect(
-            context: fca.rootContext,
+            // context: fca.rootContext,
             widget: widget.calloutBoxContentBuilderF(fca.rootContext),
           )
           .then((rect) {});

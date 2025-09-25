@@ -2073,7 +2073,6 @@ class PositionedBoxContent extends StatelessWidget {
         onPanCancel: () {
           cc._onDragEnd(DragEndDetails());
         },
-        // child: TransparentPointer(
         child: ClipRRect(
           borderRadius: BorderRadius.circular(cc.decorationBorderRadius??0.0),
           child: Material(

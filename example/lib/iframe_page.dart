@@ -32,7 +32,7 @@ class _IFramePageState extends State<IFramePage> {
         namedSC: _namedSC,
         wrapInPointerInterceptor: true, // THIS IS THE MOST IMPORTANT LINE
       );
-      fca.showToastColor1OnColor2(
+      fca.showToast(
         gravity: Alignment.bottomCenter,
         msg: 'demonstrating that a callout is still draggable even when over an Iframe',
         textColor: Colors.white,

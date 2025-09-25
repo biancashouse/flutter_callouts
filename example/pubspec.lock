@@ -124,7 +124,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "9.0.0"
+    version: "10.0.0"
   flutter_hooks:
     dependency: transitive
     description:
