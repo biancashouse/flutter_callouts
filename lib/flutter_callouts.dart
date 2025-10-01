@@ -55,6 +55,7 @@ export 'src/api/callouts/target_pointer_type.dart';
 export 'src/api/callouts/decoration_shape.dart';
 
 export 'src/api/callouts/color_or_gradient.dart';
+export 'src/api/callouts/modal_barrier_with_cutout.dart';
 
 // re-export
 export 'package:logger/src/logger.dart';

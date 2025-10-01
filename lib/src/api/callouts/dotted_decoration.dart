@@ -28,7 +28,15 @@ class DottedDecoration extends Decoration {
 
   @override
   BoxPainter createBoxPainter([VoidCallback? onChanged]) {
-    return _DottedDecoratorPainter(shape, linePosition, borderColor, borderBgColor, fillColor, borderRadius, dash, strokeWidth);
+    return _DottedDecoratorPainter(
+        shape,
+        linePosition,
+        borderColor,
+        borderBgColor,
+        fillColor,
+        borderRadius,
+        dash,
+        strokeWidth);
   }
 }
 
@@ -44,7 +52,9 @@ class _DottedDecoratorPainter extends BoxPainter {
   List<int> dash;
   double strokeWidth;
 
-  _DottedDecoratorPainter(this.shape, this.linePosition, this.borderColor, this.borderBgColor, this.fillColor, this.borderRadius, this.dash, this.strokeWidth) {
+  _DottedDecoratorPainter(this.shape, this.linePosition, this.borderColor,
+      this.borderBgColor, this.fillColor, this.borderRadius, this.dash,
+      this.strokeWidth) {
     borderRadius = borderRadius ?? BorderRadius.circular(0);
   }
 
@@ -60,10 +70,12 @@ class _DottedDecoratorPainter extends BoxPainter {
         outPath.lineTo(offset.dx + configuration.size!.width, offset.dy);
       } else if (linePosition == LinePosition.right) {
         outPath.moveTo(offset.dx + configuration.size!.width, offset.dy);
-        outPath.lineTo(offset.dx + configuration.size!.width, offset.dy + configuration.size!.height);
+        outPath.lineTo(offset.dx + configuration.size!.width,
+            offset.dy + configuration.size!.height);
       } else {
         outPath.moveTo(offset.dx, offset.dy + configuration.size!.height);
-        outPath.lineTo(offset.dx + configuration.size!.width, offset.dy + configuration.size!.height);
+        outPath.lineTo(offset.dx + configuration.size!.width,
+            offset.dy + configuration.size!.height);
       }
     } else if (shape == Shape.box) {
       RRect rect = RRect.fromLTRBAndCorners(
@@ -78,7 +90,9 @@ class _DottedDecoratorPainter extends BoxPainter {
       );
       outPath.addRRect(rect);
     } else if (shape == Shape.circle) {
-      outPath.addOval(Rect.fromLTWH(offset.dx, offset.dy, configuration.size!.width, configuration.size!.height));
+      outPath.addOval(Rect.fromLTWH(
+          offset.dx, offset.dy, configuration.size!.width,
+          configuration.size!.height));
     }
 
     PathMetrics metrics = outPath.computeMetrics(forceClosed: false);
@@ -92,19 +106,28 @@ class _DottedDecoratorPainter extends BoxPainter {
         double to = start + dash[(++index) % dash.length];
         to = to > totalLength ? totalLength : to;
         bool isEven = index % 2 == 0;
-        if (isEven) drawPath.addPath(me.extractPath(start, to, startWithMoveTo: true), Offset.zero);
+        if (isEven) drawPath.addPath(
+            me.extractPath(start, to, startWithMoveTo: true), Offset.zero);
         start = to;
       }
     }
 
-    if (fillColor != null) {
-      canvas.drawPath(
-        outPath,
-        Paint()
-          ..color = fillColor!
-          ..shader = fillGradient?.createShader(outPath.getBounds())
-          ..style = PaintingStyle.fill,
-      );
+    if (fillColor != Colors.transparent) {
+      if (fillColor != null && fillColor != Colors.transparent) {
+        canvas.drawPath(
+          outPath,
+          Paint()
+            ..color = fillColor!
+            ..style = PaintingStyle.fill,
+        );
+      } else if (fillGradient != null) {
+        canvas.drawPath(
+          outPath,
+          Paint()
+            ..shader = fillGradient?.createShader(outPath.getBounds())
+            ..style = PaintingStyle.fill,
+        );
+      }
     }
 
     canvas.drawPath(
@@ -112,7 +135,7 @@ class _DottedDecoratorPainter extends BoxPainter {
       Paint()
         ..color = borderBgColor
         ..style = PaintingStyle.stroke
-        ..strokeWidth = strokeWidth+2,
+        ..strokeWidth = strokeWidth + 2,
     );
 
     canvas.drawPath(
