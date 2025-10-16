@@ -20,9 +20,8 @@ class Error extends StatelessWidget {
         borderRadius: BorderRadius.circular(32),
         child: Container(
             width: 300,
-            height: 200,
             color: Colors.red,
-            padding: EdgeInsets.all(30),
+            padding: EdgeInsets.all(8),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(18),
               child: Container(

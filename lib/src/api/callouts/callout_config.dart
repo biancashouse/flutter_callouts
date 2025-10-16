@@ -6,7 +6,6 @@ import 'package:flutter_callouts/flutter_callouts.dart';
 import 'package:flutter_callouts/src/api/callouts/bubble_shape.dart';
 import 'package:flutter_callouts/src/api/callouts/draggable_corner.dart';
 import 'package:flutter_callouts/src/api/callouts/draggable_edge.dart';
-import 'package:flutter_callouts/src/api/callouts/modal_barrier_with_cutout.dart';
 import 'package:flutter_callouts/src/api/callouts/pointing_line.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart'
