@@ -1,4 +1,17 @@
-// library pkg_flutter_callout;
+/// A powerful Flutter package for creating interactive tutorials, feature callouts,
+/// and guided user experiences.
+///
+/// Callouts are highly configurable, supporting different pointer styles,
+/// colors, and behaviors. They can be interactive, draggable, and resizable.
+///
+/// ![spank](https://flutter.github.io/assets-for-api-docs/assets/material/card.png)
+/// {@image src/assets/callouts-screenshot.png}
+///
+/// In the image above:
+/// - The **green bubble** callout points to a target widget.
+/// - The **yellow callout** demonstrates pointing to an element within another widget.
+/// - The **dark blue callout** shows an absolutely positioned callout without a pointer.
+library flutter_callouts;
 
 // ignore_for_file: constant_identifier_names
 
@@ -56,6 +69,7 @@ export 'src/api/callouts/decoration_shape.dart';
 
 export 'src/api/callouts/color_or_gradient.dart';
 export 'src/api/callouts/modal_barrier_with_cutout.dart';
+export 'src/api/callouts/rect_extn.dart';
 
 // re-export
 export 'package:logger/src/logger.dart';
@@ -119,4 +133,5 @@ class FlutterCalloutMixins
   //         : HydratedStorageDirectory((await getTemporaryDirectory()).path),
   //   );
   // }
+
 }

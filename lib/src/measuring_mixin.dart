@@ -134,7 +134,6 @@ class _OffstageWidgetWrapperState extends State<_OffstageWidgetWrapper> {
 
   @override
   void initState() {
-    print('inity state ****************');
     super.initState();
     fca.afterNextBuildDo(() {
       final Rect? rect = fca.findGlobalRect(key);

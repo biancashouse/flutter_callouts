@@ -10,11 +10,25 @@ import 'package:flutter_callouts/src/api/callouts/overlay_entry_list.dart';
 import 'package:flutter_callouts/src/api/repositionable_overlay_content.dart';
 import 'package:flutter_callouts/src/debouncer/throttler.dart';
 
-
 mixin CalloutMixin {
   static const int separationAnimationMs = 500;
 
+  /// A widget that displays a customizable callout box, capable of pointing to
+  /// a target widget or being positioned absolutely on the screen.
+  ///
+  /// Callouts are highly configurable, supporting different pointer styles,
+  /// colors, and behaviors. They can be interactive, draggable, and resizable.
+  ///
+  ///
+  /// In the image above:
+  /// - The **green bubble** callout points to a target widget.
+  /// - The **yellow callout** demonstrates pointing to an element within another widget.
+  /// - The **dark blue callout** shows an absolutely positioned callout without a pointer.
+  ///
+  /// To create a simple callout, provide a [child] and a [target].
+
   // assumption: at least 1 build has been executed; after initState
+
   // #begin
   Future<void> showOverlay({
     // ZoomerState? zoomer, // if callout needs access to the zoomer
@@ -29,11 +43,21 @@ mixin CalloutMixin {
     bool skipHeightConstraintWarning = false,
     bool wrapInPointerInterceptor = false,
     CalloutConfig? callout2Follow,
-    NamedScrollController? namedSC,
+    bool skipOnScreenCheck = false,
   }) async
   // #end
   {
     print('showOverlay: ${calloutConfig.cId}');
+
+    // if no target gk provided and incomplete dimensions, abort showOverlay!
+    if (targetGkF == null &&
+        (calloutConfig.initialCalloutW == null ||
+            calloutConfig.initialCalloutH == null)) {
+      fca.logger.e(
+        'no width or height provided, and no content gk to use for measuring callout size !',
+      );
+      return;
+    }
 
     if (await fca.alreadyGotit(calloutConfig.cId)) return;
 
@@ -64,104 +88,66 @@ mixin CalloutMixin {
       });
     }
 
-    // // get this target's context
-    // if (targetGkF != null) {
-    //   GlobalKey? gk = targetGkF.call();
-    //   var cc = gk?.currentContext;
-    //   if (cc == null) {
-    //     fca.logger.i(
-    //         '${calloutConfig.cId} missing target gk - overlay not shown');
-    //     return;
-    //   } else {
-    //     fca.initWithContext(cc);
-    //   }
-    // }
+    // possibly measure callout content using target gk
+    if (targetGkF != null &&
+        (calloutConfig.initialCalloutW == null ||
+            calloutConfig.initialCalloutH == null)) {
+      Rect contentRect = await fca.measureWidgetRect(widget: calloutContent);
+      calloutConfig.initialCalloutW = calloutConfig.calloutW =
+          contentRect.width;
+      calloutConfig.initialCalloutH = calloutConfig.calloutH =
+          contentRect.height;
+      fca.logger.i('measured content size: ${contentRect.toString()}');
+    }
 
-    // possibly create the overlay after measuring the callout's content
-    if (calloutConfig.initialCalloutW == null ||
-        calloutConfig.initialCalloutH == null) {
-      fca
-          .measureWidgetRect(widget: calloutContent)
-          .then((rect) {
-            calloutConfig.initialCalloutW = calloutConfig.calloutW = rect.width;
-            calloutConfig.initialCalloutH = calloutConfig.calloutH  = rect.height;
-            fca.logger.i('measured content size: ${rect.toString()}');
-            _createOverlayDefinitelyHasSize(
-              calloutConfig,
-              calloutContent,
-              // zoomer,
-              targetGkF,
-              ValueNotifier<int>(0),
-              ensureLowestOverlay,
-              onReadyF,
-              wrapInPointerInterceptor,
-              callout2Follow,
-              namedSC,
-            );
-          });
-    } else {
-      // width and height supplied
-      // calloutConfig.initialCalloutW = calloutConfig.initialCalloutH = 0.0;
-      _createOverlayDefinitelyHasSize(
-        calloutConfig,
-        calloutContent,
-        // zoomer,
-        targetGkF,
-        ValueNotifier<int>(0),
-        ensureLowestOverlay,
-        onReadyF,
-        wrapInPointerInterceptor,
-        callout2Follow,
-        namedSC,
+    // no alignments nor pos not provided, centre on screen
+    if (calloutConfig.initialTargetAlignment == null &&
+        calloutConfig.initialCalloutAlignment == null &&
+        calloutConfig.initialCalloutPos == null) {
+      calloutConfig.targetAlignment = Alignment.center;
+      calloutConfig.calloutAlignment = Alignment.center;
+      calloutConfig.initialCalloutPos = Offset(
+        fca.scrW / 2 - calloutConfig.initialCalloutW! / 2,
+        fca.scrH / 2 - calloutConfig.initialCalloutH! / 2,
       );
     }
 
-    await Future.delayed(const Duration(milliseconds: 800));
-  }
-
-  void _createOverlayDefinitelyHasSize(
-    CalloutConfig calloutConfig,
-    Widget calloutContent,
-    // ZoomerState? zoomer,
-    TargetKeyFunc? targetGkF,
-    ValueNotifier<int>? targetChangedNotifier,
-    bool ensureLowestOverlay,
-    VoidCallback? onReadyF,
-    bool wrapInPointerInterceptor,
-    CalloutConfig? callout2Follow,
-    NamedScrollController? namedSC,
-  ) {
     OverlayEntry oEntry = _createOverlay(
-      // zoomer,
       calloutConfig,
       calloutContent,
       targetGkF,
       ensureLowestOverlay,
       wrapInPointerInterceptor,
+      skipOnScreenCheck,
     ); // will be null if target not present
     // if a notifer was passed in, means inside another overlay, so the target would change as the overlay gets moved or resized
-    targetChangedNotifier?.addListener(() {
-      print("\n\ntime to update the target\n\n");
-      fca.afterNextBuildDo(() => oEntry.markNeedsBuild());
-    });
+    // ValueNotifier<int>(0).addListener(() {
+    //   print("\n\ntime to update the target\n\n");
+    //   fca.afterNextBuildDo(() => oEntry.markNeedsBuild());
+    // });
     // allow to follow scroll - using throttler is optional
     final throttler = Throttler(delayMs: 100);
     final throttleScroll = false;
-    namedSC?.addListener(() {
-      if (throttleScroll) {
-        throttler.run(
-          action: () {
-            oEntry.markNeedsBuild();
-          },
-        );
-      } else {
-        oEntry.markNeedsBuild();
-      }
-    });
-    // possibly follow another callout (our target inside another callout)
-      callout2Follow?.movedOrResizedNotifier?.addListener(() {
-        refresh(calloutConfig.cId);
+    if (calloutConfig.scrollControllerName != null) {
+      NamedScrollController? namedSC = NamedScrollController.instance(
+        calloutConfig.scrollControllerName!,
+      );
+      namedSC?.addListener(() {
+        if (throttleScroll) {
+          throttler.run(
+            action: () {
+              oEntry.markNeedsBuild();
+            },
+          );
+        } else {
+          oEntry.markNeedsBuild();
+        }
       });
+    }
+    // possibly follow another callout (our target inside another callout)
+    callout2Follow?.movedOrResizedNotifier?.addListener(() {
+      refresh(calloutConfig.cId);
+    });
     // animating appearance of callout
     Future.delayed(const Duration(milliseconds: 300), () {
       if (calloutConfig.notToast) {
@@ -180,6 +166,7 @@ mixin CalloutMixin {
     TargetKeyFunc? targetGkF,
     bool ensureLowestOverlay,
     bool wrapInPointerInterceptor,
+    bool skipOnScreenCheck,
   ) {
     // in the event that finalSeparation specified, ensure initial callout at zero separation
     double? savedFinalSeparation = calloutConfig.finalSeparation;
@@ -256,6 +243,7 @@ mixin CalloutMixin {
               entry.markNeedsBuild();
             },
             wrapInPointerInterceptor: wrapInPointerInterceptor,
+            skipOnScreenCheck: skipOnScreenCheck,
           ),
         );
       },
@@ -357,15 +345,13 @@ mixin CalloutMixin {
       initialTargetAlignment: null,
       initialCalloutAlignment: null,
       gravity: calloutConfig.gravity,
-      initialCalloutPos:
-        _initialOffsetFromGravity(
-          calloutConfig.gravity!,
-          calloutConfig.initialCalloutW!,
-          calloutConfig.initialCalloutH!,
+      initialCalloutPos: _initialOffsetFromGravity(
+        calloutConfig.gravity!,
+        calloutConfig.initialCalloutW!,
+        calloutConfig.initialCalloutH!,
       ),
       targetPointerType: TargetPointerType.none(),
       // draggable: false,
-      skipOnScreenCheck: true,
       allowScrolling: calloutConfig.followScroll,
     );
     if (removeAfterMs > 0) {
@@ -373,7 +359,7 @@ mixin CalloutMixin {
         dismiss(toastCC.cId);
       });
     }
-    showOverlay(calloutConfig: toastCC, calloutContent: calloutContent);
+    showOverlay(calloutConfig: toastCC, calloutContent: calloutContent, skipOnScreenCheck: true);
   }
 
   void showToast({
@@ -667,25 +653,33 @@ mixin CalloutMixin {
     return (renderObject as RenderBox).localToGlobal(Offset.zero);
   }
 
-  (double, double) ensureOnScreen(
-    Rect calloutRect,
-    double minVisibleH,
-    double minVisibleV,
-  ) {
+  // make sure callout will not be off the screen
+  // NOTE - scroll aware!
+  (double, double) ensureOnScreen({
+    required Rect calloutRect,
+    double? minAlwaysVisibleH,
+    double? minAlwaysVisibleV,
+    required double scrollOffsetX,
+    required double scrollOffsetY,
+    required bool skipOnScreenCheck,
+  }) {
+    // if (skipOnScreenCheck) return (calloutRect.left, calloutRect.top);
+
     double resultLeft = calloutRect.left;
     double resultTop = calloutRect.top;
     // adjust s.t entirely visible
-    if (calloutRect.left > (fca.scrW - minVisibleH)) {
-      resultLeft = fca.scrW - minVisibleH;
+    if (calloutRect.left > (fca.scrW - (minAlwaysVisibleH ?? 0.0))) {
+      resultLeft = fca.scrW - (minAlwaysVisibleH ?? 0.0);
     }
-    if (calloutRect.top > (fca.scrH - minVisibleV - fca.keyboardHeight)) {
-      resultTop = fca.scrH - minVisibleV - fca.keyboardHeight;
+    if (calloutRect.top >
+        (fca.scrH - (minAlwaysVisibleV ?? 0.0) - fca.keyboardHeight) + scrollOffsetY) {
+      resultTop = fca.scrH - (minAlwaysVisibleV ?? 0.0) - fca.keyboardHeight + scrollOffsetY;
     }
-    if (calloutRect.right < minVisibleH) {
-      resultLeft = minVisibleH - calloutRect.width;
+    if (calloutRect.right < (minAlwaysVisibleH ?? 0.0)) {
+      resultLeft = (minAlwaysVisibleH ?? 0.0) - calloutRect.width;
     }
-    if (calloutRect.bottom < minVisibleV) {
-      resultTop = minVisibleV - calloutRect.height;
+    if (calloutRect.bottom < (minAlwaysVisibleV ?? 0.0) + scrollOffsetY) {
+      resultTop = (minAlwaysVisibleV ?? 0.0) - calloutRect.height + scrollOffsetY;
     }
 
     return (resultLeft, resultTop);
@@ -885,9 +879,7 @@ mixin CalloutMixin {
   }
 
   CalloutConfig? findParentCalloutConfig(context) {
-    return context
-        .findAncestorWidgetOfExactType<PositionedBoxContent>()
-        ?.calloutConfig;
+    return PositionedBoxContent.of(context)?.cc;
   }
 
   // unhide OpenPortal overlay
@@ -1008,16 +1000,11 @@ mixin CalloutMixin {
   }
 
   void preventParentCalloutDrag(BuildContext ctx) {
-    PositionedBoxContent? parent = ctx
-        .findAncestorWidgetOfExactType<PositionedBoxContent>();
-    if (parent != null) {
-      parent.cc.preventDrag = true;
-    }
+    PositionedBoxContent.of(ctx)?.cc.preventDrag = true;
   }
 
   void allowParentCalloutDrag(BuildContext ctx) {
-    PositionedBoxContent? parent = ctx
-        .findAncestorWidgetOfExactType<PositionedBoxContent>();
+    PositionedBoxContent? parent = PositionedBoxContent.of(ctx);
     if (parent != null) {
       // delay to allow _onContentPointerUp to do its thing
       fca.afterMsDelayDo(300, () {

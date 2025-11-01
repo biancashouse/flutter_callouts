@@ -13,7 +13,7 @@ import 'package:pointer_interceptor/pointer_interceptor.dart'
 
 // import 'package:pointer_interceptor/pointer_interceptor.dart';
 
-// import 'package:transparent_pointer/transparent_pointer.dart';
+// import 'package:transpare nt_pointer/transparent_pointer.dart';
 
 // import 'callout_config_toolbar.dart';
 
@@ -62,12 +62,15 @@ class CalloutConfig implements TickerProvider {
   double? toDelta;
 
   TargetPointerType? targetPointerType;
+
   // bubble
   Color? bubbleOrTargetPointerColor;
   double? bubbleBorderRadius;
+
   // arrow
   bool? animatePointer;
   Widget? lineLabel;
+
   // optional decoration
   DecorationShape? decorationShape;
   ColorOrGradient? decorationFillColors;
@@ -130,7 +133,6 @@ class CalloutConfig implements TickerProvider {
 
   final double elevation;
   final bool circleShape;
-  final bool skipOnScreenCheck;
   final bool resizeableH;
   final bool resizeableV;
 
@@ -339,7 +341,6 @@ class CalloutConfig implements TickerProvider {
     this.onDragF,
     this.onDragEndedF,
     this.onDragStartedF,
-    this.skipOnScreenCheck = false,
     this.resizeableH = false,
     this.resizeableV = false,
     this.onResizeF,
@@ -368,7 +369,9 @@ class CalloutConfig implements TickerProvider {
     }
     // fillColor = Color.fromColor(
     //     Colors.white); //FCallouts().FUCHSIA_X.withValues(alpha:.9);
-    if (decorationFillColors != null && !(decorationFillColors!.isAGradient()) && decorationFillColors!.color1 == null) {
+    if (decorationFillColors != null &&
+        !(decorationFillColors!.isAGradient()) &&
+        decorationFillColors!.color1 == null) {
       bubbleOrTargetPointerColor ??= decorationFillColors!.color1;
     }
 
@@ -386,9 +389,10 @@ class CalloutConfig implements TickerProvider {
     _calloutW ??= initialCalloutW;
     _calloutH ??= initialCalloutH;
 
+    // in the case where no alignments nor pos are supplied,
+    // assumption that the pos should be centre of screen
     targetAlignment = initialTargetAlignment;
     calloutAlignment = initialCalloutAlignment;
-
     // if (initialCalloutPos != null) {
     //   calloutAlignment = targetAlignment = null;
     // }
@@ -468,7 +472,6 @@ class CalloutConfig implements TickerProvider {
     Function? onDragF,
     Function? onDragEndedF,
     Function? onDragStartedF,
-    bool? skipOnScreenCheck,
     bool? resizeableH,
     bool? resizeableV,
     ValueChanged<Size>? onResize,
@@ -505,8 +508,7 @@ class CalloutConfig implements TickerProvider {
       initialCalloutH: suppliedCalloutH ?? initialCalloutH,
       // decoration
       decorationShape: decorationShape ?? this.decorationShape,
-      decorationFillColors:
-          decorationFillColors ?? this.decorationFillColors,
+      decorationFillColors: decorationFillColors ?? this.decorationFillColors,
       decorationBorderColors:
           decorationBorderColors ?? this.decorationBorderColors,
       decorationBorderThickness:
@@ -522,7 +524,8 @@ class CalloutConfig implements TickerProvider {
       closeButtonColor: closeButtonColor ?? this.closeButtonColor,
       closeButtonPos: closeButtonPos ?? this.closeButtonPos,
       gotitAxis: gotitAxis ?? this.gotitAxis,
-      bubbleOrTargetPointerColor: targetPointerColor ?? this.bubbleOrTargetPointerColor,
+      bubbleOrTargetPointerColor:
+          targetPointerColor ?? this.bubbleOrTargetPointerColor,
       targetPointerType: targetPointerType ?? this.targetPointerType,
       animatePointer: animate ?? this.animatePointer,
       lineLabel: lineLabel ?? this.lineLabel,
@@ -539,7 +542,6 @@ class CalloutConfig implements TickerProvider {
       draggable: draggable ?? this.draggable,
       draggableColor: draggableColor ?? this.draggableColor,
       dragHandleHeight: dragHandleHeight ?? this.dragHandleHeight,
-      skipOnScreenCheck: skipOnScreenCheck ?? this.skipOnScreenCheck,
       onDismissedF: onDismissedF ?? this.onDismissedF,
       onTickedF: onTickedF ?? this.onTickedF,
       followScroll: allowScrolling,
@@ -807,8 +809,9 @@ class CalloutConfig implements TickerProvider {
     required VoidCallback rebuildF,
     // Target? configurableTarget,
     bool wrapInPointerInterceptor = false,
+    bool skipOnScreenCheck = false,
   }) {
-    // print('isAnimating: ${isAnimating().toString()}');
+    print('oeContentWidget}');
 
     // experiment ------------------------------------------------------------
     // infer alignment from initialPos
@@ -835,6 +838,7 @@ class CalloutConfig implements TickerProvider {
         calloutContentF,
         rebuildF,
         wrapInPointerInterceptor,
+        skipOnScreenCheck,
       ),
     );
   }
@@ -846,6 +850,7 @@ class CalloutConfig implements TickerProvider {
     required WidgetBuilder calloutContentF,
     required VoidCallback rebuildF,
     bool wrapInPointerInterceptor = false,
+    bool skipOnScreenCheck = false,
   }) {
     opDescendantContext =
         context; // used to find nearest parent OverlayPortal for barrier tap to close
@@ -857,6 +862,7 @@ class CalloutConfig implements TickerProvider {
             calloutContentF,
             rebuildF,
             wrapInPointerInterceptor,
+            skipOnScreenCheck,
           );
   }
 
@@ -886,11 +892,21 @@ class CalloutConfig implements TickerProvider {
     VoidCallback rebuildF,
     // Target? configurableTarget,
     bool wrapInPointerInterceptor,
+    bool skipOnScreenCheck,
   ) {
+    print('_renderCallout targetAlignment is ${targetAlignment.toString()}');
     _targetRect = targetRect;
 
     // print('_target: ${_targetRect.toString()}');
     setRebuildCallback(rebuildF);
+
+    if (targetAlignment == null &&
+        calloutAlignment == null &&
+        initialCalloutPos == null) {
+      BuildContext ctx = fca.rootContext;
+      var content = calloutContent(ctx);
+      return _calloutStack(content, wrapInPointerInterceptor);
+    }
 
     // // if (width > Useful.screenW()) _calloutW = Useful.screenW() - 30;
     // //if (height > Useful.screenH()) _calloutH = Useful.screenH() - 30;
@@ -904,6 +920,33 @@ class CalloutConfig implements TickerProvider {
     /// given a Rect, returns most appropriate alignment between target and callout
 
     // fca.logger.i("overlayChild top:$top");
+
+    // hotspot callout targets just specify a target alignment,
+    // and not a calloutAlignment
+    if ((calloutAlignment == null && targetAlignment != null)) {
+      /// Calculates the Offset for a given [Alignment] within a [Rect].
+      ///
+      /// The [Alignment] object is used to determine a point within the rectangle.
+      /// For example, `Alignment.topLeft` will return the rect's `topLeft` offset,
+      /// `Alignment.center` will return its `center` offset, and so on.
+      Offset offsetForAlignment(Rect rect, Alignment alignment) {
+        // The alongSize method calculates the offset of the alignment point
+        // from the top-left corner of a rectangle of the given size.
+        final Offset offsetWithinRect = alignment.alongSize(rect.size);
+
+        // Add the calculated offset to the rect's top-left corner
+        // to get the global coordinate.
+        return rect.topLeft + offsetWithinRect;
+      }
+
+      var topLeft = offsetForAlignment(targetRect, targetAlignment!);
+
+      top = topLeft.dy - calloutH! / 2;
+      left = topLeft.dx - calloutW! / 2;
+      BuildContext ctx = fca.rootContext;
+      var content = calloutContent(ctx);
+      return _calloutStack(content, wrapInPointerInterceptor);
+    }
 
     if ((calloutAlignment == null || targetAlignment == null)) {
       // double sw = Useful.scrW;
@@ -939,7 +982,7 @@ class CalloutConfig implements TickerProvider {
       }
     }
 
-    if (top == null) calcContentTopLeft();
+    if (top == null) calcContentTopLeft(skipOnScreenCheck: skipOnScreenCheck);
 
     // fca.logger.i('$feature: tR() (${tR?.width}x${tR?.height})');
 
@@ -948,7 +991,7 @@ class CalloutConfig implements TickerProvider {
     //   return const Icon(Icons.error, color: Colors.orangeAccent, size: 60);
     // }
 
-    if (!skipOnScreenCheck && (top ?? 999) < fca.viewPadding.top) {
+    if ((top ?? 999) < fca.viewPadding.top) {
       top = fca.viewPadding.top;
     }
 
@@ -1098,10 +1141,14 @@ class CalloutConfig implements TickerProvider {
         wrapWithPointerInterceptor,
         key: ValueKey(cId),
       ),
-      if (notToast && targetPointerType != null && targetPointerType?.name != 'none' &&
+      if (notToast &&
+          targetPointerType != null &&
+          targetPointerType?.name != 'none' &&
           targetPointerType?.name != "bubble")
         _createPointingLine(),
-      if (notToast && targetPointerType != null && targetPointerType?.name != 'none' &&
+      if (notToast &&
+          targetPointerType != null &&
+          targetPointerType?.name != 'none' &&
           targetPointerType?.name != "bubble" &&
           lineLabel != null)
         _createLineLabel(),
@@ -1282,7 +1329,7 @@ class CalloutConfig implements TickerProvider {
 
   // late Color calloutColor;
 
-  void calcContentTopLeft() {
+  void calcContentTopLeft({bool skipOnScreenCheck = false}) {
     double startingCalloutLeft;
     double startingCalloutTop;
 
@@ -1339,11 +1386,19 @@ class CalloutConfig implements TickerProvider {
     if (!notToast) {
       fca.logger.i('must skip screen bounds check');
     }
-    if ((!skipOnScreenCheck) && !needsToScrollV && !needsToScrollH) {
+    if (!needsToScrollV && !needsToScrollH) {
       var definitelyOnScreen = fca.ensureOnScreen(
-        Rect.fromLTWH(actualLeft, actualTop, _calloutW!, _calloutH!),
-        _calloutW!,
-        _calloutH!,
+        calloutRect: Rect.fromLTWH(
+          actualLeft,
+          actualTop,
+          _calloutW!,
+          _calloutH!,
+         ),
+        minAlwaysVisibleH: _calloutW!,
+        minAlwaysVisibleV: _calloutH!,
+        scrollOffsetX: scrollOffsetX(),
+        scrollOffsetY: scrollOffsetY(),
+        skipOnScreenCheck: skipOnScreenCheck,
       );
       actualLeft = definitelyOnScreen.$1;
       actualTop = definitelyOnScreen.$2;
@@ -1401,29 +1456,31 @@ class CalloutConfig implements TickerProvider {
       return;
     }
     rebuild(() {
+      print('top: $top old');
       top =
           event.globalPosition.dy -
           dragCalloutOffset.dy +
           (followScroll ? scrollOffsetY() : 0.0);
+      print('top: $top new');
       left =
           event.globalPosition.dx -
           dragCalloutOffset.dx +
           (followScroll ? scrollOffsetX() : 0.0);
-      var definitelyOnScreen = fca.ensureOnScreen(
-        Rect.fromLTWH(left!, top!, _calloutW!, dragHandleHeight ?? _calloutH!)
-        // .translate(
-        // followScroll ? scrollOffsetX() : 0.0,
-        // followScroll ? scrollOffsetY() : 0.0,
-        // )
-        .translate(
-          contentTranslateX != null ? -contentTranslateX! : 0.0,
-          contentTranslateY != null ? -contentTranslateY! : 0.0,
-        ),
-        _calloutW!,
-        0,
-      );
-      left = definitelyOnScreen.$1;
-      top = definitelyOnScreen.$2;
+      // var definitelyOnScreen = fca.ensureOnScreen(
+      //   calloutRect: Rect.fromLTWH(left!, top!, _calloutW!, dragHandleHeight ?? _calloutH!)
+      //   // .translate(
+      //   // followScroll ? scrollOffsetX() : 0.0,
+      //   // followScroll ? scrollOffsetY() : 0.0,
+      //   // )
+      //   .translate(
+      //     contentTranslateX != null ? -contentTranslateX! : 0.0,
+      //     contentTranslateY != null ? -contentTranslateY! : 0.0,
+      //   ),
+      //   minAlwaysVisibleH: _calloutW!,
+      //   minAlwaysVisibleV: 0,
+      // );
+      // left = definitelyOnScreen.$1;
+      // top = definitelyOnScreen.$2;
 
       onDragF?.call(Offset(left!, top!));
       movedOrResizedNotifier?.value++;
@@ -1588,18 +1645,18 @@ class CalloutConfig implements TickerProvider {
     //if (preventDrag || !isDraggable || event.localPosition.dy >= (dragHandleHeight ?? 9999)) return;
     if (dragging) {
       rebuild(() {
-        var definitelyOnScreen = fca.ensureOnScreen(
-          Rect.fromLTWH(
-            left!,
-            top!,
-            _calloutW!,
-            dragHandleHeight ?? _calloutH!,
-          ),
-          _calloutW!,
-          0,
-        );
-        left = definitelyOnScreen.$1;
-        top = definitelyOnScreen.$2;
+        // var definitelyOnScreen = fca.ensureOnScreen(
+        //   calloutRect: Rect.fromLTWH(
+        //     left!,
+        //     top!,
+        //     _calloutW!,
+        //     dragHandleHeight ?? _calloutH!,
+        //   ),
+        //   minAlwaysVisibleH: _calloutW!,
+        //   minAlwaysVisibleV: 0,
+        // );
+        // left = definitelyOnScreen.$1;
+        // top = definitelyOnScreen.$2;
         if (dragging) {
           onDragF?.call(Offset(left!, top!));
           onDragEndedF?.call(Offset(left!, top!));
@@ -1728,12 +1785,12 @@ class CalloutConfig implements TickerProvider {
 
       Widget pointingLine = IgnorePointer(
         child: PointingLine(
-          targetPointerType?.reverse??false ? to : from,
-          targetPointerType?.reverse??false ? from : to,
-          targetPointerType??TargetPointerType.thin_line(),
+          targetPointerType?.reverse ?? false ? to : from,
+          targetPointerType?.reverse ?? false ? from : to,
+          targetPointerType ?? TargetPointerType.thin_line(),
           bubbleOrTargetPointerColor ?? Colors.grey,
           lengthDeltaPc: lengthDeltaPc,
-          animate: animatePointer??false,
+          animate: animatePointer ?? false,
         ),
       );
 
@@ -1757,12 +1814,12 @@ class CalloutConfig implements TickerProvider {
     final sv = scrollOffsetY();
     final tr = tR();
     //.translate(-scrollOffsetX(), -scrollOffsetY());
-    final top = tr.top; //+sv;
-    final left = tr.left; //+sh;
-    print('scrollOffset: $sv, tr.top: ${tr.top} pos top: $top');
+    // final top = tr.top; //+sv;
+    // final left = tr.left; //+sh;
+    // print('scrollOffset: $sv, tr.top: ${tr.top} pos top: $top');
     return Positioned(
-      left: left,
-      top: top,
+      left: tr.left,
+      top: tr.top,
       child: Material(
         color: Colors.yellow.withValues(alpha: .3),
         child: GestureDetector(
@@ -2052,7 +2109,7 @@ class PositionedBoxContent extends StatelessWidget {
     //   final ob = decoration;
     //   sb = ob.shape;
     // }
-       return Positioned(
+    return Positioned(
       top:
           (cc.followScroll ? -cc.scrollOffsetY() : 0.0) +
           (cc.top ?? 0) +
@@ -2073,19 +2130,20 @@ class PositionedBoxContent extends StatelessWidget {
           cc._onDragEnd(DragEndDetails());
         },
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(cc.decorationBorderRadius??0.0),
+          borderRadius: BorderRadius.circular(cc.decorationBorderRadius ?? 0.0),
           child: Material(
             type: MaterialType.canvas,
             color: Colors.transparent,
             elevation: cc.elevation,
             child: Container(
-              decoration: (cc.decorationShape ?? DecorationShape.rectangle()).toDecoration(
-                fillColorOrGradient: cc.decorationFillColors,
-                borderColorOrGradient: cc.decorationBorderColors,
-                borderRadius: cc.decorationBorderRadius,
-                borderThickness: cc.decorationBorderThickness,
-                starPoints: cc.decorationStarPoints,
-              ),
+              decoration: (cc.decorationShape ?? DecorationShape.rectangle())
+                  .toDecoration(
+                    fillColorOrGradient: cc.decorationFillColors,
+                    borderColorOrGradient: cc.decorationBorderColors,
+                    borderRadius: cc.decorationBorderRadius,
+                    borderThickness: cc.decorationBorderThickness,
+                    starPoints: cc.decorationStarPoints,
+                  ),
               // color: cc.decorationShape == null ? cc.decorationUpTo6FillColors?.onlyColor : null,
               child: FocusableActionDetector(
                 focusNode: cc.focusNode,

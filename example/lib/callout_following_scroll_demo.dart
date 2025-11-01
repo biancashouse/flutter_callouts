@@ -42,19 +42,16 @@ class _ScrollingDemoState extends State<ScrollingDemo> {
         calloutConfig: _cc1 = _createGreenCalloutConfig(),
         calloutContent: _createGreenContent(),
         targetGkF: () => _blueIconGK,
-        namedSC: _namedSC,
       );
       fca.showOverlay(
         calloutConfig: _cc2 = _createYellowCalloutConfig(),
         calloutContent: _createYellowCalloutContent(),
         targetGkF: () => _redIconGK,
-        namedSC: _namedSC,
         onReadyF: () {
           fca.showOverlay(
             calloutConfig: _createOrangeCalloutConfig(),
             calloutContent: _createOrangeCalloutContent(),
             targetGkF: () => _purpleIconGK,
-            namedSC: _namedSC,
             callout2Follow: _cc2,
           );
         },
@@ -62,7 +59,6 @@ class _ScrollingDemoState extends State<ScrollingDemo> {
       fca.showOverlay(
         calloutConfig: _createBlueCalloutConfig(),
         calloutContent: _createBlueContent(),
-        namedSC: _namedSC,
       );
       fca.showToast(
         gravity: Alignment.bottomCenter,

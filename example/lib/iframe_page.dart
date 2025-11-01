@@ -29,7 +29,6 @@ class _IFramePageState extends State<IFramePage> {
         calloutConfig: _createCalloutConfig1(),
         calloutContent: _createCalloutContent1(),
         targetGkF: () => _gk,
-        namedSC: _namedSC,
         wrapInPointerInterceptor: true, // THIS IS THE MOST IMPORTANT LINE
       );
       fca.showToast(
